@@ -1,0 +1,27 @@
+FROM php:8.4-cli
+
+RUN apt-get update && apt-get install -y \
+    libpng-dev \
+    libjpeg-dev \
+    libfreetype6-dev \
+    libzip-dev \
+    zip \
+    unzip \
+    git \
+    curl \
+    cron \
+    && docker-php-ext-configure gd --with-freetype --with-jpeg \
+    && docker-php-ext-install gd pdo pdo_mysql zip bcmath pcntl
+
+COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
+
+WORKDIR /var/www/html
+
+COPY . .
+
+RUN composer install --no-dev --optimize-autoloader --no-scripts --no-interaction
+
+RUN echo '#!/bin/bash\nwhile true; do\n  php /var/www/html/artisan schedule:run >> /var/log/scheduler.log 2>&1\n  sleep 60\ndone' > /scheduler.sh \
+    && chmod +x /scheduler.sh
+
+CMD ["/scheduler.sh"]

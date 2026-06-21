@@ -1,0 +1,249 @@
+@import "tailwindcss";
+
+/* Scan semua file yang mengandung Tailwind class */
+@source "../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php";
+@source "../../storage/framework/views/*.php";
+@source "../**/*.blade.php";
+@source "../**/*.js";
+
+/* Custom theme project (warna sesuai PRD sistem diklat) */
+@theme {
+    --color-primary: #1B5E7B;        /* Deep Teal */
+    --color-primary-dark: #154a63;
+    --color-accent: #E87722;         /* Orange */
+    --color-accent-dark: #c9671a;
+    --font-sans: 'Inter', 'Poppins', ui-sans-serif, system-ui, sans-serif;
+}
+
+/* ============================================================
+   STAT CARDS — Dashboard Diklat
+   Letakkan CSS ini di resources/css/app.css
+   ============================================================ */
+
+/* --- Entrance animation --- */
+@keyframes stat-fade-up {
+  from { opacity: 0; transform: translateY(20px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* --- Base card --- */
+.stat-card {
+  position: relative;
+  border-radius: 20px;
+  padding: 22px 22px 20px;
+  overflow: hidden;
+  opacity: 0;
+  animation: stat-fade-up 0.5s cubic-bezier(.22, .68, 0, 1.2) forwards;
+  transition: transform 0.3s cubic-bezier(.22, .68, 0, 1.2), box-shadow 0.3s ease;
+  cursor: default;
+}
+.stat-card:hover {
+  transform: translateY(-6px) scale(1.02);
+  box-shadow: 0 20px 40px -8px rgba(0, 0, 0, 0.18);
+}
+
+/* Decorative bubble overlays */
+.stat-card::before {
+  content: '';
+  position: absolute;
+  top: -40px; right: -40px;
+  width: 130px; height: 130px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.08);
+  pointer-events: none;
+}
+.stat-card::after {
+  content: '';
+  position: absolute;
+  bottom: -30px; left: -20px;
+  width: 90px; height: 90px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.05);
+  pointer-events: none;
+}
+
+/* --- Gradient themes (harmonis dengan primary orange) --- */
+.card-orange     { background: linear-gradient(135deg, #F97316 0%, #EA580C 60%, #C2410C 100%); }
+.card-amber      { background: linear-gradient(135deg, #FBBF24 0%, #F59E0B 60%, #D97706 100%); }
+.card-rose       { background: linear-gradient(135deg, #FB7185 0%, #F43F5E 60%, #E11D48 100%); }
+.card-terracotta { background: linear-gradient(135deg, #FB923C 0%, #EA580C 40%, #9A3412 100%); }
+
+/* --- Glass icon --- */
+.glass-icon {
+  width: 48px;
+  height: 48px;
+  border-radius: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border: 1px solid rgba(255, 255, 255, 0.35);
+  flex-shrink: 0;
+  transition: transform 0.3s ease;
+}
+.stat-card:hover .glass-icon {
+  transform: rotate(-8deg) scale(1.1);
+}
+
+/* --- Typography --- */
+.stat-label {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.88);
+}
+.stat-number {
+  font-size: 32px;
+  font-weight: 700;
+  letter-spacing: -1px;
+  line-height: 1;
+  margin: 14px 0 5px;
+  color: #ffffff;
+}
+.stat-sub {
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.7);
+  margin-top: 4px;
+}
+
+/* --- Badge pill bawah card --- */
+.stat-badge {
+  display: inline-flex;
+  align-items: center;
+  font-size: 11px;
+  font-weight: 600;
+  padding: 3px 10px;
+  border-radius: 20px;
+  margin-top: 10px;
+  background: rgba(255, 255, 255, 0.18);
+  color: rgba(255, 255, 255, 0.92);
+  border: 1px solid rgba(255, 255, 255, 0.22);
+}
+/* ============================================================
+   END STAT CARDS
+   ============================================================ */
+
+/* ============================================================
+   ROW 2 — Acara Mendatang & Akses Cepat
+   Letakkan di resources/css/app.css
+   ============================================================ */
+
+/* --- Entrance animation --- */
+@keyframes fade-up {
+  from { opacity: 0; transform: translateY(18px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes row-slide {
+  from { opacity: 0; transform: translateX(-8px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+
+/* --- Card base (shadow abu + putih) --- */
+.card-section {
+  background: #ffffff;
+  border-radius: 20px;
+  overflow: hidden;
+  border: 1px solid rgba(231, 227, 222, 0.8);
+  /* Shadow: putih inset (atas) + abu lembut (bawah) */
+  box-shadow:
+    0 1px 0 0 rgba(255, 255, 255, 0.95) inset,
+    0 8px 24px -4px rgba(120, 113, 108, 0.13),
+    0 2px 6px -1px rgba(120, 113, 108, 0.07);
+  animation: fade-up 0.45s cubic-bezier(.22, .68, 0, 1.2) both;
+  transition: transform 0.3s cubic-bezier(.22, .68, 0, 1.2), box-shadow 0.3s ease;
+}
+.card-section:hover {
+  transform: translateY(-3px);
+  box-shadow:
+    0 1px 0 0 rgba(255, 255, 255, 1) inset,
+    0 16px 40px -8px rgba(100, 94, 90, 0.16),
+    0 4px 12px -2px rgba(100, 94, 90, 0.09);
+}
+
+/* --- Acara list rows --- */
+.acara-row {
+  opacity: 0;
+  animation: row-slide 0.4s cubic-bezier(.22, .68, 0, 1.2) forwards;
+}
+
+/* --- Shortcut buttons --- */
+.shortcut-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  padding: 14px 10px 12px;
+  border-radius: 14px;
+  text-decoration: none;
+  background: #FAFAF9;
+  border: 1px solid #EDE9E5;
+  /* putih inset + abu bawah */
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.95) inset,
+    0 1px 4px rgba(140, 130, 120, 0.07);
+  transition:
+    background 0.22s,
+    transform 0.25s cubic-bezier(.22, .68, 0, 1.2),
+    box-shadow 0.22s;
+}
+.shortcut-btn:hover {
+  transform: translateY(-3px) scale(1.04);
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, 1) inset,
+    0 8px 20px -4px rgba(120, 113, 108, 0.16);
+}
+
+/* Hover tint per shortcut */
+.sc-teal:hover   { background: #F0FDFA; border-color: #99F6E4; }
+.sc-orange:hover { background: #FFF7ED; border-color: #FED7AA; }
+.sc-green:hover  { background: #F0FDF4; border-color: #BBF7D0; }
+.sc-purple:hover { background: #FAF5FF; border-color: #E9D5FF; }
+.sc-red:hover    { background: #FFF1F2; border-color: #FECDD3; }
+
+/* Label warna hover */
+.sc-teal:hover   .sc-label { color: #0F766E; }
+.sc-orange:hover .sc-label { color: #EA580C; }
+.sc-green:hover  .sc-label { color: #16A34A; }
+.sc-purple:hover .sc-label { color: #7C3AED; }
+.sc-red:hover    .sc-label { color: #DC2626; }
+
+.sc-icon-wrap {
+  width: 38px; height: 38px;
+  border-radius: 11px;
+  display: flex; align-items: center; justify-content: center;
+  transition: transform 0.25s cubic-bezier(.22, .68, 0, 1.2);
+}
+.shortcut-btn:hover .sc-icon-wrap { transform: scale(1.12) rotate(-6deg); }
+
+.sc-label {
+  font-size: 11px;
+  font-weight: 500;
+  color: #78716C;
+  text-align: center;
+  line-height: 1.3;
+  transition: color 0.2s;
+}
+
+/* --- Animate class for entry --- */
+.animate-fade-up {
+  animation: fade-up 0.45s cubic-bezier(.22, .68, 0, 1.2) both;
+}
+/* ============================================================
+   END ROW 2
+   ============================================================ */
+
+input[type=password]::-ms-reveal,
+input[type=password]::-ms-clear {
+    display: none !important;
+    width: 0;
+    height: 0;
+}
+
+ @media (min-width: 1024px) {
+        html { font-size: 14px; }
+    }
+  
+
