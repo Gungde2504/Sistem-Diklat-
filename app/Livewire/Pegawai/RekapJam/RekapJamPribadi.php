@@ -10,7 +10,7 @@ use App\Models\RecordAbsensiDiklat;
 use Livewire\Component;
 use Livewire\Attributes\Title;
 
-#[Title('Jam Pelatihan Saya')]
+#[Title('Jam Pelatihan')]
 class RekapJamPribadi extends Component
 {
     public string $tahun  = '';
