@@ -228,27 +228,25 @@
                 });
             });
         </script>
-        {{-- ── FOTO DELETE MODAL ── --}}
+         {{-- ── GLOBAL DELETE MODAL ── --}}
         <div
             x-data
-            x-show="$store.fotoModal.open"
+            x-show="$store.deleteModal.open"
             x-cloak
             class="fixed inset-0 z-50 flex items-center justify-center p-4"
             style="display:none;">
 
-            {{-- Backdrop --}}
-            <div class="absolute inset-0 bg-black/70 backdrop-blur-sm"
+            <div class="absolute inset-0 bg-black/40 backdrop-blur-sm"
                 x-transition:enter="transition duration-200"
                 x-transition:enter-start="opacity-0"
                 x-transition:enter-end="opacity-100"
                 x-transition:leave="transition duration-150"
                 x-transition:leave-start="opacity-100"
                 x-transition:leave-end="opacity-0"
-                @click="$store.fotoModal.close()">
+                @click="$store.deleteModal.close()">
             </div>
 
-            {{-- Modal --}}
-            <div class="relative bg-white rounded-3xl shadow-[0_20px_60px_-10px_rgba(0,0,0,.4)] w-full max-w-sm overflow-hidden"
+            <div class="relative bg-white rounded-3xl shadow-[0_20px_60px_-10px_rgba(0,0,0,.25)] w-full max-w-sm overflow-hidden"
                 x-transition:enter="transition duration-200"
                 x-transition:enter-start="opacity-0 scale-95 translate-y-2"
                 x-transition:enter-end="opacity-100 scale-100 translate-y-0"
@@ -257,47 +255,67 @@
                 x-transition:leave-end="opacity-0 scale-95 translate-y-2"
                 @click.stop>
 
-                {{-- Preview Foto --}}
-                <div class="relative aspect-video bg-stone-900 overflow-hidden">
-                    <img :src="$store.fotoModal.src"
-                        class="w-full h-full object-cover opacity-80" />
-                    {{-- Overlay gelap --}}
-                    <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
-                    {{-- Close button --}}
-                    <button @click="$store.fotoModal.close()"
-                        class="absolute top-3 right-3 w-8 h-8 rounded-full bg-black/40 backdrop-blur-sm
-                           flex items-center justify-center text-white/80 hover:text-white
-                           hover:bg-black/60 transition-all duration-200">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12" />
-                        </svg>
-                    </button>
-                    {{-- Label --}}
-                    <div class="absolute bottom-3 left-3">
-                        <span class="text-xs font-semibold text-white/80 bg-black/40 backdrop-blur-sm px-2.5 py-1 rounded-full">
-                            Foto Dokumentasi
-                        </span>
-                    </div>
+                {{-- Top bar dinamis --}}
+                <div class="h-1.5 w-full"
+                    :style="$store.deleteModal.type === 'approve'
+                        ? 'background:linear-gradient(90deg,#4ade80,#22c55e,#16a34a)'
+                        : ($store.deleteModal.type === 'reject'
+                            ? 'background:linear-gradient(90deg,#f87171,#ef4444,#dc2626)'
+                            : ($store.deleteModal.type === 'confirm'
+                                ? 'background:linear-gradient(90deg,#60a5fa,#3b82f6,#2563eb)'
+                                : 'background:linear-gradient(90deg,#F87171,#EF4444,#DC2626)'))">
                 </div>
 
-                <div class="p-5">
-                    {{-- Warning --}}
-                    <div class="flex items-start gap-3 mb-5">
-                        <div class="w-9 h-9 rounded-xl flex items-center justify-center flex-shrink-0
-                            bg-red-50 border border-red-200">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-red-500" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126ZM12 15.75h.007v.008H12v-.008Z" />
+                <div class="p-6">
+                    {{-- Icon dinamis --}}
+                    <div class="flex justify-center mb-4">
+                        <div class="w-16 h-16 rounded-2xl flex items-center justify-center"
+                            :class="$store.deleteModal.type === 'approve'
+                                ? 'bg-green-50 border border-green-200 shadow-[0_4px_14px_-3px_rgba(34,197,94,.25)]'
+                                : ($store.deleteModal.type === 'reject'
+                                    ? 'bg-red-50 border border-red-200 shadow-[0_4px_14px_-3px_rgba(239,68,68,.25)]'
+                                    : ($store.deleteModal.type === 'confirm'
+                                        ? 'bg-blue-50 border border-blue-200 shadow-[0_4px_14px_-3px_rgba(59,130,246,.25)]'
+                                        : 'bg-red-50 border border-red-200 shadow-[0_4px_14px_-3px_rgba(239,68,68,.25)]'))">
+
+                            {{-- Icon hapus --}}
+                            <svg x-show="$store.deleteModal.type === 'delete' || $store.deleteModal.type === ''"
+                                xmlns="http://www.w3.org/2000/svg" class="w-8 h-8 text-red-500" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0" />
                             </svg>
-                        </div>
-                        <div>
-                            <p class="text-sm font-bold text-stone-800">Hapus foto ini?</p>
-                            <p class="text-xs text-stone-400 mt-0.5">Foto akan dihapus permanen dan tidak bisa dikembalikan.</p>
+                            {{-- Icon approve --}}
+                            <svg x-show="$store.deleteModal.type === 'approve'"
+                                xmlns="http://www.w3.org/2000/svg" class="w-8 h-8 text-green-500" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75 11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+                            </svg>
+                            {{-- Icon reject --}}
+                            <svg x-show="$store.deleteModal.type === 'reject'"
+                                xmlns="http://www.w3.org/2000/svg" class="w-8 h-8 text-red-500" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M18.364 18.364A9 9 0 0 0 5.636 5.636m12.728 12.728A9 9 0 0 1 5.636 5.636m12.728 12.728L5.636 5.636" />
+                            </svg>
+                            {{-- Icon confirm --}}
+                            <svg x-show="$store.deleteModal.type === 'confirm'"
+                                xmlns="http://www.w3.org/2000/svg" class="w-8 h-8 text-blue-500" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M9.879 7.519c1.171-1.025 3.071-1.025 4.242 0 1.172 1.025 1.172 2.687 0 3.712-.203.179-.43.326-.67.442-.745.361-1.45.999-1.45 1.827v.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9 5.25h.008v.008H12v-.008Z" />
+                            </svg>
                         </div>
                     </div>
 
-                    {{-- Buttons --}}
+                    <div class="text-center mb-6">
+                        <h3 class="text-lg font-bold text-stone-800 mb-1.5"
+                            x-text="$store.deleteModal.title"></h3>
+                        <p class="text-sm text-stone-500 leading-relaxed"
+                            x-text="$store.deleteModal.message"></p>
+                        <p class="text-xs mt-2"
+                            :class="$store.deleteModal.type === 'approve' ? 'text-green-500' : 'text-red-500'"
+                            x-text="$store.deleteModal.type === 'approve'
+                                ? 'Peserta akan dapat mengakses sistem.'
+                                : 'Tindakan ini tidak dapat dibatalkan.'">
+                        </p>
+                    </div>
+
                     <div class="flex gap-3">
-                        <button @click="$store.fotoModal.close()"
+                        <button @click="$store.deleteModal.close()"
                             class="flex-1 py-2.5 rounded-2xl text-sm font-semibold text-stone-600
                            border border-stone-200 bg-stone-50
                            shadow-[0_1px_0_rgba(255,255,255,.9)_inset]
@@ -305,41 +323,54 @@
                            transition-all duration-200">
                             Batal
                         </button>
-                        <button @click="$store.fotoModal.confirm()"
+                        <button @click="$store.deleteModal.confirm()"
                             class="relative flex-1 py-2.5 rounded-2xl text-sm font-bold text-white overflow-hidden
-                           shadow-[0_4px_14px_-3px_rgba(239,68,68,.5),0_1px_0_rgba(255,255,255,.2)_inset]
-                           hover:-translate-y-0.5 hover:shadow-[0_8px_20px_-4px_rgba(239,68,68,.55)]
-                           active:scale-[.97] transition-all duration-200"
-                            style="background:linear-gradient(135deg,#F97316 0%,#EA580C 100%)">
+                           hover:-translate-y-0.5 active:scale-[.97] transition-all duration-200"
+                            :style="$store.deleteModal.type === 'approve'
+                                ? 'background:linear-gradient(135deg,#4ade80 0%,#22c55e 45%,#16a34a 100%);box-shadow:0 4px 14px -3px rgba(34,197,94,.5)'
+                                : ($store.deleteModal.type === 'confirm'
+                                    ? 'background:linear-gradient(135deg,#60a5fa 0%,#3b82f6 45%,#2563eb 100%);box-shadow:0 4px 14px -3px rgba(59,130,246,.5)'
+                                    : 'background:linear-gradient(135deg,#F87171 0%,#EF4444 45%,#DC2626 100%);box-shadow:0 4px 14px -3px rgba(239,68,68,.5)')">
                             <span class="absolute inset-0 bg-gradient-to-br from-white/15 to-transparent pointer-events-none"></span>
-                            <span class="relative">Ya, Hapus</span>
+                            <span class="relative"
+                                x-text="$store.deleteModal.type === 'approve'
+                                    ? 'Ya, Setujui'
+                                    : ($store.deleteModal.type === 'reject'
+                                        ? 'Ya, Tolak'
+                                        : ($store.deleteModal.type === 'confirm'
+                                            ? 'Ya, Lanjutkan'
+                                            : 'Ya, Hapus'))">
+                            </span>
                         </button>
                     </div>
                 </div>
             </div>
         </div>
 
+       {{-- Alpine Store --}}
         <script>
             document.addEventListener('alpine:init', () => {
-                Alpine.store('fotoModal', {
+                Alpine.store('deleteModal', {
                     open: false,
-                    src: '',
+                    title: '',
+                    message: '',
+                    type: 'delete',
                     onConfirm: null,
-
-                    show(src, onConfirm) {
-                        this.src = src;
+                    show(title, message, onConfirm, type = 'delete') {
+                        this.title = title;
+                        this.message = message;
                         this.onConfirm = onConfirm;
+                        this.type = type;
                         this.open = true;
                     },
-
                     confirm() {
                         if (this.onConfirm) this.onConfirm();
                         this.close();
                     },
-
                     close() {
                         this.open = false;
                         this.onConfirm = null;
+                        this.type = 'delete';
                     }
                 });
             });

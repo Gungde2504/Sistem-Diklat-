@@ -364,7 +364,7 @@
                                 {{-- ACC / Tolak --}}
                                 @if($p->approval_status === 'pending')
                                 <button
-                                    @click="$store.deleteModal.show('Setujui Peserta', 'Setujui pendaftaran {{ $nama }}? Peserta dapat login ke sistem.', () => $wire.approve({{ $p->id }}))"
+                                    @click="$store.deleteModal.show('Setujui Peserta', 'Setujui pendaftaran {{ $nama }}? Peserta dapat login ke sistem.', () => $wire.approve({{ $p->id }}), 'approve')"
                                     class="w-8 h-8 flex items-center justify-center rounded-xl
                    bg-gradient-to-br from-green-50 to-green-100 text-green-600
                    border border-green-200 shadow-[0_1px_0_rgba(255,255,255,.9)_inset]
@@ -375,7 +375,7 @@
                                     </svg>
                                 </button>
                                 <button
-                                    @click="$store.deleteModal.show('Tolak Peserta', 'Tolak pendaftaran {{ $nama }}? Peserta tidak dapat login ke sistem.', () => $wire.reject({{ $p->id }}))"
+                                    @@click="$store.deleteModal.show('Tolak Peserta', 'Tolak pendaftaran {{ $nama }}? Peserta tidak dapat login ke sistem.', () => $wire.reject({{ $p->id }}), 'reject')"
                                     class="w-8 h-8 flex items-center justify-center rounded-xl
                    bg-gradient-to-br from-red-50 to-red-100 text-red-500
                    border border-red-200 shadow-[0_1px_0_rgba(255,255,255,.9)_inset]
@@ -390,7 +390,7 @@
                                 {{-- Tandai Tidak Aktif — hanya Karyawan External --}}
                                 @if($tab === 'karyawan' && $p->status === 'aktif' && $p->approval_status === 'approved')
                                 <button
-                                    @click="$store.deleteModal.show('Tandai Tidak Aktif', 'Tandai {{ $nama }} sebagai tidak aktif? Karyawan tidak dapat mengakses sistem.', () => $wire.ubahStatus({{ $p->id }}, 'selesai'))"
+                                   @click="$store.deleteModal.show('Tandai Tidak Aktif', 'Tandai {{ $nama }} sebagai tidak aktif? Karyawan tidak dapat mengakses sistem.', () => $wire.ubahStatus({{ $p->id }}, 'selesai'), 'confirm')"
                                     class="w-8 h-8 flex items-center justify-center rounded-xl
                    bg-gradient-to-br from-teal-50 to-teal-100 text-teal-600
                    border border-teal-200 shadow-[0_1px_0_rgba(255,255,255,.9)_inset]
