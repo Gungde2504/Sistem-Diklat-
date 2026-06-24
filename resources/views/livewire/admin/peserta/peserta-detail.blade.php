@@ -63,19 +63,22 @@
                 <div class="flex flex-col items-end gap-2 flex-shrink-0">
                     {{-- ACC / Tolak --}}
                     @if($detail->approval_status === 'pending')
-                    <button wire:click="approve" wire:confirm="Setujui peserta ini?"
+                    @php $namaPeserta = str_replace("'", "\'", $detail->user->nama ?? '-'); @endphp
+                    <button
+                        @click="$store.deleteModal.show('Setujui Peserta', 'Setujui pendaftaran {{ $namaPeserta }}? Peserta dapat login ke sistem.', () => $wire.approve(), 'approve')"
                         class="flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl text-xs font-semibold
-                               bg-green-400/25 text-green-100 border border-green-400/35 backdrop-blur-sm
-                               hover:bg-green-400/40 hover:-translate-y-px transition-all duration-200">
+               bg-green-400/25 text-green-100 border border-green-400/35 backdrop-blur-sm
+               hover:bg-green-400/40 hover:-translate-y-px transition-all duration-200">
                         <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75 11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
                         </svg>
                         Setujui
                     </button>
-                    <button wire:click="reject" wire:confirm="Tolak peserta ini?"
+                    <button
+                        @click="$store.deleteModal.show('Tolak Peserta', 'Tolak pendaftaran {{ $namaPeserta }}? Peserta tidak dapat login ke sistem.', () => $wire.reject(), 'reject')"
                         class="flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl text-xs font-semibold
-                               bg-red-400/25 text-red-100 border border-red-400/35 backdrop-blur-sm
-                               hover:bg-red-400/40 hover:-translate-y-px transition-all duration-200">
+               bg-red-400/25 text-red-100 border border-red-400/35 backdrop-blur-sm
+               hover:bg-red-400/40 hover:-translate-y-px transition-all duration-200">
                         <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12" />
                         </svg>
@@ -86,10 +89,10 @@
                     @if($detail->status === 'aktif' && !$isKaryawan)
                     @php $namaPeserta = str_replace("'", "\'", $detail->user->nama ?? '-'); @endphp
                     <button
-                        @click="$store.deleteModal.show('Tandai Selesai', 'Tandai {{ $namaPeserta }} sebagai selesai? Status peserta akan diubah menjadi selesai.', () => $wire.ubahStatus('selesai'))"
+                        @click="$store.deleteModal.show('Tandai Selesai', 'Tandai {{ $namaPeserta }} sebagai selesai? Status peserta akan diubah menjadi selesai.', () => $wire.ubahStatus('selesai'), 'confirm')"
                         class="flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl text-xs font-semibold
-           bg-white/20 text-white border border-white/35 backdrop-blur-sm
-           hover:bg-white/30 hover:-translate-y-px transition-all duration-200">
+               bg-white/20 text-white border border-white/35 backdrop-blur-sm
+               hover:bg-white/30 hover:-translate-y-px transition-all duration-200">
                         <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75 11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
                         </svg>
