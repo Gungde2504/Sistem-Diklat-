@@ -47,7 +47,7 @@ return [
         'mysql' => [
             'driver' => 'mysql',
             'url' => env('DB_URL'),
-            'host' => '172.18.0.2',
+            'host' => 'diklat_db',
             'port' => '3306',
             'database' => 'sistem_diklat',
             'username' => 'diklat_user',
