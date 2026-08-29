@@ -9,7 +9,6 @@
             <h2 class="text-xl font-bold text-white tracking-tight">{{ auth()->user()->nama }}</h2>
             <p class="text-white/50 text-xs mt-0.5">{{ auth()->user()->unit ?? 'RSU Prima Medika' }}</p>
 
-            {{-- Progress Bar --}}
             <div class="mt-4">
                 <div class="flex items-center justify-between mb-1.5">
                     <p class="text-xs text-white/65">Jam Pelatihan {{ now()->year }}</p>
@@ -27,10 +26,10 @@
             </div>
         </div>
     </div>
+
     {{-- ── STATS 3 SUMBER ── --}}
     <div class="grid grid-cols-3 gap-3">
 
-        {{-- Acara --}}
         <div class="bg-white rounded-2xl p-3.5 text-center border border-stone-200 border-l-4 border-l-blue-500
                     shadow-[0_1px_0_rgba(255,255,255,.95)_inset,0_4px_14px_-4px_rgba(120,113,108,.12)]
                     hover:-translate-y-1 hover:shadow-[0_1px_0_rgba(255,255,255,1)_inset,0_10px_24px_-4px_rgba(59,159,209,.2)]
@@ -44,7 +43,6 @@
             <p class="text-[11px] text-stone-400 font-medium">Acara</p>
         </div>
 
-        {{-- Mandiri --}}
         <div class="bg-white rounded-2xl p-3.5 text-center border border-stone-200 border-l-4 border-l-orange-400
                     shadow-[0_1px_0_rgba(255,255,255,.95)_inset,0_4px_14px_-4px_rgba(120,113,108,.12)]
                     hover:-translate-y-1 hover:shadow-[0_1px_0_rgba(255,255,255,1)_inset,0_10px_24px_-4px_rgba(249,115,22,.2)]
@@ -58,7 +56,6 @@
             <p class="text-[11px] text-stone-400 font-medium">Mandiri</p>
         </div>
 
-        {{-- E-Learning --}}
         <div class="bg-white rounded-2xl p-3.5 text-center border border-stone-200 border-l-4 border-l-purple-500
                     shadow-[0_1px_0_rgba(255,255,255,.95)_inset,0_4px_14px_-4px_rgba(120,113,108,.12)]
                     hover:-translate-y-1 hover:shadow-[0_1px_0_rgba(255,255,255,1)_inset,0_10px_24px_-4px_rgba(168,85,247,.2)]
@@ -80,7 +77,6 @@
         <p class="text-[10.5px] font-bold text-stone-500 uppercase tracking-widest mb-3">Akses Cepat</p>
         <div class="grid grid-cols-4 gap-2">
 
-            {{-- Sertifikat --}}
             <a href="{{ route('pegawai.sertifikat') }}"
                 class="group flex flex-col items-center gap-1.5 p-3 rounded-2xl border border-blue-100 bg-blue-50/60
           hover:bg-blue-100 hover:-translate-y-1
@@ -96,8 +92,7 @@
                 </div>
                 <span class="text-[11px] font-semibold text-blue-700 text-center">Sertifikat</span>
             </a>
-            
-            {{-- Acara --}}
+
             <a href="{{ route('pegawai.acara') }}"
                 class="group flex flex-col items-center gap-1.5 p-3 rounded-2xl border border-sky-100 bg-sky-50/60
                       hover:bg-sky-100 hover:-translate-y-1
@@ -114,7 +109,6 @@
                 <span class="text-[11px] font-semibold text-sky-700 text-center">Acara</span>
             </a>
 
-            {{-- Mandiri --}}
             <a href="{{ route('pegawai.diklat-mandiri') }}"
                 class="group flex flex-col items-center gap-1.5 p-3 rounded-2xl border border-orange-100 bg-orange-50/60
                       hover:bg-orange-100 hover:-translate-y-1
@@ -131,7 +125,6 @@
                 <span class="text-[11px] font-semibold text-orange-600 text-center">Mandiri</span>
             </a>
 
-            {{-- E-Learning --}}
             <a href="{{ route('pegawai.elearning') }}"
                 class="group flex flex-col items-center gap-1.5 p-3 rounded-2xl border border-purple-100 bg-purple-50/60
                       hover:bg-purple-100 hover:-translate-y-1
@@ -151,97 +144,92 @@
         </div>
     </div>
 
-    {{-- ── ACARA MENDATANG ── --}}
-    <div class="bg-white rounded-2xl border border-stone-200 overflow-hidden
-                shadow-[0_1px_0_rgba(255,255,255,.95)_inset,0_6px_20px_-4px_rgba(120,113,108,.12),0_2px_6px_-1px_rgba(120,113,108,.07)]
-                hover:shadow-[0_1px_0_rgba(255,255,255,1)_inset,0_12px_30px_-6px_rgba(100,94,90,.15)]
-                transition-shadow duration-300">
-        <div class="flex items-center justify-between px-4 py-3.5 border-b border-stone-100">
-            <div class="flex items-center gap-2">
-                <div class="w-0.5 h-4 rounded-full bg-gradient-to-b from-blue-500 to-blue-700"></div>
-                <p class="text-sm font-semibold text-stone-800 tracking-tight">Acara Mendatang</p>
-            </div>
-            <a href="{{ route('pegawai.acara') }}"
-                class="text-xs text-blue-600 font-semibold hover:text-blue-700 transition-colors">
-                Lihat semua →
-            </a>
-        </div>
-        <div class="divide-y divide-stone-50">
-            @forelse($acaraMendatang as $acara)
-            <a href="{{ route('pegawai.acara.detail', $acara->id) }}"
-                class="group flex items-center gap-3 px-4 py-3.5
-                      hover:bg-gradient-to-r hover:from-blue-50/50 hover:to-transparent
-                      transition-all duration-200">
-                <div class="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0
-                            shadow-[0_2px_6px_-1px_rgba(15,79,122,.25)]
-                            group-hover:scale-105 group-hover:shadow-[0_4px_10px_-2px_rgba(15,79,122,.3)]
-                            transition-all duration-200"
-                    style="background:linear-gradient(135deg,#3B9FD1 0%,#1A78B0 50%,#0F5A8C 100%)">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-white" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 6.042A8.967 8.967 0 0 0 6 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 0 1 6 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 0 1 6-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0 0 18 18a8.967 8.967 0 0 0-6 2.292m0-14.25v14.25" />
-                    </svg>
-                </div>
-                <div class="flex-1 min-w-0">
-                    <p class="text-sm font-semibold text-stone-800 truncate group-hover:text-blue-700 transition-colors duration-200">
-                        {{ $acara->nama }}
-                    </p>
-                    <p class="text-xs text-stone-400 mt-0.5">{{ $acara->tglJamMulai }} · {{ $acara->tempat }}</p>
-                </div>
-                <span class="text-[10.5px] px-2.5 py-1 rounded-full font-semibold border flex-shrink-0
-                    {{ $acara->status === 'Berlangsung'
-                        ? 'bg-green-50 text-green-700 border-green-200'
-                        : 'bg-blue-50 text-blue-700 border-blue-200' }}">
-                    {{ $acara->status }}
-                </span>
-            </a>
-            @empty
-            <div class="px-4 py-10 text-center">
-                <div class="w-12 h-12 rounded-2xl bg-stone-100 flex items-center justify-center mx-auto mb-3">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 text-stone-300" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 0 1 2.25-2.25h13.5A2.25 2.25 0 0 1 21 7.5v11.25m-18 0A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75m-18 0v-7.5" />
-                    </svg>
-                </div>
-                <p class="text-sm text-stone-400">Tidak ada acara mendatang</p>
-            </div>
-            @endforelse
-        </div>
-    </div>
+    {{-- ── ACARA MENDATANG + DIKLAT MANDIRI (sejajar) ── --}}
+   <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
 
-    {{-- ── RIWAYAT DIKLAT MANDIRI ── --}}
-    @if($riwayatMandiri->count() > 0)
-    <div class="bg-white rounded-2xl border border-stone-200 overflow-hidden
-                shadow-[0_1px_0_rgba(255,255,255,.95)_inset,0_6px_20px_-4px_rgba(120,113,108,.12),0_2px_6px_-1px_rgba(120,113,108,.07)]
-                hover:shadow-[0_1px_0_rgba(255,255,255,1)_inset,0_12px_30px_-6px_rgba(100,94,90,.15)]
-                transition-shadow duration-300">
-        <div class="flex items-center justify-between px-4 py-3.5 border-b border-stone-100">
-            <div class="flex items-center gap-2">
-                <div class="w-0.5 h-4 rounded-full bg-gradient-to-b from-orange-500 to-orange-600"></div>
-                <p class="text-sm font-semibold text-stone-800 tracking-tight">Diklat Mandiri Terbaru</p>
-            </div>
-            <a href="{{ route('pegawai.diklat-mandiri') }}"
-                class="text-xs text-orange-500 font-semibold hover:text-orange-600 transition-colors">
-                Lihat semua →
-            </a>
-        </div>
-        <div class="divide-y divide-stone-50">
-            @foreach($riwayatMandiri as $dm)
-            <div class="flex items-center gap-3 px-4 py-3.5 hover:bg-stone-50/60 transition-colors duration-150">
-                <div class="flex-1 min-w-0">
-                    <p class="text-sm font-semibold text-stone-800 truncate">{{ $dm->nama }}</p>
-                    <p class="text-xs text-stone-400 mt-0.5">
-                        {{ $dm->durasi }} menit · {{ \Carbon\Carbon::parse($dm->created_at)->format('d M Y') }}
-                    </p>
+        {{-- ── ACARA MENDATANG ── --}}
+        <div class="bg-white rounded-2xl border border-stone-200 overflow-hidden
+                    shadow-[0_1px_0_rgba(255,255,255,.95)_inset,0_6px_20px_-4px_rgba(120,113,108,.12),0_2px_6px_-1px_rgba(120,113,108,.07)]
+                    hover:shadow-[0_1px_0_rgba(255,255,255,1)_inset,0_12px_30px_-6px_rgba(100,94,90,.15)]
+                    transition-shadow duration-300">
+            <div class="flex items-center justify-between px-4 py-3.5 border-b border-stone-100">
+                <div class="flex items-center gap-2">
+                    <div class="w-0.5 h-4 rounded-full bg-gradient-to-b from-blue-500 to-blue-700"></div>
+                    <p class="text-sm font-semibold text-stone-800 tracking-tight">Acara Mendatang</p>
                 </div>
-                <span class="text-[10.5px] px-2.5 py-1 rounded-full font-semibold border flex-shrink-0
-                    {{ $dm->status === 'Disetujui' ? 'bg-green-50 text-green-700 border-green-200'  :
-                       ($dm->status === 'Ditolak'  ? 'bg-red-50 text-red-600 border-red-200'        :
-                       'bg-yellow-50 text-yellow-700 border-yellow-200') }}">
-                    {{ $dm->status }}
-                </span>
+                <a href="{{ route('pegawai.acara') }}"
+                    class="text-xs text-blue-600 font-semibold hover:text-blue-700 transition-colors">
+                    Lihat semua →
+                </a>
             </div>
-            @endforeach
+            <div class="divide-y divide-stone-50">
+                @forelse($acaraMendatang as $acara)
+                <a href="{{ route('pegawai.acara.detail', $acara->id) }}"
+                    class="group flex items-center justify-between gap-3 px-4 py-3.5
+                          hover:bg-blue-50/40 transition-all duration-200">
+                    <div class="flex-1 min-w-0">
+                        <p class="text-sm font-semibold text-stone-800 truncate group-hover:text-blue-700 transition-colors duration-200">
+                            {{ $acara->nama }}
+                        </p>
+                        <p class="text-xs text-blue-500 mt-0.5">{{ $acara->tglJamMulai }} · {{ $acara->tempat }}</p>
+                    </div>
+                    <span class="text-[10.5px] px-2.5 py-1 rounded-full font-semibold border flex-shrink-0
+                        {{ $acara->status === 'Berlangsung'
+                            ? 'bg-green-50 text-green-700 border-green-200'
+                            : 'bg-blue-50 text-blue-700 border-blue-200' }}">
+                        {{ $acara->status }}
+                    </span>
+                </a>
+                @empty
+                <div class="px-4 py-10 text-center">
+                    <div class="w-12 h-12 rounded-2xl bg-stone-100 flex items-center justify-center mx-auto mb-3">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 text-stone-300" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 0 1 2.25-2.25h13.5A2.25 2.25 0 0 1 21 7.5v11.25m-18 0A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75m-18 0v-7.5" />
+                        </svg>
+                    </div>
+                    <p class="text-sm text-stone-400">Tidak ada acara mendatang</p>
+                </div>
+                @endforelse
+            </div>
         </div>
+
+        {{-- ── RIWAYAT DIKLAT MANDIRI ── --}}
+        @if($riwayatMandiri->count() > 0)
+        <div class="bg-white rounded-2xl border border-stone-200 overflow-hidden
+                    shadow-[0_1px_0_rgba(255,255,255,.95)_inset,0_6px_20px_-4px_rgba(120,113,108,.12),0_2px_6px_-1px_rgba(120,113,108,.07)]
+                    hover:shadow-[0_1px_0_rgba(255,255,255,1)_inset,0_12px_30px_-6px_rgba(100,94,90,.15)]
+                    transition-shadow duration-300">
+            <div class="flex items-center justify-between px-4 py-3.5 border-b border-stone-100">
+                <div class="flex items-center gap-2">
+                    <div class="w-0.5 h-4 rounded-full bg-gradient-to-b from-orange-500 to-orange-600"></div>
+                    <p class="text-sm font-semibold text-stone-800 tracking-tight">Diklat Mandiri Terbaru</p>
+                </div>
+                <a href="{{ route('pegawai.diklat-mandiri') }}"
+                    class="text-xs text-orange-500 font-semibold hover:text-orange-600 transition-colors">
+                    Lihat semua →
+                </a>
+            </div>
+            <div class="divide-y divide-stone-50">
+                @foreach($riwayatMandiri as $dm)
+                <div class="flex items-center gap-3 px-4 py-3.5 hover:bg-orange-50/40 transition-colors duration-150">
+                    <div class="flex-1 min-w-0">
+                        <p class="text-sm font-semibold text-stone-800 truncate">{{ $dm->nama }}</p>
+                        <p class="text-xs text-orange-500 mt-0.5">
+                            {{ $dm->durasi }} menit · {{ \Carbon\Carbon::parse($dm->created_at)->format('d M Y') }}
+                        </p>
+                    </div>
+                    <span class="text-[10.5px] px-2.5 py-1 rounded-full font-semibold border flex-shrink-0
+                        {{ $dm->status === 'Disetujui' ? 'bg-green-50 text-green-700 border-green-200'  :
+                           ($dm->status === 'Ditolak'  ? 'bg-red-50 text-red-600 border-red-200'        :
+                           'bg-yellow-50 text-yellow-700 border-yellow-200') }}">
+                        {{ $dm->status }}
+                    </span>
+                </div>
+                @endforeach
+            </div>
+        </div>
+        @endif
+
     </div>
-    @endif
 
 </div>

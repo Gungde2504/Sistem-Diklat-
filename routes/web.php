@@ -27,7 +27,9 @@ Route::get('/absensi/scan/{token}', [\App\Http\Controllers\AbsensiQrController::
     ->name('absensi.scan');
 Route::post('/absensi/scan/{token}', [\App\Http\Controllers\AbsensiQrController::class, 'login'])
     ->name('absensi.scan.login');
-
+Route::post('/absensi/scan/{token}/confirm', [\App\Http\Controllers\AbsensiQrController::class, 'confirm'])
+    ->name('absensi.scan.confirm');
+    
 // Peserta External (PKL/Magang/Orientasi)
 Route::get('/daftar-external', function () {
     $units       = \App\Models\MUnit::orderBy('nama')->get();

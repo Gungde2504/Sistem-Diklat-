@@ -1,7 +1,5 @@
 <?php
-
 namespace App\Http\Controllers;
-
 use App\Models\MDiklat;
 use App\Models\User;
 use App\Models\RecordAbsensiDiklat;
@@ -16,6 +14,12 @@ class AbsensiQrController extends Controller
         $diklat = MDiklat::where('QRcode', $token)
             ->where('IsActive', 1)
             ->firstOrFail();
+
+        // Kalau sudah login, langsung tampilkan card konfirmasi tanpa form
+        if (Auth::check()) {
+            $user = Auth::user()->load('detailEksternal');
+            return view('absensi.scan-confirm', compact('diklat', 'token', 'user'));
+        }
 
         return view('absensi.scan-login', compact('diklat', 'token'));
     }
@@ -34,12 +38,10 @@ class AbsensiQrController extends Controller
             'password.required' => 'Password wajib diisi.',
         ]);
 
-        // Cari by NIP (internal)
         $user = User::where('nip', $request->nip)
             ->where('isActive', 1)
             ->first();
 
-        // Kalau tidak ketemu, cari by email (eksternal)
         if (!$user) {
             $user = User::where('email', $request->nip)
                 ->where('isActive', 1)
@@ -53,13 +55,27 @@ class AbsensiQrController extends Controller
         return $this->prosesAbsensi($user, $diklat);
     }
 
+    // Absen langsung dari sesi yang sudah login — tanpa form
+    public function confirm(string $token)
+    {
+        $diklat = MDiklat::where('QRcode', $token)
+            ->where('IsActive', 1)
+            ->firstOrFail();
+
+        if (!Auth::check()) {
+            return redirect()->route('absensi.scan', $token);
+        }
+
+        $user = Auth::user();
+        return $this->prosesAbsensi($user, $diklat);
+    }
+
     private function prosesAbsensi(User $user, MDiklat $diklat)
     {
         $record = RecordAbsensiDiklat::where('id_diklat', $diklat->id)
             ->where('id_user', $user->id)
             ->first();
 
-        // Login user agar sesi aktif
         Auth::login($user);
 
         if ($record && $record->is_hadir) {
