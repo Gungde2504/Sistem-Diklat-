@@ -14,6 +14,8 @@ class DetailEksternal extends Model
         'id_user',
         'jenis',
         'institusi',
+        'program_studi',
+        'semester',
         'vendor',
         'id_unit',
         'id_supervisor',

@@ -14,6 +14,13 @@
         .completed { background: #D1FAE5; color: #065F46; }
         .in_progress { background: #DBEAFE; color: #1E40AF; }
         .failed { background: #FEE2E2; color: #991B1B; }
+        .pengesahan-table { width: 100%; margin-top: 24px; }
+        .pengesahan-box { width: 30%; text-align: center; vertical-align: top; }
+        .pengesahan-intro { font-size: 11px; color: #333; margin-bottom: 2px; }
+        .stamp-img { width: 72px; height: auto; margin: 8px auto 0 auto; display: block; opacity: 0.92; }
+        .stamp-label { font-size: 8px; font-weight: bold; color: #16a34a; letter-spacing: 1px; margin-top: 2px; }
+        .pengesahan-name { font-size: 11px; font-weight: bold; text-decoration: underline; margin-top: 10px; }
+        .pengesahan-role { font-size: 9px; color: #888; margin-top: 1px; }
     </style>
 </head>
 <body>
@@ -60,6 +67,22 @@
             <tr><td colspan="9" style="text-align:center;color:#9CA3AF;padding:20px;">Tidak ada data</td></tr>
             @endforelse
         </tbody>
+    </table>
+
+    <table class="pengesahan-table">
+        <tr>
+            <td style="width:70%;"></td>
+            <td class="pengesahan-box">
+                <div class="pengesahan-intro">Mengetahui,</div>
+                <div class="pengesahan-intro">Koordinator Diklat</div>
+
+                <img src="{{ public_path('images/pengesahan/stempel-disahkan.png') }}" class="stamp-img" alt="Cap Disahkan">
+                <div class="stamp-label">DISAHKAN</div>
+
+                <div class="pengesahan-name">Putu Gita Laksmi, A.Md Keb</div>
+                <div class="pengesahan-role">Koordinator Diklat</div>
+            </td>
+        </tr>
     </table>
 </body>
 </html>

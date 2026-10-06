@@ -3,11 +3,14 @@
 namespace App\Livewire\Admin\Peserta;
 
 use App\Actions\Sertifikat\GenerateSertifikatPklAction;
+use App\Mail\PesertaStatusNotification;
 use App\Models\DetailEksternal;
+use App\Models\DiklatMandiri;
 use App\Models\ExternalDailyAttendance;
 use App\Models\RecordAbsensiDiklat;
 use App\Models\ElearningProgress;
 use App\Models\JurnalEksternal;
+use Illuminate\Support\Facades\Mail;
 use Livewire\Component;
 use Livewire\Attributes\Title;
 use Livewire\WithPagination;
@@ -71,8 +74,11 @@ class PesertaDetail extends Component
             'approved_at'     => now(),
         ]);
         $this->detail->user?->update(['isActive' => true]);
-        $this->detail->refresh();
-        session()->flash('success', 'Peserta berhasil disetujui.');
+        $this->detail->refresh()->load('user');
+        $emailTerkirim = $this->kirimEmailStatus();
+        session()->flash('success', $emailTerkirim
+            ? 'Peserta berhasil disetujui dan email notifikasi telah dikirim.'
+            : 'Peserta berhasil disetujui, tetapi email notifikasi gagal dikirim.');
     }
 
     public function reject(): void
@@ -83,8 +89,27 @@ class PesertaDetail extends Component
             'approved_at'     => now(),
         ]);
         $this->detail->user?->update(['isActive' => false]);
-        $this->detail->refresh();
-        session()->flash('success', 'Peserta ditolak.');
+        $this->detail->refresh()->load('user');
+        $emailTerkirim = $this->kirimEmailStatus();
+        session()->flash('success', $emailTerkirim
+            ? 'Peserta ditolak dan email notifikasi telah dikirim.'
+            : 'Peserta ditolak, tetapi email notifikasi gagal dikirim.');
+    }
+
+    private function kirimEmailStatus(): bool
+    {
+        if (!$this->detail->user?->email) {
+            return false;
+        }
+
+        try {
+            Mail::to($this->detail->user->email)
+                ->send(new PesertaStatusNotification($this->detail));
+            return true;
+        } catch (\Throwable $e) {
+            report($e);
+            return false;
+        }
     }
 
     public function simpanNilai(): void
@@ -179,9 +204,20 @@ class PesertaDetail extends Component
             $totalCompleted = ElearningProgress::where('id_user', $this->detail->id_user)
                 ->where('status', 'completed')->count();
 
+            $diklatMandiri = DiklatMandiri::where('id_user', $this->detail->id_user)
+                ->orderByDesc('tglJamMulai')
+                ->paginate(10, ['*'], 'diklat_mandiri_page');
+
+            $totalDiklatMandiri         = DiklatMandiri::where('id_user', $this->detail->id_user)->count();
+            $totalDiklatMandiriApproved = DiklatMandiri::where('id_user', $this->detail->id_user)
+                ->where('status', 'Disetujui')->count();
+            $totalDiklatMandiriPending  = DiklatMandiri::where('id_user', $this->detail->id_user)
+                ->where('status', 'pending')->count();
+
             return view('livewire.admin.peserta.peserta-detail-karyawan', compact(
                 'absensi', 'totalHadir', 'totalAbsensi', 'totalJamPelatihan',
-                'elearning', 'totalElearning', 'totalCompleted'
+                'elearning', 'totalElearning', 'totalCompleted',
+                'diklatMandiri', 'totalDiklatMandiri', 'totalDiklatMandiriApproved', 'totalDiklatMandiriPending'
             ));
         }
 

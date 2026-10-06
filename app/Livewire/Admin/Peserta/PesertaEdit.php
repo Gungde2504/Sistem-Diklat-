@@ -18,6 +18,8 @@ class PesertaEdit extends Component
     public string $editHp             = '';
     public string $editJenis          = '';
     public string $editInstitusi      = '';
+    public string $editProgramStudi   = '';
+    public string $editSemester       = '';
     public string $editIdUnit         = '';
     public string $editIdSupervisor   = '';
     public string $editStatus         = '';
@@ -33,6 +35,8 @@ class PesertaEdit extends Component
         $this->editHp             = $detail->user?->hp ?? '';
         $this->editJenis          = $detail->jenis ?? '';
         $this->editInstitusi      = $detail->institusi ?? '';
+        $this->editProgramStudi   = $detail->program_studi ?? '';
+        $this->editSemester       = (string) ($detail->semester ?? '');
         $this->editIdUnit         = $detail->id_unit ?? '';
         $this->editIdSupervisor   = (string) ($detail->id_supervisor ?? '');
         $this->editStatus         = $detail->status ?? '';
@@ -42,7 +46,9 @@ class PesertaEdit extends Component
 
     public function simpan(): void
     {
-        $this->validate([
+        $isKaryawan = DetailEksternal::isKaryawanExternal($this->editJenis);
+
+        $rules = [
             'editNama'           => 'required|string|max:100',
             'editEmail'          => 'required|email|max:100',
             'editJenis'          => 'required|string',
@@ -50,11 +56,22 @@ class PesertaEdit extends Component
             'editStatus'         => 'required|string',
             'editTanggalMulai'   => 'required|date',
             'editTanggalSelesai' => 'required|date|after_or_equal:editTanggalMulai',
-        ], [
+        ];
+
+        // Program studi & semester hanya relevan untuk Mahasiswa PKL/Magang/Orientasi,
+        // bukan Karyawan Eksternal.
+        if (!$isKaryawan) {
+            $rules['editProgramStudi'] = 'required|string|max:150';
+            $rules['editSemester']     = 'required|integer|min:1|max:14';
+        }
+
+        $this->validate($rules, [
             'editNama.required'                 => 'Nama wajib diisi.',
             'editEmail.required'                => 'Email wajib diisi.',
             'editJenis.required'                => 'Jenis wajib dipilih.',
             'editInstitusi.required'            => 'Institusi wajib diisi.',
+            'editProgramStudi.required'         => 'Program studi wajib diisi.',
+            'editSemester.required'             => 'Semester wajib diisi.',
             'editStatus.required'               => 'Status wajib dipilih.',
             'editTanggalMulai.required'         => 'Tanggal mulai wajib diisi.',
             'editTanggalSelesai.required'       => 'Tanggal selesai wajib diisi.',
@@ -70,6 +87,9 @@ class PesertaEdit extends Component
         $this->detail->update([
             'jenis'           => $this->editJenis,
             'institusi'       => $this->editInstitusi,
+            // Karyawan eksternal tidak punya field ini di form — pertahankan nilai yang sudah ada.
+            'program_studi'   => $isKaryawan ? $this->detail->program_studi : $this->editProgramStudi,
+            'semester'        => $isKaryawan ? $this->detail->semester : $this->editSemester,
             'id_unit'         => $this->editIdUnit ?: null,
             'id_supervisor'   => $this->editIdSupervisor ?: null,
             'status'          => $this->editStatus,

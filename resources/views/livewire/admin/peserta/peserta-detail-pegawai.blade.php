@@ -12,17 +12,6 @@
         <p class="text-sm text-green-700 font-medium">{{ session('success') }}</p>
     </div>
     @endif
-    @if(session('error'))
-    <div class="mb-5 flex items-center gap-3 p-4 bg-red-50 border border-red-200 rounded-2xl
-                shadow-[0_1px_0_rgba(255,255,255,.9)_inset]">
-        <div class="w-8 h-8 rounded-xl flex items-center justify-center flex-shrink-0 bg-red-100 border border-red-200">
-            <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-red-500" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m9-.75a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9 3.75h.008v.008H12v-.008Z" />
-            </svg>
-        </div>
-        <p class="text-sm text-red-600 font-medium">{{ session('error') }}</p>
-    </div>
-    @endif
 
     {{-- ── HEADER BANNER ── --}}
     <div class="relative overflow-hidden rounded-2xl px-6 py-5 mb-5 text-white
@@ -42,54 +31,41 @@
                             <svg xmlns="http://www.w3.org/2000/svg" class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 6a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0ZM4.501 20.118a7.5 7.5 0 0 1 14.998 0A17.933 17.933 0 0 1 12 21.75c-2.676 0-5.216-.584-7.499-1.632Z" />
                             </svg>
-                            Karyawan External
+                            Pegawai
                         </span>
+                        @if($pegawai->unit)
                         <span class="inline-flex items-center gap-1.5 text-[10.5px] font-semibold px-2.5 py-1 rounded-full bg-white/15 border border-white/25 backdrop-blur-sm">
                             <svg xmlns="http://www.w3.org/2000/svg" class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M9.568 3H5.25A2.25 2.25 0 0 0 3 5.25v4.318c0 .597.237 1.17.659 1.591l9.581 9.581c.699.699 1.78.872 2.607.33a18.095 18.095 0 0 0 5.223-5.223c.542-.827.369-1.908-.33-2.607L11.16 3.66A2.25 2.25 0 0 0 9.568 3Z" />
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 21h19.5m-18-18v18m10.5-18v18m6-13.5V21M6.75 6.75h.75m-.75 3h.75m-.75 3h.75m3-6h.75m-.75 3h.75m-.75 3h.75M6.75 21v-3.375c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21" />
                             </svg>
-                            {{ \App\Models\DetailEksternal::jenisOptions()[$detail->jenis] ?? $detail->jenis }}
+                            {{ $pegawai->unit }}
                         </span>
+                        @endif
                         <span class="inline-flex items-center gap-1.5 text-[10.5px] font-semibold px-2.5 py-1 rounded-full backdrop-blur-sm
-                            {{ $detail->approval_status === 'approved' ? 'bg-green-400/25 text-green-100 border border-green-400/35'
-                                : ($detail->approval_status === 'pending' ? 'bg-yellow-400/25 text-yellow-100 border border-yellow-400/35'
-                                : 'bg-red-400/25 text-red-100 border border-red-400/35') }}">
-                            @if($detail->approval_status === 'approved')
+                            {{ $pegawai->isActive ? 'bg-green-400/25 text-green-100 border border-green-400/35' : 'bg-red-400/25 text-red-100 border border-red-400/35' }}">
+                            @if($pegawai->isActive)
                             <svg xmlns="http://www.w3.org/2000/svg" class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 6 6 9-13.5" /></svg>
-                            @elseif($detail->approval_status === 'pending')
-                            <svg xmlns="http://www.w3.org/2000/svg" class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" /></svg>
                             @else
                             <svg xmlns="http://www.w3.org/2000/svg" class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12" /></svg>
                             @endif
-                            {{ ucfirst($detail->approval_status) }}
+                            {{ $pegawai->isActive ? 'Aktif' : 'Nonaktif' }}
                         </span>
                     </div>
-                    <h2 class="text-xl font-bold text-white tracking-tight leading-tight mb-1">{{ $detail->user?->nama }}</h2>
+                    <h2 class="text-xl font-bold text-white tracking-tight leading-tight mb-1">{{ $pegawai->nama }}</h2>
                     <div class="flex items-center gap-1.5 mb-0.5">
                         <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5 text-white/50" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M21.75 6.75v10.5a2.25 2.25 0 0 1-2.25 2.25h-15a2.25 2.25 0 0 1-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0 0 19.5 4.5h-15a2.25 2.25 0 0 0-2.25 2.25m19.5 0v.243a2.25 2.25 0 0 1-1.07 1.916l-7.5 4.615a2.25 2.25 0 0 1-2.36 0L3.32 8.91a2.25 2.25 0 0 1-1.07-1.916V6.75" /></svg>
-                        <p class="text-white/65 text-sm">{{ $detail->user?->email }}</p>
+                        <p class="text-white/65 text-sm">{{ $pegawai->email }}</p>
                     </div>
+                    @if($pegawai->jabatan || $pegawai->profesi)
                     <div class="flex items-center gap-1.5">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5 text-white/50" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M3.75 21 3 3l18 9-18 9Zm0 0 10.5-4.5" /></svg>
-                        <p class="text-white/45 text-xs">{{ $detail->institusi }}</p>
+                        <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5 text-white/50" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M20.25 14.15v4.25c0 1.094-.787 2.036-1.872 2.18-2.087.277-4.216.42-6.378.42s-4.291-.143-6.378-.42c-1.085-.144-1.872-1.086-1.872-2.18v-4.25m16.5 0a2.18 2.18 0 0 0 .75-1.661V8.706c0-1.081-.768-2.015-1.837-2.175a48.114 48.114 0 0 0-3.413-.387m4.5 8.006c-.194.165-.42.295-.673.38A23.978 23.978 0 0 1 12 15.75c-2.648 0-5.195-.429-7.577-1.22a2.016 2.016 0 0 1-.673-.38m0 0A2.18 2.18 0 0 1 3 12.489V8.706c0-1.081.768-2.015 1.837-2.175a48.111 48.111 0 0 1 3.413-.387m7.5 0V5.25A2.25 2.25 0 0 0 13.5 3h-3a2.25 2.25 0 0 0-2.25 2.25v.894m7.5 0a48.667 48.667 0 0 0-7.5 0" /></svg>
+                        <p class="text-white/45 text-xs">{{ $pegawai->jabatan ?: $pegawai->profesi }}</p>
                     </div>
+                    @endif
                 </div>
 
                 {{-- Actions --}}
                 <div class="flex flex-col items-end gap-2 flex-shrink-0">
-                    @if($detail->approval_status === 'pending')
-                    @php $namaKaryawan = str_replace("'", "\'", $detail->user->nama ?? '-'); @endphp
-                    <button @click="$store.deleteModal.show('Setujui Karyawan', 'Setujui pendaftaran {{ $namaKaryawan }}? Karyawan dapat login ke sistem.', () => $wire.approve(), 'approve')"
-                        class="flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl text-xs font-semibold bg-green-400/20 text-green-100 border border-green-400/30 backdrop-blur-sm hover:bg-green-400/35 hover:-translate-y-px active:scale-95 transition-all duration-200">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75 11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" /></svg>
-                        Setujui
-                    </button>
-                    <button @click="$store.deleteModal.show('Tolak Karyawan', 'Tolak pendaftaran {{ $namaKaryawan }}? Karyawan tidak dapat login ke sistem.', () => $wire.reject(), 'reject')"
-                        class="flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl text-xs font-semibold bg-red-400/20 text-red-100 border border-red-400/30 backdrop-blur-sm hover:bg-red-400/35 hover:-translate-y-px active:scale-95 transition-all duration-200">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12" /></svg>
-                        Tolak
-                    </button>
-                    @endif
                     <a href="{{ route('admin.peserta.index') }}"
                         class="flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl text-xs font-semibold bg-black/15 text-white/70 border border-white/20 backdrop-blur-sm hover:bg-black/25 hover:-translate-y-px active:scale-95 transition-all duration-200">
                         <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke-width="2.2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M10.5 19.5 3 12m0 0 7.5-7.5M3 12h18" /></svg>
@@ -125,30 +101,24 @@
         </div>
     </div>{{-- tutup header banner --}}
 
-    {{-- ── DATA KARYAWAN ── --}}
+    {{-- ── DATA PEGAWAI ── --}}
     <div class="bg-white rounded-2xl border border-stone-100 overflow-hidden mb-5
             shadow-[0_1px_0_rgba(255,255,255,.95)_inset,0_4px_16px_-4px_rgba(120,113,108,.1),0_1px_4px_-1px_rgba(120,113,108,.06)]">
         <div class="flex items-center gap-2.5 px-5 py-4 border-b border-stone-100">
             <div class="w-0.5 h-5 rounded-full" style="background:linear-gradient(180deg,#FF8C00,#C73D00)"></div>
-            <h3 class="text-sm font-semibold text-stone-800">Data Karyawan</h3>
-            <a href="{{ route('admin.peserta.edit', $detail->id) }}"
-                class="ml-auto flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold
-                   text-orange-600 bg-orange-50 border border-orange-200
-                   hover:bg-orange-100 hover:-translate-y-px active:scale-95 transition-all duration-200">
-                <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Z" /></svg>
-                Edit
-            </a>
+            <h3 class="text-sm font-semibold text-stone-800">Data Pegawai</h3>
+            <span class="ml-auto text-[10px] px-2 py-0.5 rounded-full bg-orange-50 border border-orange-200 text-orange-600 font-semibold">Dari Sistem SDM</span>
         </div>
         <div class="p-5 grid grid-cols-1 sm:grid-cols-2 gap-3">
             @foreach([
-                ['label' => 'Nama Lengkap',    'value' => $detail->user?->nama],
-                ['label' => 'Email',            'value' => $detail->user?->email],
-                ['label' => 'No. HP',           'value' => $detail->user?->hp ?? '-'],
-                ['label' => 'Alamat Domisili',  'value' => $detail->user?->alamat ?? '-'],
-                ['label' => 'Jenis',            'value' => \App\Models\DetailEksternal::jenisOptions()[$detail->jenis] ?? $detail->jenis],
-                ['label' => 'Perusahaan',       'value' => $detail->institusi],
-                ['label' => 'Status',           'value' => ucfirst($detail->status), 'color' => $detail->status === 'aktif' ? 'text-green-600' : 'text-red-500'],
-                ['label' => 'Akun Aktif',       'value' => $detail->user?->isActive ? 'Aktif' : 'Nonaktif', 'color' => $detail->user?->isActive ? 'text-green-600' : 'text-red-500'],
+                ['label' => 'Nama Lengkap', 'value' => $pegawai->nama],
+                ['label' => 'Email',        'value' => $pegawai->email],
+                ['label' => 'No. HP',       'value' => $pegawai->hp ?? '-'],
+                ['label' => 'NIK',          'value' => $pegawai->nip ?: '-'],
+                ['label' => 'Unit',         'value' => $pegawai->unit ?: '-'],
+                ['label' => 'Profesi',      'value' => $pegawai->profesi ?: '-'],
+                ['label' => 'Jabatan',      'value' => $pegawai->jabatan ?: '-'],
+                ['label' => 'Status',       'value' => $pegawai->isActive ? 'Aktif' : 'Nonaktif', 'color' => $pegawai->isActive ? 'text-green-600' : 'text-red-500'],
             ] as $item)
             <div class="bg-stone-50 border border-stone-100 rounded-xl p-3 hover:bg-orange-50/40 hover:border-orange-100 transition-all duration-200">
                 <p class="text-[10.5px] text-stone-400 mb-0.5 uppercase tracking-wider font-medium">{{ $item['label'] }}</p>
@@ -243,7 +213,7 @@
                                 <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 text-stone-300" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 0 1 2.25-2.25h13.5A2.25 2.25 0 0 1 21 7.5v11.25m-18 0A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75m-18 0v-7.5" /></svg>
                             </div>
                             <p class="text-sm font-semibold text-stone-400">Belum ada data pelatihan</p>
-                            <p class="text-xs text-stone-300 mt-0.5">Data akan muncul setelah peserta mengikuti pelatihan</p>
+                            <p class="text-xs text-stone-300 mt-0.5">Data akan muncul setelah pegawai mengikuti pelatihan</p>
                         </td>
                     </tr>
                     @endforelse
@@ -330,7 +300,7 @@
                     <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 text-stone-300" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6.042A8.967 8.967 0 0 0 6 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 0 1 6 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 0 1 6-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0 0 18 18a8.967 8.967 0 0 0-6 2.292m0-14.25v14.25" /></svg>
                 </div>
                 <p class="text-sm font-semibold text-stone-400">Belum ada data e-learning</p>
-                <p class="text-xs text-stone-300 mt-0.5">Data akan muncul setelah peserta mengikuti e-learning</p>
+                <p class="text-xs text-stone-300 mt-0.5">Data akan muncul setelah pegawai mengikuti e-learning</p>
             </div>
             @endforelse
         </div>
@@ -401,7 +371,7 @@
                                 <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 text-stone-300" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Z" /></svg>
                             </div>
                             <p class="text-sm font-semibold text-stone-400">Belum ada data diklat mandiri</p>
-                            <p class="text-xs text-stone-300 mt-0.5">Data akan muncul setelah karyawan mengajukan diklat mandiri</p>
+                            <p class="text-xs text-stone-300 mt-0.5">Data akan muncul setelah pegawai mengajukan diklat mandiri</p>
                         </td>
                     </tr>
                     @endforelse

@@ -1,0 +1,33 @@
+app = "diklat-rsu-prima-medika"
+primary_region = "sin"
+
+[build]
+  dockerfile = "Dockerfile"
+
+[env]
+  APP_ENV = "production"
+  APP_DEBUG = "false"
+  APP_URL = "https://diklat-rsu-prima-medika.fly.dev"
+  CACHE_STORE = "file"
+  SESSION_DRIVER = "file"
+  QUEUE_CONNECTION = "sync"
+  DB_CONNECTION = "mysql"
+  DB_PORT = "3306"
+  DB_DATABASE = "sistem_diklat"
+
+[http_service]
+  internal_port = 80
+  force_https = true
+  auto_stop_machines = true
+  auto_start_machines = true
+  min_machines_running = 0
+
+  [http_service.concurrency]
+    type = "requests"
+    hard_limit = 25
+    soft_limit = 20
+
+[[vm]]
+  memory = "512mb"
+  cpu_kind = "shared"
+  cpus = 1

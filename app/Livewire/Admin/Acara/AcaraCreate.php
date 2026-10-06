@@ -4,6 +4,7 @@ namespace App\Livewire\Admin\Acara;
 
 use App\Actions\Event\CreateEventAction;
 use App\DTOs\EventDTO;
+use App\Models\MUnit;
 use Livewire\Component;
 use Livewire\Attributes\Title;
 use Livewire\WithFileUploads;
@@ -15,6 +16,7 @@ class AcaraCreate extends Component
 
     public string $nama           = '';
     public string $jenisDiklat    = '';
+    public string $kategori       = '';
     public string $namaNarasumber = '';
     public string $tempat         = '';
     public string $tglJamMulai   = '';
@@ -28,21 +30,27 @@ class AcaraCreate extends Component
     public int    $publish        = 0;
     public bool   $berhasil       = false;
 
+    /** @var array<int, string> */
+    public array $selectedUnits = [];
+
     protected function rules(): array
     {
         return [
-            'nama'           => 'required|string|max:255',
-            'jenisDiklat'    => 'required|in:Diklat Internal,Diklat Eksternal,Seminar',
-            'namaNarasumber' => 'required|string|max:255',
-            'tempat'         => 'required|string|max:255',
-            'tglJamMulai'    => 'required|string',
-            'tglJamSelesai'  => 'required|string',
-            'durasi'         => 'required|integer|min:1',
-            'kuota'          => 'required|integer|min:1',
-            'deskripsi'      => 'nullable|string',
-            'linkPretest'    => 'nullable|url',
-            'linkPosttest'   => 'nullable|url',
-            'img'            => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
+            'nama'              => 'required|string|max:255',
+            'jenisDiklat'       => 'required|in:Diklat Internal,Diklat Eksternal,Seminar',
+            'kategori'          => 'required|in:medis,non_medis',
+            'namaNarasumber'    => 'required|string|max:255',
+            'tempat'            => 'required|string|max:255',
+            'tglJamMulai'       => 'required|string',
+            'tglJamSelesai'     => 'required|string',
+            'durasi'            => 'required|integer|min:1',
+            'kuota'             => 'required|integer|min:1',
+            'deskripsi'         => 'nullable|string',
+            'linkPretest'       => 'nullable|url',
+            'linkPosttest'      => 'nullable|url',
+            'img'               => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
+            'selectedUnits'     => 'required|array|min:1',
+            'selectedUnits.*'   => 'exists:m_units,id',
         ];
     }
 
@@ -86,6 +94,7 @@ class AcaraCreate extends Component
         $dto = EventDTO::fromArray([
             'nama'           => $this->nama,
             'jenisDiklat'    => $this->jenisDiklat,
+            'kategori'       => $this->kategori,
             'namaNarasumber' => $this->namaNarasumber,
             'tempat'         => $this->tempat,
             'tglJamMulai'    => $this->tglJamMulai,
@@ -98,20 +107,23 @@ class AcaraCreate extends Component
             'publish'        => $this->publish,
             'status'         => $this->hitungStatus(),
             'img'            => $imgPath,
+            'unitIds'        => $this->selectedUnits,
         ]);
 
         app(CreateEventAction::class)->execute($dto);
 
         $this->berhasil = true;
         $this->reset([
-            'nama', 'jenisDiklat', 'namaNarasumber', 'tempat',
+            'nama', 'jenisDiklat', 'kategori', 'namaNarasumber', 'tempat',
             'tglJamMulai', 'tglJamSelesai', 'durasi', 'kuota',
-            'deskripsi', 'linkPretest', 'linkPosttest', 'img',
+            'deskripsi', 'linkPretest', 'linkPosttest', 'img', 'selectedUnits',
         ]);
     }
 
     public function render()
     {
-        return view('livewire.admin.acara.acara-create');
+        return view('livewire.admin.acara.acara-create', [
+            'units' => MUnit::orderBy('nama')->get(),
+        ]);
     }
 }

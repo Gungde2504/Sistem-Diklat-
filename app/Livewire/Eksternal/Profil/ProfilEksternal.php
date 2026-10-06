@@ -2,6 +2,7 @@
 
 namespace App\Livewire\Eksternal\Profil;
 
+use App\Models\DetailEksternal;
 use Livewire\Component;
 use Livewire\Attributes\Title;
 use Illuminate\Support\Facades\Hash;
@@ -12,6 +13,12 @@ class ProfilEksternal extends Component
     public string $nama        = '';
     public string $email       = '';
     public string $hp          = '';
+    public string $alamat      = '';
+    public string $institusi   = '';
+    public string $programStudi = '';
+    public string $semester     = '';
+
+    public bool $isMahasiswa = false;
 
     public string $passwordLama  = '';
     public string $passwordBaru  = '';
@@ -22,23 +29,52 @@ class ProfilEksternal extends Component
 
     public function mount(): void
     {
-        $user = auth()->user();
-        $this->nama  = $user->nama ?? '';
-        $this->email = $user->email ?? '';
-        $this->hp    = $user->hp ?? '';
+        $user   = auth()->user();
+        $detail = $user->detailEksternal;
+
+        $this->nama    = $user->nama ?? '';
+        $this->email   = $user->email ?? '';
+        $this->hp      = $user->hp ?? '';
+        $this->alamat  = $user->alamat ?? '';
+
+        $this->institusi    = $detail?->institusi ?? '';
+        $this->programStudi = $detail?->program_studi ?? '';
+        $this->semester     = $detail?->semester !== null ? (string) $detail->semester : '';
+
+        $this->isMahasiswa = in_array($detail?->jenis, ['pkl', 'magang', 'orientasi'], true);
     }
 
     public function simpanProfil(): void
     {
-        $this->validate([
-            'nama' => 'required|string|max:100',
-            'hp'   => 'nullable|string|max:20',
-        ]);
+        $rules = [
+            'nama'    => 'required|string|max:100',
+            'hp'      => 'nullable|string|max:20',
+            'alamat'  => 'nullable|string|max:255',
+            'institusi' => 'nullable|string|max:200',
+        ];
+
+        if ($this->isMahasiswa) {
+            $rules['programStudi'] = 'required|string|max:150';
+            $rules['semester']     = 'required|integer|min:1|max:14';
+        }
+
+        $this->validate($rules);
 
         auth()->user()->update([
-            'nama' => $this->nama,
-            'hp'   => $this->hp,
+            'nama'   => $this->nama,
+            'hp'     => $this->hp,
+            'alamat' => $this->alamat,
         ]);
+
+        $detail = auth()->user()->detailEksternal;
+        if ($detail) {
+            $data = ['institusi' => $this->institusi];
+            if ($this->isMahasiswa) {
+                $data['program_studi'] = $this->programStudi;
+                $data['semester']      = $this->semester;
+            }
+            $detail->update($data);
+        }
 
         $this->message     = 'Profil berhasil disimpan.';
         $this->messageType = 'success';

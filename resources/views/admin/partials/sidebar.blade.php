@@ -2,7 +2,7 @@
 $menu = [
 ['label' => 'Dashboard', 'route' => 'admin.dashboard', 'icon' => 'home', 'section' => 'UTAMA'],
 ['label' => 'Manajemen Acara', 'route' => 'admin.acara.index', 'icon' => 'calendar', 'section' => null],
-['label' => 'Peserta Eksternal', 'route' => 'admin.peserta.index', 'icon' => 'users', 'section' => 'PESERTA'],
+['label' => 'Karyawan/Peserta', 'route' => 'admin.peserta.index', 'icon' => 'users', 'section' => 'PESERTA'],
 ['label' => 'Diklat Mandiri', 'route' => 'admin.diklat-mandiri.index', 'icon' => 'document', 'section' => null],
 ['label' => 'E-Learning', 'route' => 'admin.elearning.index', 'icon' => 'book', 'section' => null],
 ['label' => 'Rekap Jam', 'route' => 'admin.rekap-jam.index', 'icon' => 'clock', 'section' => 'ANALITIK'],

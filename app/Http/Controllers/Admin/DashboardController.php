@@ -25,7 +25,20 @@ class DashboardController extends Controller
             ->filter(fn($user) => $action->execute($user->id, $tahun)->total() < 20)
             ->count();
 
-        $acaraMendatang = MDiklat::whereIn('status', ['Terbuka', 'Berlangsung', 'Draft'])
+        // Acara Mendatang: tampilkan acara yang SEDANG berlangsung (apapun tanggalnya),
+        // atau yang BELUM berlangsung tapi tanggal mulainya masih di masa depan.
+        // Tanpa filter tanggal, acara lama berstatus Terbuka/Draft yang sudah lewat
+        // tanggalnya (tapi belum sempat diubah statusnya) akan terus menumpuk di urutan
+        // teratas dan mendorong keluar acara baru yang baru saja dipublish.
+        $nowStr = now()->format('Y-m-d\TH:i');
+
+        $acaraMendatang = MDiklat::where(function ($q) use ($nowStr) {
+                $q->where('status', 'Berlangsung')
+                  ->orWhere(function ($q2) use ($nowStr) {
+                      $q2->whereIn('status', ['Terbuka', 'Draft'])
+                         ->where('tglJamMulai', '>=', $nowStr);
+                  });
+            })
             ->orderBy('tglJamMulai')
             ->limit(5)
             ->get();

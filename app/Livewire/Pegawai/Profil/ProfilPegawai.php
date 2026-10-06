@@ -20,6 +20,7 @@ class ProfilPegawai extends Component
     public string $unit  = '';
     public string $profesi  = '';
     public string $jabatan  = '';
+    public string $alamat   = '';
 
     // Ganti Password
     #[Validate('required|string|min:8')]
@@ -45,6 +46,7 @@ class ProfilPegawai extends Component
         $this->unit     = $user->unit     ?? '';
         $this->profesi  = $user->profesi  ?? '';
         $this->jabatan  = $user->jabatan  ?? '';
+        $this->alamat   = $user->alamat   ?? '';
     }
 
     public function setTab(string $tab): void
@@ -58,16 +60,24 @@ class ProfilPegawai extends Component
     public function simpanProfil(): void
     {
         $this->validate([
-            'nama'  => 'required|string|max:150',
-            'email' => 'required|email|unique:users,email,'.auth()->id(),
-            'hp'    => 'nullable|string|max:20',
+            'nama'     => 'required|string|max:150',
+            'email'    => 'required|email|unique:users,email,'.auth()->id(),
+            'hp'       => 'nullable|string|max:20',
+            'unit'     => 'nullable|string|max:150',
+            'profesi'  => 'nullable|string|max:150',
+            'jabatan'  => 'nullable|string|max:150',
+            'alamat'   => 'nullable|string|max:255',
         ]);
 
         auth()->user()->update([
-            'nama'  => $this->nama,
-            'name'  => $this->nama,
-            'email' => $this->email,
-            'hp'    => $this->hp,
+            'nama'    => $this->nama,
+            'name'    => $this->nama,
+            'email'   => $this->email,
+            'hp'      => $this->hp,
+            'unit'    => $this->unit,
+            'profesi' => $this->profesi,
+            'jabatan' => $this->jabatan,
+            'alamat'  => $this->alamat,
         ]);
 
         $this->profilBerhasil = true;

@@ -22,6 +22,7 @@
             </div>
             @endif
         </div>
+        @unless($tab === 'karyawan' && $karyawanSubTab === 'pegawai')
         <a href="{{ route('admin.peserta.create') }}"
             class="relative inline-flex items-center gap-2 px-5 py-2.5 rounded-2xl text-sm font-semibold text-white overflow-hidden
                   shadow-[0_4px_14px_-3px_rgba(234,88,12,.45),0_1px_0_rgba(255,255,255,.2)_inset]
@@ -35,12 +36,13 @@
             </svg>
             <span class="relative">Tambah Peserta</span>
         </a>
+        @endunless
     </div>
 
     {{-- ── STAT CARDS ── --}}
-    <div class="grid grid-cols-2 gap-4 mb-4">
+    <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-4">
 
-        {{-- PKL / Magang --}}
+        {{-- Mahasiswa PKL / Magang --}}
         <div class="bg-white rounded-2xl border border-stone-100 p-4 overflow-hidden relative
             shadow-[0_1px_0_rgba(255,255,255,.95)_inset,0_4px_16px_-4px_rgba(120,113,108,.1),0_1px_4px_-1px_rgba(120,113,108,.06)]
             hover:-translate-y-0.5 hover:shadow-[0_1px_0_rgba(255,255,255,1)_inset,0_8px_24px_-4px_rgba(249,115,22,.15)]
@@ -59,7 +61,7 @@
                     </svg>
                 </div>
                 <span class="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-orange-50 border border-orange-100 text-orange-600">
-                    PKL & Magang
+                    Mahasiswa PKL & Magang
                 </span>
             </div>
 
@@ -82,7 +84,45 @@
             </div>
         </div>
 
-        {{-- Karyawan External --}}
+        {{-- Pegawai --}}
+        <div class="bg-white rounded-2xl border border-stone-100 p-4 overflow-hidden relative
+            shadow-[0_1px_0_rgba(255,255,255,.95)_inset,0_4px_16px_-4px_rgba(120,113,108,.1),0_1px_4px_-1px_rgba(120,113,108,.06)]
+            hover:-translate-y-0.5 hover:shadow-[0_1px_0_rgba(255,255,255,1)_inset,0_8px_24px_-4px_rgba(249,115,22,.15)]
+            transition-all duration-300">
+
+            {{-- Decorative --}}
+            <div class="absolute -top-3 -right-3 w-16 h-16 rounded-full pointer-events-none"
+                style="background:radial-gradient(circle,rgba(255,140,0,.12),transparent)"></div>
+
+            <div class="flex items-start justify-between mb-3">
+                <div class="w-9 h-9 rounded-xl flex items-center justify-center flex-shrink-0
+                    shadow-[0_2px_8px_-2px_rgba(234,88,12,.35)]"
+                    style="background:linear-gradient(135deg,#FF8C00 0%,#E85000 60%,#C73D00 100%)">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-white" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 6a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0ZM4.501 20.118a7.5 7.5 0 0 1 14.998 0A17.933 17.933 0 0 1 12 21.75c-2.676 0-5.216-.584-7.499-1.632Z" />
+                    </svg>
+                </div>
+                <span class="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-orange-50 border border-orange-100 text-orange-600">
+                    Pegawai
+                </span>
+            </div>
+
+            <p class="text-3xl font-bold text-stone-800 mb-0.5">{{ $totalPegawai }}</p>
+            <p class="text-xs text-stone-400">Total pegawai terdaftar</p>
+
+            <div class="mt-3 pt-3 border-t border-stone-100 grid grid-cols-2 gap-2">
+                <div class="text-center">
+                    <p class="text-sm font-bold text-green-600">{{ $totalPegawaiAktif ?? 0 }}</p>
+                    <p class="text-[10px] text-stone-400 mt-0.5">Aktif</p>
+                </div>
+                <div class="text-center border-l border-stone-100">
+                    <p class="text-sm font-bold text-stone-500">{{ $totalPegawaiNonaktif ?? 0 }}</p>
+                    <p class="text-[10px] text-stone-400 mt-0.5">Nonaktif</p>
+                </div>
+            </div>
+        </div>
+
+        {{-- Karyawan Eksternal --}}
         <div class="bg-white rounded-2xl border border-stone-100 p-4 overflow-hidden relative
             shadow-[0_1px_0_rgba(255,255,255,.95)_inset,0_4px_16px_-4px_rgba(120,113,108,.1),0_1px_4px_-1px_rgba(120,113,108,.06)]
             hover:-translate-y-0.5 hover:shadow-[0_1px_0_rgba(255,255,255,1)_inset,0_8px_24px_-4px_rgba(249,115,22,.15)]
@@ -101,7 +141,7 @@
                     </svg>
                 </div>
                 <span class="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-orange-50 border border-orange-100 text-orange-600">
-                    Karyawan External
+                    Karyawan Eksternal
                 </span>
             </div>
 
@@ -110,11 +150,11 @@
 
             <div class="mt-3 pt-3 border-t border-stone-100 grid grid-cols-3 gap-2">
                 <div class="text-center">
-                    <p class="text-sm font-bold text-green-600">{{ $totalKaryawanAktif ?? 0 }}</p>
+                    <p class="text-sm font-bold text-green-600">{{ $totalKaryawanAktif ?? 0}}</p>
                     <p class="text-[10px] text-stone-400 mt-0.5">Aktif</p>
                 </div>
                 <div class="text-center border-x border-stone-100">
-                    <p class="text-sm font-bold text-blue-600">{{ $totalKaryawanApproved ?? 0 }}</p>
+                    <p class="text-sm font-bold text-blue-600">{{ $totalKaryawanApproved ??0 }}</p>
                     <p class="text-[10px] text-stone-400 mt-0.5">Approved</p>
                 </div>
                 <div class="text-center">
@@ -127,7 +167,7 @@
     </div>
 
     {{-- Tab Switch --}}
-    <div class="flex gap-1.5 bg-stone-100 rounded-2xl p-1.5 mb-5">
+    <div class="flex gap-1.5 bg-stone-100 rounded-2xl p-1.5 mb-3">
         <button wire:click="setTab('pkl')"
             class="flex-1 py-2.5 rounded-xl text-sm font-medium transition-all duration-200
                flex items-center justify-center gap-2
@@ -138,7 +178,7 @@
             <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M4.26 10.147a60.438 60.438 0 0 0-.491 6.347A48.62 48.62 0 0 1 12 20.904a48.62 48.62 0 0 1 8.232-4.41 60.46 60.46 0 0 0-.491-6.347m-15.482 0a50.636 50.636 0 0 0-2.658-.813A59.906 59.906 0 0 1 12 3.493a59.903 59.903 0 0 1 10.399 5.84c-.896.248-1.783.52-2.658.814m-15.482 0A50.717 50.717 0 0 1 12 13.489a50.702 50.702 0 0 1 3.741-3.342" />
             </svg>
-            PKL / Magang
+            Mahasiswa PKL / Magang
         </button>
         <button wire:click="setTab('karyawan')"
             class="flex-1 py-2.5 rounded-xl text-sm font-medium transition-all duration-200
@@ -150,14 +190,41 @@
             <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M20.25 14.15v4.25c0 1.094-.787 2.036-1.872 2.18-2.087.277-4.216.42-6.378.42s-4.291-.143-6.378-.42c-1.085-.144-1.872-1.086-1.872-2.18v-4.25m16.5 0a2.18 2.18 0 0 0 .75-1.661V8.706c0-1.081-.768-2.015-1.837-2.175a48.114 48.114 0 0 0-3.413-.387m4.5 8.006c-.194.165-.42.295-.673.38A23.978 23.978 0 0 1 12 15.75c-2.648 0-5.195-.429-7.577-1.22a2.016 2.016 0 0 1-.673-.38m0 0A2.18 2.18 0 0 1 3 12.489V8.706c0-1.081.768-2.015 1.837-2.175a48.111 48.111 0 0 1 3.413-.387m7.5 0V5.25A2.25 2.25 0 0 0 13.5 3h-3a2.25 2.25 0 0 0-2.25 2.25v.894m7.5 0a48.667 48.667 0 0 0-7.5 0" />
             </svg>
-            Karyawan External
+            Karyawan
         </button>
     </div>
+
+    {{-- Sub-tab Switch — hanya tampil di tab Karyawan --}}
+    @if($tab === 'karyawan')
+    <div class="flex gap-1.5 mb-5">
+        <button wire:click="setKaryawanSubTab('pegawai')"
+            class="flex-1 py-2 rounded-xl text-xs font-semibold transition-all duration-200 border
+               {{ $karyawanSubTab === 'pegawai'
+                   ? 'text-white border-transparent shadow-[0_2px_8px_-2px_rgba(21,128,61,.4),0_1px_0_rgba(255,255,255,.2)_inset]'
+                   : 'bg-white border-stone-200 text-stone-400 hover:text-stone-600 hover:bg-stone-50' }}"
+            @if($karyawanSubTab==='pegawai') style="background:linear-gradient(135deg,#4ADE80 0%,#16A34A 55%,#15803D 100%)" @endif>
+            Pegawai
+        </button>
+        <button wire:click="setKaryawanSubTab('eksternal')"
+            class="flex-1 py-2 rounded-xl text-xs font-semibold transition-all duration-200 border
+               {{ $karyawanSubTab === 'eksternal'
+                   ? 'text-white border-transparent shadow-[0_2px_8px_-2px_rgba(21,128,61,.4),0_1px_0_rgba(255,255,255,.2)_inset]'
+                   : 'bg-white border-stone-200 text-stone-400 hover:text-stone-600 hover:bg-stone-50' }}"
+            @if($karyawanSubTab==='eksternal') style="background:linear-gradient(135deg,#4ADE80 0%,#16A34A 55%,#15803D 100%)" @endif>
+            Karyawan Eksternal
+        </button>
+    </div>
+    @endif
+
+    @php
+        $isPegawaiTab = $tab === 'karyawan' && $karyawanSubTab === 'pegawai';
+        $isEksternalTab = $tab === 'karyawan' && $karyawanSubTab === 'eksternal';
+    @endphp
 
     {{-- Filter Bar --}}
     <div class="bg-white rounded-2xl border border-stone-200 p-4 mb-5
             shadow-[0_1px_0_rgba(255,255,255,.9)_inset,0_4px_16px_-4px_rgba(120,113,108,.1)]">
-        <div class="grid grid-cols-1 sm:grid-cols-2 {{ $tab === 'karyawan' ? 'lg:grid-cols-4' : 'lg:grid-cols-3' }} gap-3">
+        <div class="grid grid-cols-1 sm:grid-cols-2 {{ $isEksternalTab ? 'lg:grid-cols-4' : ($isPegawaiTab ? 'lg:grid-cols-2' : 'lg:grid-cols-3') }} gap-3">
 
             {{-- Search --}}
             <div class="relative">
@@ -165,7 +232,7 @@
                     <path stroke-linecap="round" stroke-linejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z" />
                 </svg>
                 <input wire:model.live.debounce.300ms="search" type="text"
-                    placeholder="Cari nama atau email..."
+                    placeholder="{{ $isPegawaiTab ? 'Cari nama atau NIK...' : 'Cari nama atau email...' }}"
                     class="w-full pl-9 pr-4 py-2.5 text-sm border border-stone-200 rounded-xl bg-stone-50 text-stone-800 outline-none
                        focus:border-orange-400 focus:ring-2 focus:ring-orange-400/15 focus:bg-white transition-all duration-200" />
             </div>
@@ -179,18 +246,23 @@
                     class="w-full pl-9 pr-4 py-2.5 text-sm border border-stone-200 rounded-xl bg-stone-50 text-stone-600 outline-none appearance-none
                        focus:border-orange-400 focus:ring-2 focus:ring-orange-400/15 transition-all duration-200">
                     <option value="">Semua Status</option>
+                    @if($isPegawaiTab)
+                    <option value="aktif">Aktif</option>
+                    <option value="nonaktif">Nonaktif</option>
+                    @else
                     <option value="aktif">Aktif</option>
                     <option value="selesai">Selesai</option>
                     <option value="tidak_lanjut">Tidak Lanjut</option>
                     <option value="tidak_aktif">Tidak Aktif</option>
+                    @endif
                 </select>
                 <svg xmlns="http://www.w3.org/2000/svg" class="absolute right-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-stone-400 pointer-events-none" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5" />
                 </svg>
             </div>
 
-            {{-- Filter Approval — hanya tampil untuk tab karyawan --}}
-            @if($tab === 'karyawan')
+            {{-- Filter Approval — hanya tampil untuk sub-tab Karyawan Eksternal --}}
+            @if($isEksternalTab)
             <div class="relative">
                 <svg xmlns="http://www.w3.org/2000/svg" class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-stone-400 pointer-events-none" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m9-.75a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9 3.75h.008v.008H12v-.008Z" />
@@ -209,7 +281,8 @@
             </div>
             @endif
 
-            {{-- Filter Jenis --}}
+            {{-- Filter Jenis — tidak relevan untuk sub-tab Pegawai --}}
+            @unless($isPegawaiTab)
             <div class="relative">
                 <svg xmlns="http://www.w3.org/2000/svg" class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-stone-400 pointer-events-none" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M4.26 10.147a60.438 60.438 0 0 0-.491 6.347A48.62 48.62 0 0 1 12 20.904a48.62 48.62 0 0 1 8.232-4.41 60.46 60.46 0 0 0-.491-6.347m-15.482 0a50.636 50.636 0 0 0-2.658-.813A59.906 59.906 0 0 1 12 3.493a59.903 59.903 0 0 1 10.399 5.84c-.896.248-1.783.52-2.658.814m-15.482 0A50.717 50.717 0 0 1 12 13.489a50.702 50.702 0 0 1 3.741-3.342" />
@@ -235,11 +308,90 @@
                     <path stroke-linecap="round" stroke-linejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5" />
                 </svg>
             </div>
+            @endunless
 
         </div>
     </div>
 
-    {{-- Tabel Card --}}
+    {{-- ══════════════════════ TABEL PEGAWAI ══════════════════════ --}}
+    @if($isPegawaiTab)
+    <div class="bg-white rounded-2xl border border-stone-200 overflow-hidden
+                shadow-[0_1px_0_rgba(255,255,255,.95)_inset,0_6px_20px_-4px_rgba(120,113,108,.12),0_2px_6px_-1px_rgba(120,113,108,.07)]
+                hover:shadow-[0_1px_0_rgba(255,255,255,1)_inset,0_12px_30px_-6px_rgba(100,94,90,.15)]
+                transition-shadow duration-300">
+        <div class="overflow-x-auto">
+            <table class="w-full">
+                <thead>
+                    <tr class="bg-stone-50 border-b border-stone-100">
+                        <th class="text-left px-5 py-3.5 text-[10.5px] font-bold text-stone-500 uppercase tracking-wider">Pegawai</th>
+                        <th class="text-left px-5 py-3.5 text-[10.5px] font-bold text-stone-500 uppercase tracking-wider">NIK</th>
+                        <th class="text-left px-5 py-3.5 text-[10.5px] font-bold text-stone-500 uppercase tracking-wider">Unit</th>
+                        <th class="text-center px-5 py-3.5 text-[10.5px] font-bold text-stone-500 uppercase tracking-wider">Status</th>
+                        <th class="text-center px-5 py-3.5 text-[10.5px] font-bold text-stone-500 uppercase tracking-wider">Aksi</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-stone-50">
+                    @forelse($peserta as $pg)
+                    <tr class="hover:bg-stone-50/70 transition-colors duration-150">
+                        <td class="px-5 py-4">
+                            <p class="text-sm font-semibold text-stone-800">{{ $pg->nama }}</p>
+                            <p class="text-xs text-stone-400 mt-0.5">{{ $pg->email }}</p>
+                            @if($pg->hp)
+                            <p class="text-xs text-stone-400">{{ $pg->hp }}</p>
+                            @endif
+                        </td>
+                        <td class="px-5 py-4">
+                            <p class="text-sm text-stone-700">{{ $pg->nip ?: '-' }}</p>
+                        </td>
+                        <td class="px-5 py-4">
+                            <p class="text-xs font-medium text-stone-700">{{ $pg->unit ?: '-' }}</p>
+                        </td>
+                        <td class="px-5 py-4 text-center">
+                            <span class="text-[10.5px] px-2.5 py-1 rounded-full font-semibold border
+                                {{ $pg->isActive ? 'bg-green-50 text-green-700 border-green-200' : 'bg-stone-100 text-stone-500 border-stone-200' }}">
+                                {{ $pg->isActive ? 'Aktif' : 'Nonaktif' }}
+                            </span>
+                        </td>
+                        <td class="px-5 py-4">
+                            <div class="flex items-center justify-center">
+                                <a href="{{ route('admin.peserta.detail.pegawai', $pg->id) }}"
+                                    class="w-8 h-8 flex items-center justify-center rounded-xl
+                                   bg-gradient-to-br from-orange-50 to-orange-100 text-orange-600
+                                   border border-orange-200 shadow-[0_1px_0_rgba(255,255,255,.9)_inset]
+                                   hover:-translate-y-0.5 hover:shadow-[0_4px_10px_-2px_rgba(234,88,12,.25)]
+                                   transition-all duration-200" title="Detail">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M2.036 12.322a1.012 1.012 0 0 1 0-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178Z" />
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
+                                    </svg>
+                                </a>
+                            </div>
+                        </td>
+                    </tr>
+                    @empty
+                    <tr>
+                        <td colspan="5" class="px-5 py-14 text-center">
+                            <div class="flex flex-col items-center gap-3">
+                                <div class="w-14 h-14 rounded-2xl bg-stone-100 flex items-center justify-center">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="w-7 h-7 text-stone-300" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 6a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0ZM4.501 20.118a7.5 7.5 0 0 1 14.998 0A17.933 17.933 0 0 1 12 21.75c-2.676 0-5.216-.584-7.499-1.632Z" />
+                                    </svg>
+                                </div>
+                                <p class="text-sm font-medium text-stone-500">Belum ada data pegawai</p>
+                                <p class="text-xs text-stone-400">Data pegawai diambil dari sistem SDM</p>
+                            </div>
+                        </td>
+                    </tr>
+                    @endforelse
+                </tbody>
+            </table>
+        </div>
+        <div class="px-5 py-4 border-t border-stone-100 bg-stone-50/50">
+            {{ $peserta->links() }}
+        </div>
+    </div>
+    @else
+    {{-- ══════════════ TABEL MAHASISWA / KARYAWAN EKSTERNAL ══════════════ --}}
     <div class="bg-white rounded-2xl border border-stone-200 overflow-hidden
                 shadow-[0_1px_0_rgba(255,255,255,.95)_inset,0_6px_20px_-4px_rgba(120,113,108,.12),0_2px_6px_-1px_rgba(120,113,108,.07)]
                 hover:shadow-[0_1px_0_rgba(255,255,255,1)_inset,0_12px_30px_-6px_rgba(100,94,90,.15)]
@@ -250,7 +402,12 @@
                     <tr class="bg-stone-50 border-b border-stone-100">
                         <th class="text-left px-5 py-3.5 text-[10.5px] font-bold text-stone-500 uppercase tracking-wider">Peserta</th>
                         <th class="text-left px-5 py-3.5 text-[10.5px] font-bold text-stone-500 uppercase tracking-wider">Jenis</th>
+                        {{-- Institusi: hanya relevan utk Mahasiswa PKL/Magang/Orientasi (nama kampus).
+                             Untuk sub-tab Karyawan Eksternal, informasi vendor sudah ada di badge Jenis,
+                             jadi kolom ini disembunyikan supaya tidak redundan. --}}
+                        @if($tab === 'pkl')
                         <th class="text-left px-5 py-3.5 text-[10.5px] font-bold text-stone-500 uppercase tracking-wider">Institusi</th>
+                        @endif
                         <th class="text-left px-5 py-3.5 text-[10.5px] font-bold text-stone-500 uppercase tracking-wider">
                             {{ $tab === 'pkl' ? 'Periode' : 'Unit' }}
                         </th>
@@ -274,8 +431,14 @@
                         {{-- Jenis --}}
                         <td class="px-5 py-4">
                             @php
-                            $jenisLabel = \App\Models\DetailEksternal::jenisOptions()[$p->jenis] ?? $p->jenis;
+                            // Untuk sub-tab Karyawan Eksternal, semua jenis (karyawan_iss, karyawan_bss, dst)
+                            // disamaratakan jadi satu keterangan "Karyawan Eksternal" — nama vendornya
+                            // sendiri sudah terlihat di kolom Unit, jadi badge ini tidak perlu beda-beda lagi.
+                            $jenisLabel = $tab === 'karyawan'
+                                ? 'Karyawan Eksternal'
+                                : (\App\Models\DetailEksternal::jenisOptions()[$p->jenis] ?? $p->jenis);
                             $jenisColor = match(true) {
+                            $tab === 'karyawan' => 'bg-orange-50 text-orange-700 border-orange-200',
                             $p->jenis === 'pkl' => 'bg-blue-50 text-blue-700 border-blue-200',
                             $p->jenis === 'magang' => 'bg-purple-50 text-purple-700 border-purple-200',
                             $p->jenis === 'orientasi' => 'bg-teal-50 text-teal-700 border-teal-200',
@@ -287,13 +450,15 @@
                             </span>
                         </td>
 
-                        {{-- Institusi --}}
+                        {{-- Institusi — hanya tab Mahasiswa PKL/Magang/Orientasi --}}
+                        @if($tab === 'pkl')
                         <td class="px-5 py-4">
                             <p class="text-sm text-stone-700">{{ $p->institusi }}</p>
                             @if($p->supervisor)
                             <p class="text-xs text-stone-400 mt-0.5">Pembimbing: {{ $p->supervisor->nama }}</p>
                             @endif
                         </td>
+                        @endif
 
                         {{-- Periode / Unit --}}
                         <td class="px-5 py-4">
@@ -364,7 +529,7 @@
                                 {{-- ACC / Tolak --}}
                                 @if($p->approval_status === 'pending')
                                 <button
-                                    @click="$store.deleteModal.show('Setujui Peserta', 'Setujui pendaftaran {{ $nama }}? Peserta dapat login ke sistem.', () => $wire.approve({{ $p->id }}), 'approve')"
+                                    @click="$store.deleteModal.show('Setujui Peserta', 'Setujui pendaftaran {{ $nama }}? Peserta dapat login ke sistem.', () => $wire.approve({{ $p->id}}), 'approve')"
                                     class="w-8 h-8 flex items-center justify-center rounded-xl
                    bg-gradient-to-br from-green-50 to-green-100 text-green-600
                    border border-green-200 shadow-[0_1px_0_rgba(255,255,255,.9)_inset]
@@ -387,7 +552,7 @@
                                 </button>
                                 @endif
 
-                                {{-- Tandai Tidak Aktif — hanya Karyawan External --}}
+                                {{-- Tandai Tidak Aktif — hanya Karyawan Eksternal --}}
                                 @if($tab === 'karyawan' && $p->status === 'aktif' && $p->approval_status === 'approved')
                                 <button
                                    @click="$store.deleteModal.show('Tandai Tidak Aktif', 'Tandai {{ $nama }} sebagai tidak aktif? Karyawan tidak dapat mengakses sistem.', () => $wire.ubahStatus({{ $p->id }}, 'selesai'), 'confirm')"
@@ -421,7 +586,7 @@
                     </tr>
                     @empty
                     <tr>
-                        <td colspan="6" class="px-5 py-14 text-center">
+                        <td colspan="{{ $tab === 'pkl' ? 6 : 5 }}" class="px-5 py-14 text-center">
                             <div class="flex flex-col items-center gap-3">
                                 <div class="w-14 h-14 rounded-2xl bg-stone-100 flex items-center justify-center">
                                     <svg xmlns="http://www.w3.org/2000/svg" class="w-7 h-7 text-stone-300" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
@@ -447,5 +612,6 @@
             {{ $peserta->links() }}
         </div>
     </div>
+    @endif
 
 </div>

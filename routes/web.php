@@ -117,6 +117,7 @@ Route::middleware(['auth'])->group(function () {
                 return view('admin.peserta.detail', compact('detail'));
             })->name('peserta.detail');
             Route::get('/peserta/{detail}/karyawan', fn(\App\Models\DetailEksternal $detail) => view('admin.peserta.detail-karyawan', compact('detail')))->name('peserta.detail.karyawan');
+            Route::get('/peserta/pegawai/{pegawai}', fn(\App\Models\User $pegawai) => view('admin.peserta.detail-pegawai', compact('pegawai')))->name('peserta.detail.pegawai');
 
             Route::get('/diklat-mandiri', fn() => view('admin.diklat-mandiri.index'))
                 ->name('diklat-mandiri.index');

@@ -130,7 +130,7 @@ return [
 
     'temporary_file_upload' => [
         'disk' => 'local',
-        'rules' => ['required', 'file', 'max:10240'],
+        'rules' => ['required', 'file', 'max:20480'],
         'directory' => 'livewire-tmp',
         'middleware' => 'throttle:60,1',
         'preview_mimes' => [

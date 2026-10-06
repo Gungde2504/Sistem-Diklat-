@@ -21,7 +21,7 @@ class AcaraDetail extends Component
     public MDiklat $diklat;
     public string $searchPeserta = '';
     public string $tab = 'peserta'; // peserta | materi | sertifikat
-    public $materiFile = null;
+    public $materiFile = [];
 
     public function mount(MDiklat $diklat): void
     {
@@ -46,23 +46,35 @@ class AcaraDetail extends Component
         $this->resetPage();
     }
 
+    public function updatedMateriFile(): void
+    {
+        // Bersihkan pesan error lama (mis. dari percobaan upload sebelumnya
+        // tanpa memilih file) begitu user memilih file baru.
+        $this->resetErrorBag('materiFile');
+        $this->resetErrorBag('materiFile.*');
+    }
+
     public function uploadMateri(): void
     {
         $this->validate([
-            'materiFile' => 'required|file|mimes:pdf,doc,docx,ppt,pptx,xls,xlsx|max:20480',
+            'materiFile'   => 'required|array|min:1',
+            'materiFile.*' => 'file|mimes:pdf,doc,docx,ppt,pptx,xls,xlsx|max:20480',
         ]);
 
-        $path = $this->materiFile->store('materi/' . $this->diklat->id, 'public');
+        foreach ($this->materiFile as $file) {
+            $path = $file->store('materi/' . $this->diklat->id, 'public');
 
-        MFileDiklat::create([
-            'id_diklat'  => $this->diklat->id,
-            'file'       => $path,
-            'type'       => 'materi',
-            'created_by' => auth()->id(),
-        ]);
+            MFileDiklat::create([
+                'id_diklat'  => $this->diklat->id,
+                'file'       => $path,
+                'type'       => 'materi',
+                'created_by' => auth()->id(),
+            ]);
+        }
 
-        $this->materiFile = null;
-        session()->flash('success', 'Materi berhasil diupload.');
+        $jumlah = count($this->materiFile);
+        $this->materiFile = [];
+        session()->flash('success', $jumlah > 1 ? "{$jumlah} materi berhasil diupload." : 'Materi berhasil diupload.');
     }
 
     public function hapusMateri(int $id): void

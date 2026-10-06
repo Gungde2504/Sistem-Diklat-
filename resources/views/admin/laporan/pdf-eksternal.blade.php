@@ -458,7 +458,7 @@
                 <td class="tc">{{ $mulai?->format('d M Y') ?? '-' }}</td>
                 <td class="tc">{{ $selesai?->format('d M Y') ?? '-' }}</td>
                 <td class="tc">{{ $durasi }}</td>
-                <td class="tc"><span class="badge b-{{ $status === 'Aktif' ? 'aktif' : ($status === 'Selesai' ? 'selesai' : 'belum') }}">{{ $status }}</span></td>
+                <td class="tc"><span class="badge b-{{ $status === 'Aktif' ? 'aktif' : ($status === 'Selesai' ? 'selesai': 'belum') }}">{{ $status }}</span></td>
             </tr>
             @endforeach
         </tbody>
@@ -573,17 +573,17 @@
     <div class="no-data">Tidak ada data peserta eksternal untuk filter yang dipilih.</div>
     @endif
 
-    {{-- TTD --}}
+    {{-- Pengesahan --}}
     <table class="ttd-table">
         <tr>
             <td></td>
             <td style="width:200px; text-align:center;">
                 <p style="font-size:9px;">Denpasar, {{ now()->format('d F Y') }}</p>
-                <p style="font-size:9px;">Kepala Bagian Diklat</p>
-                <div class="ttd-space"></div>
-                <div class="ttd-line"></div>
-                <div class="ttd-name">( _________________________ )</div>
-                <div class="ttd-nip">NIP. ___________________</div>
+                <p style="font-size:9px;">Koordinator Diklat</p>
+                <img src="{{ public_path('images/pengesahan/stempel-disahkan.png') }}" style="width:70px; height:auto; margin:8px auto 0 auto; display:block; opacity:0.92;" alt="Cap Disahkan">
+                <div style="font-size:7.5px; font-weight:bold; color:#16a34a; letter-spacing:1px; margin-top:2px;">DISAHKAN</div>
+                <div class="ttd-line" style="margin-top:8px;"></div>
+                <div class="ttd-name">Putu Gita Laksmi, A.Md Keb</div>
             </td>
         </tr>
     </table>

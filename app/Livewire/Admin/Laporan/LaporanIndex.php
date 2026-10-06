@@ -105,18 +105,47 @@ class LaporanIndex extends Component
     // ── Absensi Diklat PDF ──
     public function eksporAbsensiPdf()
     {
-        $absensi = RecordAbsensiDiklat::with(['user', 'diklat'])
+        $query = RecordAbsensiDiklat::with(['user.detailEksternal', 'diklat'])
             ->whereYear('date', $this->tahun)
             ->when($this->bulan, fn($q) => $q->whereMonth('date', $this->bulan))
-            ->when($this->unit,  fn($q) => $q->whereHas('user', fn($u) => $u->where('unit', $this->unit)))
-            ->orderBy('date', 'desc')
-            ->get();
+            ->when($this->unit,  fn($q) => $q->whereHas('user', fn($u) => $u->where('unit', $this->unit)));
+
+        $jumlah = (clone $query)->count();
+
+        // PDF (DomPDF) sangat boros memori untuk tabel besar. Kalau datanya
+        // terlalu banyak dan belum difilter per bulan, jangan dipaksa render
+        // PDF (bisa bikin server crash kehabisan memori) — minta user
+        // mempersempit filter atau pakai Excel untuk data besar.
+        if ($jumlah > 1000 && !$this->bulan) {
+            session()->flash('error',
+                "Data terlalu banyak untuk PDF ({$jumlah} baris). " .
+                'Silakan pilih filter Bulan terlebih dahulu, atau gunakan ekspor Excel untuk data dalam jumlah besar.'
+            );
+            return;
+        }
+
+        $absensi = $query->orderBy('date', 'desc')->get();
+
+        // Kelompokkan per acara: tiap acara jadi satu blok berisi daftar
+        // lengkap peserta yang hadir di acara tersebut.
+        $acaraList = $absensi
+            ->groupBy('id_diklat')
+            ->map(function ($records) {
+                return [
+                    'diklat'  => $records->first()->diklat,
+                    'tanggal' => $records->first()->date,
+                    'peserta' => $records->sortBy(fn($r) => $r->user?->nama ?? $r->namaPeserta)->values(),
+                ];
+            })
+            ->sortByDesc('tanggal')
+            ->values();
 
         $pdf = Pdf::loadView('admin.laporan.pdf-absensi', [
-            'absensi' => $absensi,
-            'tahun'   => $this->tahun,
-            'bulan'   => $this->bulan,
-            'unit'    => $this->unit,
+            'absensi'   => $absensi,
+            'acaraList' => $acaraList,
+            'tahun'     => $this->tahun,
+            'bulan'     => $this->bulan,
+            'unit'      => $this->unit,
         ])->setPaper('a4', 'landscape');
 
         return response()->streamDownload(

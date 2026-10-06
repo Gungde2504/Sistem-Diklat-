@@ -5,6 +5,7 @@ namespace App\Providers;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\View;
+use Illuminate\Support\Facades\URL;
 use Intervention\Image\ImageManager;
 use Intervention\Image\Drivers\Gd\Driver;
 
@@ -25,6 +26,12 @@ class AppServiceProvider extends ServiceProvider
     {
         \Carbon\Carbon::setLocale('id');
         date_default_timezone_set(config('app.timezone'));
+
+        // Force HTTPS dan hapus port dari URL
+        if (str_contains(config('app.url'), 'https')) {
+            URL::forceScheme('https');
+            URL::forceRootUrl(config('app.url'));
+        }
 
         View::composer('*', function ($view) {
             $view->with('authUser', Auth::user());

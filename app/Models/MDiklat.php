@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Support\Str;
 
 class MDiklat extends Model
@@ -19,6 +20,7 @@ class MDiklat extends Model
         'deskripsi',
         'namaNarasumber',
         'jenisDiklat',
+        'kategori',
         'tglJamMulai',
         'tglJamSelesai',
         'tempat',
@@ -106,5 +108,22 @@ class MDiklat extends Model
     public function templateSertifikat(): HasMany
     {
         return $this->files()->where('type', 'sertifikat');
+    }
+
+    /**
+     * Unit-unit yang boleh mengikuti acara ini.
+     */
+    public function units(): BelongsToMany
+    {
+        return $this->belongsToMany(MUnit::class, 'm_diklat_unit', 'id_diklat', 'id_unit');
+    }
+
+    public function kategoriLabel(): string
+    {
+        return match ($this->kategori) {
+            'medis'     => 'Medis',
+            'non_medis' => 'Non Medis',
+            default     => '-',
+        };
     }
 }

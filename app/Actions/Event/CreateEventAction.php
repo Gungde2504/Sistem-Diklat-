@@ -10,9 +10,10 @@ class CreateEventAction
 {
     public function execute(EventDTO $dto): MDiklat
     {
-        return MDiklat::create([
+        $diklat = MDiklat::create([
             'nama'           => $dto->nama,
             'jenisDiklat'    => $dto->jenisDiklat,
+            'kategori'       => $dto->kategori,
             'namaNarasumber' => $dto->namaNarasumber,
             'tempat'         => $dto->tempat,
             'tglJamMulai'    => $dto->tglJamMulai,
@@ -28,5 +29,9 @@ class CreateEventAction
             'QRcode'         => QrHelper::generateToken(),
             'IsActive'       => 0,
         ]);
+
+        $diklat->units()->sync($dto->unitIds);
+
+        return $diklat;
     }
 }

@@ -15,6 +15,8 @@
 
 <body class="bg-stone-50 font-sans antialiased">
 
+    @php $isKaryawan = auth()->user()->detailEksternal?->isKaryawan() ?? false; @endphp
+
     <div class="min-h-screen pb-20 lg:pb-0 lg:flex ">
 
         {{-- ── SIDEBAR DESKTOP ── --}}
@@ -124,15 +126,16 @@
                              ? 'shadow-[0_3px_10px_-2px_rgba(15,79,122,.35),0_1px_0_rgba(255,255,255,.2)_inset]'
                              : 'bg-stone-100 group-hover:bg-blue-50 group-hover:shadow-[0_2px_8px_-2px_rgba(15,79,122,.2)]' }}"
                     @if(request()->routeIs('eksternal.dashboard'))
-                    style="background:linear-gradient(135deg,#3B9FD1 0%,#1A78B0 50%,#0F5A8C 100%)"
+                    style="background:linear-gradient(135deg,#3B9FD1 0%,#1A78B0 50%,#0F5A8C100%)"
                     @endif>
-                    <svg xmlns="http://www.w3.org/2000/svg" class="w-4.5 h-4.5 {{ request()->routeIs('eksternal.dashboard') ? 'text-white' : 'text-stone-500 group-hover:text-blue-500' }}" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-4.5 h-4.5 {{ request()->routeIs('eksternal.dashboard') ? 'text-white' : 'text-stone-500 group-hover:text-blue-500'}}" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" d="m2.25 12 8.954-8.955c.44-.439 1.152-.439 1.591 0L21.75 12M4.5 9.75v10.125c0 .621.504 1.125 1.125 1.125H9.75v-4.875c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21h4.125c.621 0 1.125-.504 1.125-1.125V9.75M8.25 21h8.25" />
                     </svg>
                 </span>
                 <span class="text-[10px] font-semibold {{ request()->routeIs('eksternal.dashboard') ? 'text-blue-600' : 'text-stone-400 group-hover:text-blue-500' }}">Home</span>
             </a>
 
+            @unless($isKaryawan)
             {{-- Absensi --}}
             <a href="{{ route('eksternal.absensi') }}"
                 class="group flex flex-col items-center gap-0.5 px-3 py-2.5 rounded-2xl transition-all duration-200
@@ -142,7 +145,7 @@
                              ? 'shadow-[0_3px_10px_-2px_rgba(15,79,122,.35),0_1px_0_rgba(255,255,255,.2)_inset]'
                              : 'bg-stone-100 group-hover:bg-blue-50 group-hover:shadow-[0_2px_8px_-2px_rgba(15,79,122,.2)]' }}"
                     @if(request()->routeIs('eksternal.absensi*'))
-                    style="background:linear-gradient(135deg,#3B9FD1 0%,#1A78B0 50%,#0F5A8C 100%)"
+                    style="background:linear-gradient(135deg,#3B9FD1 0%,#1A78B0 50%,#0F5A8C100%)"
                     @endif>
                     <svg xmlns="http://www.w3.org/2000/svg" class="w-4.5 h-4.5 {{ request()->routeIs('eksternal.absensi*') ? 'text-white' : 'text-stone-500 group-hover:text-blue-500' }}" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M15 10.5a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
@@ -160,7 +163,7 @@
                         group-hover:-translate-y-1
                         group-hover:shadow-[0_10px_28px_-4px_rgba(15,79,122,.55)]
                         transition-all duration-200"
-                    style="background:linear-gradient(135deg,#3B9FD1 0%,#1A78B0 50%,#0F5A8C 100%)">
+                    style="background:linear-gradient(135deg,#3B9FD1 0%,#1A78B0 50%,#0F5A8C100%)">
                     <span class="absolute w-14 h-14 rounded-full border-2 border-blue-300/40
                              group-hover:scale-110 transition-all duration-300 pointer-events-none"></span>
                     <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 text-white relative" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
@@ -169,6 +172,7 @@
                 </div>
                 <span class="text-[10px] font-bold text-blue-600">Jurnal</span>
             </a>
+            @endunless
 
             {{-- Acara --}}
             <a href="{{ route('eksternal.acara') }}"
@@ -179,7 +183,7 @@
                              ? 'shadow-[0_3px_10px_-2px_rgba(15,79,122,.35),0_1px_0_rgba(255,255,255,.2)_inset]'
                              : 'bg-stone-100 group-hover:bg-blue-50 group-hover:shadow-[0_2px_8px_-2px_rgba(15,79,122,.2)]' }}"
                     @if(request()->routeIs('eksternal.acara*'))
-                    style="background:linear-gradient(135deg,#3B9FD1 0%,#1A78B0 50%,#0F5A8C 100%)"
+                    style="background:linear-gradient(135deg,#3B9FD1 0%,#1A78B0 50%,#0F5A8C100%)"
                     @endif>
                     <svg xmlns="http://www.w3.org/2000/svg" class="w-4.5 h-4.5 {{ request()->routeIs('eksternal.acara*') ? 'text-white' : 'text-stone-500 group-hover:text-blue-500' }}" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 0 1 2.25-2.25h13.5A2.25 2.25 0 0 1 21 7.5v11.25m-18 0A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75m-18 0v-7.5" />
@@ -197,10 +201,10 @@
                              ? 'shadow-[0_3px_10px_-2px_rgba(15,79,122,.35),0_1px_0_rgba(255,255,255,.2)_inset]'
                              : 'bg-stone-100 group-hover:bg-blue-50 group-hover:shadow-[0_2px_8px_-2px_rgba(15,79,122,.2)]' }}"
                     @if(request()->routeIs('eksternal.profil'))
-                    style="background:linear-gradient(135deg,#3B9FD1 0%,#1A78B0 50%,#0F5A8C 100%)"
+                    style="background:linear-gradient(135deg,#3B9FD1 0%,#1A78B0 50%,#0F5A8C100%)"
                     @endif>
                     <svg xmlns="http://www.w3.org/2000/svg" class="w-4.5 h-4.5 {{ request()->routeIs('eksternal.profil') ? 'text-white' : 'text-stone-500 group-hover:text-blue-500' }}" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 6a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0ZM4.501 20.118a7.5 7.5 0 0 1 14.998 0A17.933 17.933 0 0 1 12 21.75c-2.676 0-5.216-.584-7.499-1.632Z" />
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 6a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0ZM4.501 20.118a7.5 7.5 0 0 1 14.998 0A17.933 17.9330 0 1 12 21.75c-2.676 0-5.216-.584-7.499-1.632Z" />
                     </svg>
                 </span>
                 <span class="text-[10px] font-semibold {{ request()->routeIs('eksternal.profil') ? 'text-blue-600' : 'text-stone-400 group-hover:text-blue-500' }}">Profil</span>

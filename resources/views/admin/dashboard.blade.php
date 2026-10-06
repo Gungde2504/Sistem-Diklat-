@@ -51,10 +51,12 @@
             transition: transform 0.15s;
         }
         .dist-chip:hover { transform: translateX(2px); }
+        .dist-legend { display: flex; flex-wrap: wrap; align-items: center; justify-content: flex-end; row-gap: 6px; column-gap: 12px; }
         @media (max-width: 640px) {
             .dist-split { flex-direction: column; }
             .dist-left { flex: none; }
             .dist-right { border-left: none; border-top: 1px solid #f5f5f4; }
+            .dist-legend { justify-content: flex-start; }
         }
     </style>
 
@@ -256,10 +258,10 @@
                     </div>
                     <div class="dist-right">
                         @if(count($dataEksternal['datasets']) > 0)
-                        <div class="flex items-center justify-end gap-3 mb-2">
+                        <div class="dist-legend mb-2">
                             @foreach($dataEksternal['datasets'] as $ds)
-                            <span class="flex items-center gap-1.5 text-xs text-stone-500">
-                                <span class="w-2.5 h-2.5 rounded-full inline-block" style="background:{{ $ds['color'] }}"></span>
+                            <span class="flex items-center gap-1.5 text-xs text-stone-500 whitespace-nowrap">
+                                <span class="w-2.5 h-2.5 rounded-full inline-block flex-shrink-0" style="background:{{ $ds['color'] }}"></span>
                                 {{ $ds['label'] }}
                             </span>
                             @endforeach
@@ -313,10 +315,10 @@
                     </div>
                     <div class="dist-right">
                         @if(count($dataKaryawan['datasets']) > 0)
-                        <div class="flex items-center justify-end gap-3 mb-2">
+                        <div class="dist-legend mb-2">
                             @foreach($dataKaryawan['datasets'] as $ds)
-                            <span class="flex items-center gap-1.5 text-xs text-stone-500">
-                                <span class="w-2.5 h-2.5 rounded-full inline-block" style="background:{{ $ds['color'] }}"></span>
+                            <span class="flex items-center gap-1.5 text-xs text-stone-500 whitespace-nowrap">
+                                <span class="w-2.5 h-2.5 rounded-full inline-block flex-shrink-0" style="background:{{ $ds['color'] }}"></span>
                                 {{ $ds['label'] }}
                             </span>
                             @endforeach
@@ -342,7 +344,7 @@
         <div class="xl:col-span-2 dash-card overflow-hidden">
             <div class="flex items-center justify-between px-5 py-4 border-b border-stone-50">
                 <h3 class="text-sm font-semibold text-stone-800">Acara Mendatang</h3>
-                <a href="#" class="text-xs font-medium text-orange-500 px-3 py-1 rounded-full bg-orange-50 hover:bg-orange-100 transition-all inline-block">Lihat semua →</a>
+                <a href="{{ route('admin.acara.index') }}" class="text-xs font-medium text-orange-500 px-3 py-1 rounded-full bg-orange-50 hover:bg-orange-100 transition-all inline-block">Lihat semua →</a>
             </div>
             <div class="divide-y divide-stone-50">
                 @forelse($acaraMendatang as $acara)

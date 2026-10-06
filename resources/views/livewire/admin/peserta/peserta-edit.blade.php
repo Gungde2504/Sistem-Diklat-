@@ -12,6 +12,7 @@
 
     @php
         $isKaryawanEdit = in_array($editJenis, ['karyawan_iss','karyawan_bss','karyawan_adidaya','karyawan_bayi_tabung','karyawan_koperasi','karyawan_lotus_spa']);
+        $supervisorTerpilih = $supervisors->firstWhere('id', $editIdSupervisor);
     @endphp
 
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-5">
@@ -98,12 +99,74 @@
                         </div>
                     </div>
 
-                    <div class="sm:col-span-2">
+                    <div>
                         <label class="block text-[10.5px] font-bold text-stone-500 uppercase tracking-widest mb-1.5">Institusi / Universitas <span class="text-red-400">*</span></label>
                         <input wire:model="editInstitusi" type="text" placeholder="Nama institusi asal"
                             class="w-full px-3.5 py-2.5 text-sm border border-stone-200 rounded-xl bg-stone-50 text-stone-800 outline-none
                                    focus:border-orange-400 focus:ring-2 focus:ring-orange-400/15 focus:bg-white transition-all duration-200"/>
                         @error('editInstitusi') <p class="text-[11px] text-red-500 mt-1">{{ $message }}</p> @enderror
+                    </div>
+
+                    <div>
+                        <label class="block text-[10.5px] font-bold text-stone-500 uppercase tracking-widest mb-1.5">Program Studi <span class="text-red-400">*</span></label>
+                        <input wire:model="editProgramStudi" type="text" placeholder="Mis. D3 Keperawatan"
+                            class="w-full px-3.5 py-2.5 text-sm border border-stone-200 rounded-xl bg-stone-50 text-stone-800 outline-none
+                                   focus:border-orange-400 focus:ring-2 focus:ring-orange-400/15 focus:bg-white transition-all duration-200"/>
+                        @error('editProgramStudi') <p class="text-[11px] text-red-500 mt-1">{{ $message }}</p> @enderror
+                    </div>
+
+                    <div>
+                        <label class="block text-[10.5px] font-bold text-stone-500 uppercase tracking-widest mb-1.5">Semester <span class="text-red-400">*</span></label>
+                        <input wire:model="editSemester" type="number" min="1" max="14" placeholder="Mis. 5"
+                            class="w-full px-3.5 py-2.5 text-sm border border-stone-200 rounded-xl bg-stone-50 text-stone-800 outline-none
+                                   focus:border-orange-400 focus:ring-2 focus:ring-orange-400/15 focus:bg-white transition-all duration-200"/>
+                        @error('editSemester') <p class="text-[11px] text-red-500 mt-1">{{ $message }}</p> @enderror
+                    </div>
+
+                    {{-- Pembimbing (RS) — searchable, supaya mudah cari nama di antara banyak pegawai --}}
+                    <div class="relative"
+                        x-data="{
+                            open: false,
+                            search: {{ \Illuminate\Support\Js::from($supervisorTerpilih?->nama ?? '') }},
+                            options: {{ \Illuminate\Support\Js::from($supervisors->map(fn($s) => ['id' => (string) $s->id, 'nama' => $s->nama])->values()) }},
+                            get filtered() {
+                                if (this.search.trim() === '') return this.options;
+                                const q = this.search.toLowerCase();
+                                return this.options.filter(o => o.nama.toLowerCase().includes(q));
+                            },
+                            pilih(opt) {
+                                this.search = opt.nama;
+                                this.open = false;
+                                $wire.set('editIdSupervisor', opt.id);
+                            },
+                            kosongkan() {
+                                this.search = '';
+                                this.open = false;
+                                $wire.set('editIdSupervisor', '');
+                            }
+                        }"
+                        @click.outside="open = false">
+                        <label class="block text-[10.5px] font-bold text-stone-500 uppercase tracking-widest mb-1.5">Pembimbing (RS)</label>
+                        <input type="text" x-model="search" @focus="open = true; $el.select()" @keydown.escape="open = false"
+                            placeholder="Ketik untuk cari nama pembimbing..." autocomplete="off"
+                            class="w-full px-3.5 py-2.5 text-sm border border-stone-200 rounded-xl bg-stone-50 text-stone-800 outline-none
+                                   focus:border-orange-400 focus:ring-2 focus:ring-orange-400/15 focus:bg-white transition-all duration-200"/>
+                        <div x-show="open" x-cloak
+                            class="absolute z-20 mt-1.5 w-full max-h-56 overflow-y-auto bg-white border border-stone-200 rounded-xl
+                                   shadow-[0_8px_24px_-6px_rgba(120,113,108,.2)]">
+                            <template x-if="search.trim() !== ''">
+                                <div @click="kosongkan()" class="px-3.5 py-2 text-xs text-stone-400 italic cursor-pointer hover:bg-stone-50">
+                                    Kosongkan pilihan
+                                </div>
+                            </template>
+                            <template x-for="opt in filtered" :key="opt.id">
+                                <div @click="pilih(opt)" x-text="opt.nama"
+                                    class="px-3.5 py-2 text-sm text-stone-700 cursor-pointer hover:bg-orange-50"></div>
+                            </template>
+                            <template x-if="filtered.length === 0">
+                                <div class="px-3.5 py-2 text-xs text-stone-400 italic">Nama tidak ditemukan</div>
+                            </template>
+                        </div>
                     </div>
 
                     <div>
@@ -195,6 +258,52 @@
                         @error('editJenis') <p class="text-[11px] text-red-500 mt-1">{{ $message }}</p> @enderror
                     </div>
 
+                    {{-- Pembimbing (RS) — searchable, supaya mudah cari nama di antara banyak pegawai --}}
+                    <div class="relative"
+                        x-data="{
+                            open: false,
+                            search: {{ \Illuminate\Support\Js::from($supervisorTerpilih?->nama ?? '') }},
+                            options: {{ \Illuminate\Support\Js::from($supervisors->map(fn($s) => ['id' => (string) $s->id, 'nama' => $s->nama])->values()) }},
+                            get filtered() {
+                                if (this.search.trim() === '') return this.options;
+                                const q = this.search.toLowerCase();
+                                return this.options.filter(o => o.nama.toLowerCase().includes(q));
+                            },
+                            pilih(opt) {
+                                this.search = opt.nama;
+                                this.open = false;
+                                $wire.set('editIdSupervisor', opt.id);
+                            },
+                            kosongkan() {
+                                this.search = '';
+                                this.open = false;
+                                $wire.set('editIdSupervisor', '');
+                            }
+                        }"
+                        @click.outside="open = false">
+                        <label class="block text-[10.5px] font-bold text-stone-500 uppercase tracking-widest mb-1.5">Pembimbing (RS)</label>
+                        <input type="text" x-model="search" @focus="open = true; $el.select()" @keydown.escape="open = false"
+                            placeholder="Ketik untuk cari nama pembimbing..." autocomplete="off"
+                            class="w-full px-3.5 py-2.5 text-sm border border-stone-200 rounded-xl bg-stone-50 text-stone-800 outline-none
+                                   focus:border-blue-400 focus:ring-2 focus:ring-blue-400/15 focus:bg-white transition-all duration-200"/>
+                        <div x-show="open" x-cloak
+                            class="absolute z-20 mt-1.5 w-full max-h-56 overflow-y-auto bg-white border border-stone-200 rounded-xl
+                                   shadow-[0_8px_24px_-6px_rgba(120,113,108,.2)]">
+                            <template x-if="search.trim() !== ''">
+                                <div @click="kosongkan()" class="px-3.5 py-2 text-xs text-stone-400 italic cursor-pointer hover:bg-stone-50">
+                                    Kosongkan pilihan
+                                </div>
+                            </template>
+                            <template x-for="opt in filtered" :key="opt.id">
+                                <div @click="pilih(opt)" x-text="opt.nama"
+                                    class="px-3.5 py-2 text-sm text-stone-700 cursor-pointer hover:bg-blue-50"></div>
+                            </template>
+                            <template x-if="filtered.length === 0">
+                                <div class="px-3.5 py-2 text-xs text-stone-400 italic">Nama tidak ditemukan</div>
+                            </template>
+                        </div>
+                    </div>
+
                 </div>
             </div>
             @endif
@@ -221,7 +330,7 @@
                         <div wire:loading wire:target="simpan">
                             <svg class="w-4 h-4 animate-spin relative" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
                                 <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-                                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 12 0 12 12H4z"></path>
+                                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path>
                             </svg>
                         </div>
                         <svg wire:loading.remove wire:target="simpan" xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 relative" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor">

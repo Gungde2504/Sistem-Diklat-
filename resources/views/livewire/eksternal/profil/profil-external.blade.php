@@ -68,7 +68,7 @@
                 shadow-[0_1px_0_rgba(255,255,255,.95)_inset,0_6px_20px_-4px_rgba(120,113,108,.12)]">
         <div class="flex items-center gap-2.5 px-5 py-4 border-b border-stone-100">
             <div class="w-0.5 h-5 rounded-full" style="background:linear-gradient(180deg,#3B9FD1,#0F5A8C)"></div>
-            <h3 class="text-sm font-semibold text-stone-800">Edit Profil</h3>
+            <h3 class="text-sm font-semibold text-stone-800">Edit Biodata</h3>
         </div>
         <div class="p-5 space-y-4">
             <div>
@@ -90,6 +90,40 @@
                     class="w-full px-3.5 py-2.5 text-sm border border-stone-200 rounded-xl bg-stone-50 text-stone-800 outline-none
                            focus:border-blue-400 focus:ring-2 focus:ring-blue-400/15 focus:bg-white transition-all duration-200"/>
             </div>
+            <div>
+                <label class="block text-xs font-semibold text-stone-500 mb-1.5 uppercase tracking-wider">Alamat</label>
+                <textarea wire:model="alamat" rows="2" placeholder="Alamat domisili / KTP"
+                    class="w-full px-3.5 py-2.5 text-sm border border-stone-200 rounded-xl bg-stone-50 text-stone-800 outline-none resize-none
+                           focus:border-blue-400 focus:ring-2 focus:ring-blue-400/15 focus:bg-white transition-all duration-200"></textarea>
+                @error('alamat') <p class="text-xs text-red-500 mt-1">{{ $message }}</p> @enderror
+            </div>
+            <div>
+                <label class="block text-xs font-semibold text-stone-500 mb-1.5 uppercase tracking-wider">Institusi</label>
+                <input wire:model="institusi" type="text" placeholder="Nama institusi / vendor"
+                    class="w-full px-3.5 py-2.5 text-sm border border-stone-200 rounded-xl bg-stone-50 text-stone-800 outline-none
+                           focus:border-blue-400 focus:ring-2 focus:ring-blue-400/15 focus:bg-white transition-all duration-200"/>
+                @error('institusi') <p class="text-xs text-red-500 mt-1">{{ $message }}</p> @enderror
+            </div>
+
+            @if($isMahasiswa)
+            <div class="grid grid-cols-2 gap-3">
+                <div>
+                    <label class="block text-xs font-semibold text-stone-500 mb-1.5 uppercase tracking-wider">Program Studi</label>
+                    <input wire:model="programStudi" type="text" placeholder="Mis. D3 Keperawatan"
+                        class="w-full px-3.5 py-2.5 text-sm border border-stone-200 rounded-xl bg-stone-50 text-stone-800 outline-none
+                               focus:border-blue-400 focus:ring-2 focus:ring-blue-400/15 focus:bg-white transition-all duration-200"/>
+                    @error('programStudi') <p class="text-xs text-red-500 mt-1">{{ $message }}</p> @enderror
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-stone-500 mb-1.5 uppercase tracking-wider">Semester</label>
+                    <input wire:model="semester" type="number" min="1" max="14" placeholder="Mis. 5"
+                        class="w-full px-3.5 py-2.5 text-sm border border-stone-200 rounded-xl bg-stone-50 text-stone-800 outline-none
+                               focus:border-blue-400 focus:ring-2 focus:ring-blue-400/15 focus:bg-white transition-all duration-200"/>
+                    @error('semester') <p class="text-xs text-red-500 mt-1">{{ $message }}</p> @enderror
+                </div>
+            </div>
+            @endif
+
             <button wire:click="simpanProfil" wire:loading.attr="disabled"
                 class="w-full py-2.5 rounded-xl text-sm font-bold text-white transition-all duration-200
                        hover:-translate-y-0.5 active:scale-95 disabled:opacity-50

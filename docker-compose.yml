@@ -12,7 +12,6 @@ services:
       - APP_ENV=production
       - APP_DEBUG=false
       - APP_KEY=base64:UiGcc6G3JUG0sMx176lHU2u5c3vbXWcOAaB9yFVQs5s=
-      - APP_URL=http://localhost:8090
       - APP_TIMEZONE=Asia/Makassar
       - DB_CONNECTION=mysql
       - DB_HOST=db
@@ -30,6 +29,12 @@ services:
       - LOG_LEVEL=error
     volumes:
       - storage_data:/var/www/html/storage/app/public
+      # Live-reload source saat testing: edit di Windows langsung kebaca
+      # container, tidak perlu docker compose build setiap ganti tampilan.
+      - ./resources:/var/www/html/resources
+      - ./app:/var/www/html/app
+      - ./routes:/var/www/html/routes
+      - ./public/build:/var/www/html/public/build
     depends_on:
       db:
         condition: service_healthy
@@ -64,7 +69,6 @@ services:
       - APP_ENV=production
       - APP_DEBUG=false
       - APP_KEY=base64:UiGcc6G3JUG0sMx176lHU2u5c3vbXWcOAaB9yFVQs5s=
-      - APP_URL=http://localhost:8090
       - APP_TIMEZONE=Asia/Makassar
       - DB_CONNECTION=mysql
       - DB_HOST=db

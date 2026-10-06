@@ -11,7 +11,7 @@
             <div class="flex items-start justify-between mb-3">
                 <p class="text-[10.5px] font-bold text-orange-500 uppercase tracking-widest">Total Karyawan</p>
                 <div class="w-8 h-8 rounded-xl bg-orange-50 border border-orange-200 flex items-center justify-center">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-orange-500" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-orange-500"fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M15 19.128a9.38 9.38 0 0 0 2.625.372 9.337 9.337 0 0 0 4.121-.952 4.125 4.125 0 0 0-7.533-2.493M15 19.128v-.003c0-1.113-.285-2.16-.786-3.07M15 19.128v.106A12.318 12.318 0 0 1 8.624 21c-2.331 0-4.512-.645-6.374-1.766l-.001-.109a6.375 6.375 0 0 1 11.964-3.07M12 6.375a3.375 3.375 0 1 1-6.75 0 3.375 3.375 0 0 1 6.75 0Zm8.25 2.25a2.625 2.625 0 1 1-5.25 0 2.625 2.625 0 0 1 5.25 0Z" />
                     </svg>
                 </div>
@@ -34,7 +34,7 @@
                 </div>
             </div>
             <p class="text-3xl font-bold text-green-500 mb-1">{{ $sudahTerpenuhi }}</p>
-            <p class="text-xs text-stone-400">≥ {{ $target }} jam / tahun</p>
+            <p class="text-xs text-stone-400">&ge; {{ $target }} jam / tahun</p>
         </div>
 
         {{-- Belum Terpenuhi --}}
@@ -51,7 +51,7 @@
                 </div>
             </div>
             <p class="text-3xl font-bold text-red-500 mb-1">{{ $belumTerpenuhi }}</p>
-            <p class="text-xs text-stone-400">< {{ $target }} jam / tahun</p>
+            <p class="text-xs text-stone-400">&lt; {{ $target }} jam / tahun</p>
         </div>
 
         {{-- Rata-rata Jam --}}
@@ -102,9 +102,9 @@
             </p>
             <p class="text-xs text-blue-500 font-medium flex items-center gap-1">
                 <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="m11.25 11.25.041-.02a.75.75 0 0 1 1.063.852l-.708 2.836a.75.75 0 0 0 1.063.853l.041-.021M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9-3.75h.008v.008H12V8.25Z" />
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M11.25 11.25.041-.02a.75.75 0 0 1 1.063.852l-.708 2.836a.75.75 0 0 0 1.063.853l.041-.021M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9-3.75h.008v.008H12V8.25Z" />
                 </svg>
-                Jika &lt; {{ $target }}j → jam e-learning otomatis dihitung
+                Jika &lt; {{ $target }}j &rarr; jam e-learning otomatis dihitung
             </p>
         </div>
     </div>
@@ -173,8 +173,8 @@
         <div class="flex gap-1 bg-stone-100 rounded-xl p-1 mt-3">
             @foreach([
                 'semua'     => ['label' => 'Semua',                     'icon' => 'M3.75 6A2.25 2.25 0 0 1 6 3.75h2.25A2.25 2.25 0 0 1 10.5 6v2.25a2.25 2.25 0 0 1-2.25 2.25H6a2.25 2.25 0 0 1-2.25-2.25V6ZM3.75 15.75A2.25 2.25 0 0 1 6 13.5h2.25a2.25 2.25 0 0 1 2.25 2.25V18a2.25 2.25 0 0 1-2.25 2.25H6A2.25 2.25 0 0 1 3.75 18v-2.25ZM13.5 6a2.25 2.25 0 0 1 2.25-2.25H18A2.25 2.25 0 0 1 20.25 6v2.25A2.25 2.25 0 0 1 18 10.5h-2.25a2.25 2.25 0 0 1-2.25-2.25V6ZM13.5 15.75a2.25 2.25 0 0 1 2.25-2.25H18a2.25 2.25 0 0 1 2.25 2.25V18A2.25 2.25 0 0 1 18 20.25h-2.25A2.25 2.25 0 0 1 13.5 18v-2.25Z', 'color' => 'text-stone-400'],
-                'terpenuhi' => ['label' => 'Terpenuhi',                  'icon' => 'M9 12.75 11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z',                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              'color' => 'text-green-500'],
-                'kurang'    => ['label' => 'Kurang dari '.$target.'j',   'icon' => 'M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126ZM12 15.75h.007v.008H12v-.008Z',                                                                                                                                                                                                                                                                                                                                                                                              'color' => 'text-red-400'],
+                'terpenuhi' => ['label' => 'Terpenuhi',                  'icon' => 'M9 12.75 11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z',                                                                                          'color' => 'text-green-500'],
+                'kurang'    => ['label' => 'Kurang dari '.$target.'j',   'icon' => 'M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126ZM12 15.75h.007v.008H12v-.008Z','color' => 'text-red-400'],
             ] as $val => $item)
             <button wire:click="$set('filter', '{{ $val }}')"
                 class="flex-1 flex items-center justify-center gap-1.5 text-xs font-medium py-1.5 rounded-lg transition-all duration-200
@@ -201,18 +201,32 @@
                 <thead>
                     <tr class="bg-stone-50 border-b border-stone-100">
                         <th class="text-left px-5 py-3.5 text-[10.5px] font-bold text-stone-500 uppercase tracking-wider">Karyawan</th>
-                        <th class="text-left px-5 py-3.5 text-[10.5px] font-bold text-stone-500 uppercase tracking-wider">Unit / Tipe</th>
-                        <th class="text-center px-5 py-3.5 text-[10.5px] font-bold text-stone-500 uppercase tracking-wider">Acara</th>
+                        <th class="text-left px-5 py-3.5 text-[10.5px] font-bold text-stone-500 uppercase tracking-wider">Unit</th>
+                        <th class="text-center px-5 py-3.5 text-[10.5px] font-bold text-stone-500 uppercase tracking-wider">Diklat</th>
                         <th class="text-center px-5 py-3.5 text-[10.5px] font-bold text-stone-500 uppercase tracking-wider">Mandiri</th>
                         <th class="text-center px-5 py-3.5 text-[10.5px] font-bold text-stone-500 uppercase tracking-wider">E-Learning</th>
                         <th class="text-center px-5 py-3.5 text-[10.5px] font-bold text-stone-500 uppercase tracking-wider">Total Jam</th>
                         <th class="text-center px-5 py-3.5 text-[10.5px] font-bold text-stone-500 uppercase tracking-wider">Progress</th>
                         <th class="text-center px-5 py-3.5 text-[10.5px] font-bold text-stone-500 uppercase tracking-wider">Status</th>
+                        <th class="text-center px-5 py-3.5 text-[10.5px] font-bold text-stone-500 uppercase tracking-wider w-10"></th>
                     </tr>
                 </thead>
                 <tbody class="divide-y divide-stone-50">
                     @forelse($rekaps as $r)
-                    <tr class="transition-colors duration-150
+                    @php
+                        $detailUrl = null;
+                        if ($r['is_karyawan']) {
+                            if ($r['user']->detailEksternal) {
+                                $detailUrl = route('admin.peserta.detail.karyawan', $r['user']->detailEksternal->id);
+                            }
+                        } elseif ($r['user']->role === 'pegawai') {
+                            $detailUrl = route('admin.peserta.detail.pegawai', $r['user']->id);
+                        }
+                    @endphp
+                    <tr
+                        @if($detailUrl) onclick="window.location.href='{{ $detailUrl }}'" @endif
+                        class="transition-colors duration-150
+                               {{ $detailUrl ? 'cursor-pointer' : '' }}
                                {{ !$r['terpenuhi'] ? 'bg-red-50/30 hover:bg-red-50/50' : 'hover:bg-stone-50/70' }}">
 
                         {{-- Karyawan --}}
@@ -232,13 +246,9 @@
                             </div>
                         </td>
 
-                        {{-- Unit / Tipe --}}
+                        {{-- Unit --}}
                         <td class="px-5 py-4">
                             <p class="text-sm text-stone-600">{{ $r['user']->unit ?? '-' }}</p>
-                            <span class="text-[10px] px-1.5 py-0.5 rounded-full font-semibold
-                                {{ $r['is_karyawan'] ? 'bg-blue-50 text-blue-600 border border-blue-200' : 'bg-orange-50 text-orange-600 border border-orange-200' }}">
-                                {{ $r['is_karyawan'] ? 'Karyawan External' : 'Internal' }}
-                            </span>
                         </td>
 
                         {{-- Jam per sumber --}}
@@ -301,10 +311,19 @@
                             @endif
                         </td>
 
+                        {{-- Chevron (indikator baris dapat diklik) --}}
+                        <td class="px-2 py-4 text-center">
+                            @if($detailUrl)
+                            <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-stone-300 inline-block" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="m8.25 4.5 7.5 7.5-7.5 7.5" />
+                            </svg>
+                            @endif
+                        </td>
+
                     </tr>
                     @empty
                     <tr>
-                        <td colspan="8" class="px-5 py-14 text-center">
+                        <td colspan="9" class="px-5 py-14 text-center">
                             <div class="flex flex-col items-center gap-3">
                                 <div class="w-14 h-14 rounded-2xl bg-stone-100 flex items-center justify-center">
                                     <svg xmlns="http://www.w3.org/2000/svg" class="w-7 h-7 text-stone-300" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">

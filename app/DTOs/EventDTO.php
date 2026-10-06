@@ -7,6 +7,7 @@ class EventDTO
     public function __construct(
         public readonly string  $nama,
         public readonly string  $jenisDiklat,
+        public readonly ?string $kategori,
         public readonly string  $namaNarasumber,
         public readonly string  $tempat,
         public readonly string  $tglJamMulai,
@@ -19,6 +20,7 @@ class EventDTO
         public readonly int     $publish      = 0,
         public readonly string  $status       = 'Draft',
         public readonly ?string $img          = null,
+        public readonly array   $unitIds      = [],
     ) {}
 
     public static function fromArray(array $data): self
@@ -26,6 +28,7 @@ class EventDTO
         return new self(
             nama:           $data['nama'],
             jenisDiklat:    $data['jenisDiklat'],
+            kategori:       $data['kategori']     ?? null,
             namaNarasumber: $data['namaNarasumber'],
             tempat:         $data['tempat'],
             tglJamMulai:    $data['tglJamMulai'],
@@ -38,6 +41,7 @@ class EventDTO
             publish:        (int) ($data['publish'] ?? 0),
             status:         $data['status']       ?? 'Draft',
             img:            $data['img']          ?? null,
+            unitIds:        $data['unitIds']      ?? [],
         );
     }
 }

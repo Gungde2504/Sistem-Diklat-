@@ -5,6 +5,7 @@ namespace App\Livewire\Admin\Acara;
 use App\Actions\Event\UpdateEventAction;
 use App\DTOs\EventDTO;
 use App\Models\MDiklat;
+use App\Models\MUnit;
 use Livewire\Component;
 use Livewire\Attributes\Title;
 use Livewire\Attributes\Validate;
@@ -24,6 +25,9 @@ class AcaraEdit extends Component
 
     #[Validate('required|in:Diklat Internal,Diklat Eksternal,Seminar')]
     public string $jenisDiklat = '';
+
+    #[Validate('required|in:medis,non_medis')]
+    public string $kategori = '';
 
     #[Validate('required|string|max:255')]
     public string $namaNarasumber = '';
@@ -59,11 +63,15 @@ class AcaraEdit extends Component
     public int    $publish     = 0;
     public bool   $berhasil    = false;
 
+    #[Validate('required|array|min:1')]
+    public array $selectedUnits = [];
+
     public function mount(MDiklat $diklat): void
     {
         $this->diklat         = $diklat;
         $this->nama           = $diklat->nama;
         $this->jenisDiklat    = $diklat->jenisDiklat;
+        $this->kategori       = $diklat->kategori ?? '';
         $this->namaNarasumber = $diklat->namaNarasumber;
         $this->tempat         = $diklat->tempat;
         $this->tglJamMulai    = $diklat->tglJamMulai;
@@ -75,6 +83,7 @@ class AcaraEdit extends Component
         $this->linkPosttest   = $diklat->linkPosttest ?? '';
         $this->publish        = (int) $diklat->publish;
         $this->imgExisting    = $diklat->img          ?? '';
+        $this->selectedUnits  = $diklat->units->pluck('id')->toArray();
     }
 
     private function hitungStatus(): string
@@ -145,6 +154,7 @@ class AcaraEdit extends Component
         $dto = EventDTO::fromArray([
             'nama'           => $this->nama,
             'jenisDiklat'    => $this->jenisDiklat,
+            'kategori'       => $this->kategori,
             'namaNarasumber' => $this->namaNarasumber,
             'tempat'         => $this->tempat,
             'tglJamMulai'    => $this->tglJamMulai,
@@ -157,6 +167,7 @@ class AcaraEdit extends Component
             'publish'        => $this->publish,
             'status'         => $this->hitungStatus(),
             'img'            => $this->imgExisting ?: null,
+            'unitIds'        => $this->selectedUnits,
         ]);
 
         app(UpdateEventAction::class)->execute($this->diklat, $dto);
@@ -167,6 +178,8 @@ class AcaraEdit extends Component
 
     public function render()
     {
-        return view('livewire.admin.acara.acara-edit');
+        return view('livewire.admin.acara.acara-edit', [
+            'units' => MUnit::orderBy('nama')->get(),
+        ]);
     }
 }

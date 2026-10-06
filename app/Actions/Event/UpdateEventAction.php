@@ -12,6 +12,7 @@ class UpdateEventAction
         $diklat->update([
             'nama'           => $dto->nama,
             'jenisDiklat'    => $dto->jenisDiklat,
+            'kategori'       => $dto->kategori,
             'namaNarasumber' => $dto->namaNarasumber,
             'tempat'         => $dto->tempat,
             'tglJamMulai'    => $dto->tglJamMulai,
@@ -24,6 +25,8 @@ class UpdateEventAction
             'publish'        => $dto->publish,
             'status'         => $dto->status,
         ]);
+
+        $diklat->units()->sync($dto->unitIds);
 
         return $diklat->fresh();
     }

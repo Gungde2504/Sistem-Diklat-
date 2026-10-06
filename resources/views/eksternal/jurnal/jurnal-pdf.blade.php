@@ -17,6 +17,13 @@
         .jurnal-value { font-size: 11px; color: #333; margin-bottom: 8px; line-height: 1.5; }
         .footer { margin-top: 16px; text-align: right; font-size: 9px; color: #aaa; }
         .badge { display: inline-block; padding: 1px 8px; border-radius: 4px; font-size: 9px; font-weight: bold; background: #E0F2FE; color: #0369A1; }
+        .pengesahan-table { width: 100%; margin-top: 30px; }
+        .pengesahan-box { width: 40%; text-align: center; vertical-align: top; }
+        .pengesahan-intro { font-size: 11px; color: #333; margin-bottom: 2px; }
+        .stamp-img { width: 78px; height: auto; margin: 8px auto 0 auto; display: block; opacity: 0.92; }
+        .stamp-label { font-size: 8px; font-weight: bold; color: #16a34a; letter-spacing: 1px; margin-top: 2px; }
+        .pengesahan-name { font-size: 11px; font-weight: bold; text-decoration: underline; margin-top: 10px; }
+        .pengesahan-role { font-size: 9px; color: #888; margin-top: 1px; }
     </style>
 </head>
 <body>
@@ -62,6 +69,22 @@
     @empty
     <p style="text-align:center; color:#888; padding:20px;">Tidak ada data jurnal</p>
     @endforelse
+
+    <table class="pengesahan-table">
+        <tr>
+            <td style="width:60%;"></td>
+            <td class="pengesahan-box">
+                <div class="pengesahan-intro">Mengetahui,</div>
+                <div class="pengesahan-intro">{{ $detail?->supervisor?->nama ? 'Pembimbing Lapangan' : 'Koordinator Diklat' }}</div>
+
+                <img src="{{ public_path('images/pengesahan/stempel-disahkan.png') }}" class="stamp-img" alt="Cap Disahkan">
+                <div class="stamp-label">DISAHKAN</div>
+
+                <div class="pengesahan-name">{{ $detail?->supervisor?->nama ?? 'Putu Gita Laksmi, A.Md Keb' }}</div>
+                <div class="pengesahan-role">{{ $detail?->supervisor?->nama ? 'Pembimbing Lapangan' : 'Koordinator Diklat' }}</div>
+            </td>
+        </tr>
+    </table>
 
     <div class="footer">Dicetak pada: {{ now()->format('d M Y, H:i') }}</div>
 

@@ -281,13 +281,14 @@
 
             {{-- Upload row --}}
             <div class="flex gap-3 items-start px-5 py-4 border-b border-stone-50">
-                <input wire:model="materiFile" type="file"
+                <input wire:model="materiFile" type="file" multiple
                     accept=".pdf,.doc,.docx,.ppt,.pptx,.xls,.xlsx"
                     class="flex-1 px-3 py-2 text-xs border border-stone-200 rounded-xl bg-stone-50
                            text-stone-700 outline-none
                            focus:border-orange-400 focus:ring-2 focus:ring-orange-400/15
                            transition-all duration-200" />
                 <button wire:click="uploadMateri" wire:loading.attr="disabled"
+                    @disabled(empty($materiFile))
                     class="flex-shrink-0 px-4 py-2 rounded-xl text-sm font-semibold text-white
                            bg-gradient-to-br from-orange-400 via-orange-500 to-orange-600
                            shadow-[0_3px_10px_-2px_rgba(234,88,12,.4),0_1px_0_rgba(255,255,255,.2)_inset]
@@ -298,7 +299,13 @@
                     <span wire:loading wire:target="uploadMateri">...</span>
                 </button>
             </div>
-            <p class="text-xs text-stone-400 px-5 pb-3 pt-1">PDF, Word, PowerPoint, Excel — maks 20MB</p>
+            <p class="text-xs text-stone-400 px-5 pb-3 pt-1">PDF, Word, PowerPoint, Excel — maks 20MB per file, bisa pilih beberapa file sekaligus</p>
+            @error('materiFile')
+                <p class="text-xs text-red-500 px-5 pb-3">{{ $message }}</p>
+            @enderror
+            @error('materiFile.*')
+                <p class="text-xs text-red-500 px-5 pb-3">{{ $message }}</p>
+            @enderror
 
             @php
             $materis = \App\Models\MFileDiklat::where('id_diklat',$diklat->id)->where('type','materi')->orderByDesc('created_at')->get();

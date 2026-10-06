@@ -25,6 +25,7 @@ class JurnalDownloadController extends Controller
         }
 
         $jurnal = $query->get();
+        $detail = $user->detailEksternal;
 
         $judul = $filter === 'bulan'
             ? 'Jurnal Harian ' . \Carbon\Carbon::createFromDate($tahun, $bulan, 1)->translatedFormat('F Y')
@@ -34,13 +35,13 @@ class JurnalDownloadController extends Controller
             return $this->downloadExcel($jurnal, $user, $judul);
         }
 
-        return $this->downloadPdf($jurnal, $user, $judul);
+        return $this->downloadPdf($jurnal, $user, $detail, $judul);
     }
 
-    private function downloadPdf($jurnal, $user, $judul)
+    private function downloadPdf($jurnal, $user, $detail, $judul)
     {
         $pdf = \Barryvdh\DomPDF\Facade\Pdf::loadView('eksternal.jurnal.jurnal-pdf', compact(
-            'jurnal', 'user', 'judul'
+            'jurnal', 'user', 'detail', 'judul'
         ))->setPaper('a4', 'portrait');
 
         return $pdf->download('jurnal-' . now()->format('Ymd') . '.pdf');

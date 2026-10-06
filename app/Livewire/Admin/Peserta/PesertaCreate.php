@@ -24,6 +24,8 @@ class PesertaCreate extends Component
     // Data Detail
     public string $jenis          = '';
     public string $institusi      = '';
+    public string $programStudi   = '';
+    public string $semester       = '';
     public string $idUnit         = '';
     public string $idSupervisor   = '';
     public string $tanggalMulai   = '';
@@ -44,6 +46,8 @@ class PesertaCreate extends Component
         if ($this->tipe === 'eksternal') {
             $rules['jenis']          = 'required|in:pkl,magang,orientasi';
             $rules['institusi']      = 'required|string|max:200';
+            $rules['programStudi']   = 'required|string|max:150';
+            $rules['semester']       = 'required|integer|min:1|max:14';
             $rules['idUnit']         = 'required|exists:m_units,id';
             $rules['tanggalMulai']   = 'required|date';
             $rules['tanggalSelesai'] = 'required|date|after_or_equal:tanggalMulai';
@@ -64,6 +68,8 @@ class PesertaCreate extends Component
             'jenis.required'         => 'Jenis wajib dipilih.',
             'jenis.in'               => 'Pilih jenis yang valid.',
             'institusi.required'     => 'Institusi wajib diisi.',
+            'programStudi.required'  => 'Program studi wajib diisi.',
+            'semester.required'      => 'Semester wajib diisi.',
             'idUnit.required'        => 'Unit penempatan wajib dipilih.',
             'tanggalMulai.required'  => 'Tanggal mulai wajib diisi.',
             'tanggalSelesai.required'=> 'Tanggal selesai wajib diisi.',
@@ -73,7 +79,7 @@ class PesertaCreate extends Component
 
     public function updatedTipe(): void
     {
-        $this->reset(['jenis', 'institusi', 'idUnit', 'idSupervisor', 'tanggalMulai', 'tanggalSelesai']);
+        $this->reset(['jenis', 'institusi', 'programStudi', 'semester', 'idUnit', 'idSupervisor', 'tanggalMulai', 'tanggalSelesai']);
         $this->resetValidation();
     }
 
@@ -108,6 +114,8 @@ class PesertaCreate extends Component
             'institusi'       => $this->tipe === 'eksternal'
                                     ? $this->institusi
                                     : ($jenisLabel[$this->jenis] ?? $this->jenis),
+            'program_studi'   => $this->tipe === 'eksternal' ? $this->programStudi : null,
+            'semester'        => $this->tipe === 'eksternal' ? $this->semester : null,
             'id_unit'         => $this->idUnit ?: null,
             'id_supervisor'   => $this->idSupervisor ?: null,
             'tanggal_mulai'   => $this->tipe === 'eksternal' ? $this->tanggalMulai : null,
@@ -120,7 +128,7 @@ class PesertaCreate extends Component
         $this->berhasil = true;
         $this->reset([
             'nama', 'email', 'password', 'hp', 'alamat',
-            'jenis', 'institusi', 'idUnit', 'idSupervisor',
+            'jenis', 'institusi', 'programStudi', 'semester', 'idUnit', 'idSupervisor',
             'tanggalMulai', 'tanggalSelesai',
         ]);
     }

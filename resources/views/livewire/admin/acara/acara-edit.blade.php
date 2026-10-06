@@ -77,6 +77,45 @@
                         </div>
 
                         <div>
+                            <label class="block text-[10.5px] font-bold text-stone-500 uppercase tracking-widest mb-1.5">Kategori Acara <span class="text-red-400">*</span></label>
+                            <select wire:model.live="kategori"
+                                class="w-full px-3.5 py-2.5 text-sm border border-stone-200 rounded-xl bg-stone-50 text-stone-700 outline-none
+                                       focus:border-orange-400 focus:ring-2 focus:ring-orange-400/15 transition-all duration-200">
+                                <option value="">-- Pilih Kategori --</option>
+                                <option value="medis">Medis</option>
+                                <option value="non_medis">Non Medis</option>
+                            </select>
+                            @error('kategori') <p class="text-[11px] text-red-500 mt-1">{{ $message }}</p> @enderror
+                        </div>
+
+                        {{-- Unit yang Dapat Mengikuti — muncul setelah kategori dipilih --}}
+                        <div>
+                            <label class="block text-[10.5px] font-bold text-stone-500 uppercase tracking-widest mb-1.5">
+                                Unit yang Dapat Mengikuti <span class="text-red-400">*</span>
+                            </label>
+
+                            @if($kategori)
+                            <div class="grid grid-cols-2 sm:grid-cols-3 gap-2 p-3 border border-stone-200 rounded-xl bg-stone-50 max-h-52 overflow-y-auto">
+                                @forelse($units as $unit)
+                                <label class="flex items-center gap-2 text-xs text-stone-600 cursor-pointer select-none">
+                                    <input type="checkbox" wire:model="selectedUnits" value="{{ $unit->id }}"
+                                        class="w-3.5 h-3.5 rounded border-stone-300 text-orange-500 focus:ring-orange-400/30" />
+                                    {{ $unit->nama }}
+                                </label>
+                                @empty
+                                <p class="text-xs text-stone-400 col-span-full">Belum ada data unit.</p>
+                                @endforelse
+                            </div>
+                            @else
+                            <div class="p-3 border border-dashed border-stone-200 rounded-xl bg-stone-50/50">
+                                <p class="text-xs text-stone-400">Pilih kategori acara (Medis / Non Medis) dahulu untuk menampilkan daftar unit.</p>
+                            </div>
+                            @endif
+
+                            @error('selectedUnits') <p class="text-[11px] text-red-500 mt-1">{{ $message }}</p> @enderror
+                        </div>
+
+                        <div>
                             <label class="block text-[10.5px] font-bold text-stone-500 uppercase tracking-widest mb-1.5">Narasumber <span class="text-red-400">*</span></label>
                             <input wire:model="namaNarasumber" type="text" placeholder="Nama narasumber"
                                 class="w-full px-3.5 py-2.5 text-sm border border-stone-200 rounded-xl bg-stone-50 text-stone-800 outline-none
@@ -361,7 +400,7 @@
 
                     </div>
                 </div>
-                
+
                 {{-- Tombol Aksi --}}
                 <div class="bg-white rounded-2xl border border-stone-200 overflow-hidden
                             shadow-[0_1px_0_rgba(255,255,255,.95)_inset,0_6px_20px_-4px_rgba(120,113,108,.12),0_2px_6px_-1px_rgba(120,113,108,.07)]">
