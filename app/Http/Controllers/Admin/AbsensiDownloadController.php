@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\MDiklat;
 use App\Models\RecordAbsensiDiklat;
 use Illuminate\Http\Request;
+use Illuminate\Support\Str;
 
 class AbsensiDownloadController extends Controller
 {
@@ -48,12 +49,12 @@ class AbsensiDownloadController extends Controller
             'diklat', 'absensi', 'totalHadir', 'totalBelum'
         ))->setPaper('a4', 'portrait');
 
-        return $pdf->download('absensi-' . \Str::slug($diklat->nama) . '-' . now()->format('Ymd') . '.pdf');
+        return $pdf->download('absensi-' . Str::slug($diklat->nama) . '-' . now()->format('Ymd') . '.pdf');
     }
 
     private function downloadExcel($diklat, $absensi, $totalHadir, $totalBelum)
     {
-        $filename = 'absensi-' . \Str::slug($diklat->nama) . '-' . now()->format('Ymd') . '.csv';
+        $filename = 'absensi-' . Str::slug($diklat->nama) . '-' . now()->format('Ymd') . '.csv';
 
         $headers = [
             'Content-Type'        => 'text/csv',

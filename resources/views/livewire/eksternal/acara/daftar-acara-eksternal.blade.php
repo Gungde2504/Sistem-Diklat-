@@ -233,8 +233,8 @@
                         hover:-translate-y-1 transition-all duration-300">
 
                 {{-- Sampul --}}
-                <div class="relative aspect-video overflow-hidden flex-shrink-0
-                            bg-gradient-to-br from-green-600 to-green-800">
+                <div class="relative aspect-video overflow-hidden flex-shrink-0"
+                     style="background:linear-gradient(135deg,#3B9FD1 0%,#1A78B0 50%,#0F5A8C 100%)">
                     @if($acara->img)
                     <img src="{{ asset('storage/'.$acara->img) }}"
                          class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"/>

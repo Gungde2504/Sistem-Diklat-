@@ -39,9 +39,11 @@
             </nav>
 
             {{-- Footer --}}
-            <div class="px-4 py-3 border-t border-stone-100 flex-shrink-0
+            <a href="{{ route('pegawai.profil') }}"
+                class="block px-4 py-3 border-t border-stone-100 flex-shrink-0
                     bg-gradient-to-r from-slate-50 to-blue-50/40
-                    shadow-[0_-1px_0_rgba(255,255,255,.9)_inset]">
+                    shadow-[0_-1px_0_rgba(255,255,255,.9)_inset]
+                    hover:from-blue-50 hover:to-blue-100/50 transition-colors duration-200 cursor-pointer">
                 <div class="flex items-center gap-2.5">
                     <div class="w-9 h-9 rounded-full flex-shrink-0 flex items-center justify-center
                             text-white text-xs font-bold
@@ -54,7 +56,7 @@
                         <p class="text-stone-400 text-[10.5px] truncate">{{ auth()->user()->unit ?? 'Pegawai' }}</p>
                     </div>
                 </div>
-            </div>
+            </a>
         </aside>
 
         {{-- ── MAIN CONTENT ── --}}

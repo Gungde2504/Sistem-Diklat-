@@ -273,9 +273,9 @@
                 valid: false,
                 loading: false,
                 jarak: 0,
-                rsLat: -8.678252,
-                rsLng: 115.213500,
-                radius: 300,
+                rsLat: {{ $rsLat }},
+                rsLng: {{ $rsLng }},
+                radius: {{ $rsRadius }},
                 init() {
                     this.getLocation();
                 },

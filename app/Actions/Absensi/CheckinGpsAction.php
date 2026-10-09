@@ -4,14 +4,22 @@ namespace App\Actions\Absensi;
 
 use App\Helpers\GeoHelper;
 use App\Models\ExternalDailyAttendance;
+use App\Models\SistemKonfigurasi;
 use Illuminate\Support\Facades\Auth;
 
 class CheckinGpsAction
 {
-    // Koordinat & radius RS — idealnya dari config/DB
-    private float $rsLat    = -8.6705;   // ganti dengan koordinat RS
-    private float $rsLon    = 115.2126;  // ganti dengan koordinat RS
-    private float $radius   = 100;       // meter
+    // Koordinat & radius RS — dibaca dari konfigurasi Super Admin (sistem_konfigurasi)
+    private float $rsLat;
+    private float $rsLon;
+    private float $radius;
+
+    public function __construct()
+    {
+        $this->rsLat  = (float) SistemKonfigurasi::get('rs_latitude', -8.674694);
+        $this->rsLon  = (float) SistemKonfigurasi::get('rs_longitude', 115.212806);
+        $this->radius = (float) SistemKonfigurasi::get('rs_radius', 300);
+    }
 
     public function execute(float $lat, float $lon, string $type = 'checkin'): array
     {

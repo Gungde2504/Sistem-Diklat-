@@ -1,3 +1,26 @@
+# ============================================================
+# STAGE 1 — Build front-end assets (Tailwind/Vite)
+# Dijalankan setiap kali image di-build, jadi public/build SELALU
+# hasil compile terbaru dari resources/**/*.blade.php & app.css.
+# Folder public/build sendiri tetap di .gitignore — tidak perlu
+# dikomit, karena di sinilah dia dibuat.
+# ============================================================
+FROM node:22-alpine AS assets
+
+WORKDIR /app
+
+COPY package.json package-lock.json ./
+RUN npm ci
+
+# Vite/Tailwind @source butuh lihat file blade untuk tahu class apa saja
+# yang dipakai, jadi seluruh source project di-copy sebelum build.
+COPY . .
+RUN npm run build
+
+
+# ============================================================
+# STAGE 2 — Aplikasi PHP (image final yang dijalankan)
+# ============================================================
 FROM php:8.4-fpm
 
 RUN apt-get update && apt-get install -y \
@@ -15,6 +38,10 @@ COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
 WORKDIR /var/www/html
 COPY . .
+
+# Timpa public/build bawaan (kalau ada sisa lokal) dengan hasil build
+# fresh dari stage "assets" di atas — ini yang benar-benar dipakai.
+COPY --from=assets /app/public/build ./public/build
 
 # Copy composer files dulu sebelum install
 RUN composer install --no-dev --optimize-autoloader --no-scripts --no-interaction --ignore-platform-reqs

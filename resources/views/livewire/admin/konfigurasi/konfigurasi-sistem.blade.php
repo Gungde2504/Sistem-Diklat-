@@ -104,45 +104,114 @@
                                focus:border-orange-400 focus:ring-2 focus:ring-orange-400/15 focus:bg-white transition-all duration-200"/>
                 </div>
 
-                <div>
-                    <label class="block text-[10.5px] font-bold text-stone-500 uppercase tracking-widest mb-1.5">Alamat</label>
-                    <textarea wire:model="rs_alamat" rows="2" placeholder="Alamat lengkap rumah sakit..."
-                        class="w-full px-3.5 py-2.5 text-sm border border-stone-200 rounded-xl bg-stone-50 text-stone-800 outline-none resize-none
-                               focus:border-orange-400 focus:ring-2 focus:ring-orange-400/15 focus:bg-white transition-all duration-200"></textarea>
-                </div>
+                {{-- Peta Interaktif (Leaflet / OpenStreetMap) --}}
+                @once
+                    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+                        integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
+                    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+                        integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+                @endonce
 
-                {{-- Google Maps --}}
-                <div x-data="{
-                        mapUrl: 'https://www.google.com/maps?q={{ $rs_latitude }},{{ $rs_longitude }}&output=embed&z=17',
-                        refreshMap() {
-                            const lat = document.querySelector('[wire\\:model=rs_latitude]').value;
-                            const lng = document.querySelector('[wire\\:model=rs_longitude]').value;
-                            this.mapUrl = 'https://www.google.com/maps?q=' + lat + ',' + lng + '&output=embed&z=17&t=' + Date.now();
+                {{-- Alamat + Peta: satu x-data supaya titik peta & link Google Maps ikut nilai terkini --}}
+                <div
+                    x-data="{
+                        lat: parseFloat('{{ $rs_latitude }}') || -8.674694,
+                        lng: parseFloat('{{ $rs_longitude }}') || 115.212806,
+                        map: null,
+                        marker: null,
+                        geocoding: false,
+                        geocodeError: '',
+                        setCoords(lat, lng, recenter = false) {
+                            // Bulatkan 6 desimal (± 11cm), cukup presisi untuk geofencing
+                            this.lat = lat;
+                            this.lng = lng;
+                            $wire.set('rs_latitude', lat.toFixed(6));
+                            $wire.set('rs_longitude', lng.toFixed(6));
+                            if (this.marker) this.marker.setLatLng([lat, lng]);
+                            if (recenter && this.map) this.map.setView([lat, lng], 17);
+                        },
+                        async cariDariAlamat() {
+                            const alamat = this.$refs.alamatEl.value.trim();
+                            if (!alamat) return;
+                            this.geocoding = true;
+                            this.geocodeError = '';
+                            try {
+                                const res = await fetch(
+                                    'https://nominatim.openstreetmap.org/search?format=json&limit=1&countrycodes=id&q=' + encodeURIComponent(alamat)
+                                );
+                                const data = await res.json();
+                                if (!data.length) {
+                                    this.geocodeError = 'Alamat tidak ditemukan, silakan geser pin manual.';
+                                } else {
+                                    this.setCoords(parseFloat(data[0].lat), parseFloat(data[0].lon), true);
+                                }
+                            } catch (e) {
+                                this.geocodeError = 'Gagal mencari lokasi. Coba lagi.';
+                            } finally {
+                                this.geocoding = false;
+                            }
+                        },
+                        initMap() {
+                            this.map = L.map(this.$refs.mapEl).setView([this.lat, this.lng], 17);
+
+                            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                                maxZoom: 19,
+                                attribution: '&copy; OpenStreetMap contributors'
+                            }).addTo(this.map);
+
+                            this.marker = L.marker([this.lat, this.lng], { draggable: true }).addTo(this.map);
+
+                            this.marker.on('dragend', () => {
+                                const pos = this.marker.getLatLng();
+                                this.setCoords(pos.lat, pos.lng);
+                            });
+
+                            this.map.on('click', (e) => {
+                                this.setCoords(e.latlng.lat, e.latlng.lng);
+                            });
                         }
-                    }">
-                    <label class="block text-[10.5px] font-bold text-stone-500 uppercase tracking-widest mb-1.5">Preview Lokasi</label>
-                    <div class="rounded-xl overflow-hidden border border-stone-200 mb-2.5
-                                shadow-[0_2px_10px_-2px_rgba(120,113,108,.12)]" style="height:260px">
-                        <iframe :src="mapUrl" width="100%" height="100%" frameborder="0"
-                            style="border:0" referrerpolicy="no-referrer-when-downgrade" allowfullscreen></iframe>
-                    </div>
-                    <div class="flex items-center justify-between">
-                        <span class="text-xs text-stone-500 font-mono bg-stone-50 border border-stone-200 px-2.5 py-1 rounded-lg">
-                            {{ $rs_latitude }}, {{ $rs_longitude }}
-                        </span>
-                        <div class="flex items-center gap-2">
-                            <button type="button" @click="refreshMap()"
-                                class="text-xs font-semibold text-stone-500 hover:text-stone-700 px-3 py-1.5 rounded-lg
-                                       bg-stone-100 hover:bg-stone-200 border border-stone-200
-                                       hover:-translate-y-px transition-all duration-200">
-                                🔄 Refresh Map
+                    }"
+                    x-init="initMap()">
+
+                    <div>
+                        <label class="block text-[10.5px] font-bold text-stone-500 uppercase tracking-widest mb-1.5">Alamat</label>
+                        <textarea
+                            wire:model="rs_alamat"
+                            x-ref="alamatEl"
+                            x-on:blur="cariDariAlamat()"
+                            rows="2" placeholder="Alamat lengkap rumah sakit..."
+                            class="w-full px-3.5 py-2.5 text-sm border border-stone-200 rounded-xl bg-stone-50 text-stone-800 outline-none resize-none
+                                   focus:border-orange-400 focus:ring-2 focus:ring-orange-400/15 focus:bg-white transition-all duration-200"></textarea>
+                        <div class="flex items-center justify-between gap-2 mt-1.5">
+                            <p class="text-[11px] text-stone-400" x-show="!geocoding && !geocodeError">
+                                Keluar dari kolom ini untuk mencari titik lokasi otomatis dari alamat.
+                            </p>
+                            <p class="text-[11px] text-orange-500 flex items-center gap-1" x-show="geocoding" x-cloak>
+                                <svg class="w-3 h-3 animate-spin" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                                    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 12 0 12 12H4z"></path>
+                                </svg>
+                                Mencari titik lokasi...
+                            </p>
+                            <p class="text-[11px] text-red-500" x-show="geocodeError" x-text="geocodeError" x-cloak></p>
+                            <button type="button" x-on:click="cariDariAlamat()" :disabled="geocoding"
+                                class="text-[11px] text-orange-500 font-semibold hover:text-orange-600 hover:underline disabled:opacity-50 flex-shrink-0">
+                                Cari titik dari alamat
                             </button>
-                            <a href="https://www.google.com/maps/search/?api=1&query={{ $rs_latitude }},{{ $rs_longitude }}"
-                               target="_blank"
-                               class="text-xs text-orange-500 font-semibold hover:text-orange-600 hover:underline transition-colors">
-                                Buka di Google Maps →
-                            </a>
                         </div>
+                    </div>
+
+                    <div wire:ignore class="mt-4">
+                        <label class="block text-[10.5px] font-bold text-stone-500 uppercase tracking-widest mb-1.5">
+                            Peta Lokasi <span class="text-stone-400 normal-case font-medium">(klik di peta atau geser pin untuk ubah titik)</span>
+                        </label>
+                        <div x-ref="mapEl" class="rounded-xl overflow-hidden border border-stone-200 mb-2.5
+                                    shadow-[0_2px_10px_-2px_rgba(120,113,108,.12)]" style="height:300px"></div>
+                    </div>
+
+                    <div class="flex items-center">
+                        <span class="text-xs text-stone-500 font-mono bg-stone-50 border border-stone-200 px-2.5 py-1 rounded-lg"
+                            x-text="lat.toFixed(6) + ', ' + lng.toFixed(6)"></span>
                     </div>
                 </div>
 

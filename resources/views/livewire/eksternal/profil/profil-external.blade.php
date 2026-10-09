@@ -1,4 +1,4 @@
-<div class="space-y-5 max-w-lg mx-auto">
+<div class="space-y-5 lg:max-w-5xl lg:mx-auto">
 
     {{-- Alert --}}
     @if($message)
@@ -63,114 +63,125 @@
         @endif
     </div>
 
-    {{-- Edit Profil --}}
-    <div class="bg-white rounded-2xl border border-stone-200 overflow-hidden
-                shadow-[0_1px_0_rgba(255,255,255,.95)_inset,0_6px_20px_-4px_rgba(120,113,108,.12)]">
-        <div class="flex items-center gap-2.5 px-5 py-4 border-b border-stone-100">
-            <div class="w-0.5 h-5 rounded-full" style="background:linear-gradient(180deg,#3B9FD1,#0F5A8C)"></div>
-            <h3 class="text-sm font-semibold text-stone-800">Edit Biodata</h3>
-        </div>
-        <div class="p-5 space-y-4">
-            <div>
-                <label class="block text-xs font-semibold text-stone-500 mb-1.5 uppercase tracking-wider">Nama Lengkap</label>
-                <input wire:model="nama" type="text"
-                    class="w-full px-3.5 py-2.5 text-sm border border-stone-200 rounded-xl bg-stone-50 text-stone-800 outline-none
-                           focus:border-blue-400 focus:ring-2 focus:ring-blue-400/15 focus:bg-white transition-all duration-200"/>
-                @error('nama') <p class="text-xs text-red-500 mt-1">{{ $message }}</p> @enderror
-            </div>
-            <div>
-                <label class="block text-xs font-semibold text-stone-500 mb-1.5 uppercase tracking-wider">Email</label>
-                <input type="text" value="{{ auth()->user()->email }}" disabled
-                    class="w-full px-3.5 py-2.5 text-sm border border-stone-200 rounded-xl bg-stone-100 text-stone-400 outline-none cursor-not-allowed"/>
-                <p class="text-xs text-stone-400 mt-1">Email tidak dapat diubah</p>
-            </div>
-            <div>
-                <label class="block text-xs font-semibold text-stone-500 mb-1.5 uppercase tracking-wider">No. HP</label>
-                <input wire:model="hp" type="text" placeholder="08xxxxxxxxxx"
-                    class="w-full px-3.5 py-2.5 text-sm border border-stone-200 rounded-xl bg-stone-50 text-stone-800 outline-none
-                           focus:border-blue-400 focus:ring-2 focus:ring-blue-400/15 focus:bg-white transition-all duration-200"/>
-            </div>
-            <div>
-                <label class="block text-xs font-semibold text-stone-500 mb-1.5 uppercase tracking-wider">Alamat</label>
-                <textarea wire:model="alamat" rows="2" placeholder="Alamat domisili / KTP"
-                    class="w-full px-3.5 py-2.5 text-sm border border-stone-200 rounded-xl bg-stone-50 text-stone-800 outline-none resize-none
-                           focus:border-blue-400 focus:ring-2 focus:ring-blue-400/15 focus:bg-white transition-all duration-200"></textarea>
-                @error('alamat') <p class="text-xs text-red-500 mt-1">{{ $message }}</p> @enderror
-            </div>
-            <div>
-                <label class="block text-xs font-semibold text-stone-500 mb-1.5 uppercase tracking-wider">Institusi</label>
-                <input wire:model="institusi" type="text" placeholder="Nama institusi / vendor"
-                    class="w-full px-3.5 py-2.5 text-sm border border-stone-200 rounded-xl bg-stone-50 text-stone-800 outline-none
-                           focus:border-blue-400 focus:ring-2 focus:ring-blue-400/15 focus:bg-white transition-all duration-200"/>
-                @error('institusi') <p class="text-xs text-red-500 mt-1">{{ $message }}</p> @enderror
-            </div>
+    {{-- ── GRID: kiri = Edit Profil, kanan = Ganti Password (sejajar di desktop) ── --}}
+    <div class="grid grid-cols-1 lg:grid-cols-3 lg:gap-5 lg:items-start gap-5">
 
-            @if($isMahasiswa)
-            <div class="grid grid-cols-2 gap-3">
-                <div>
-                    <label class="block text-xs font-semibold text-stone-500 mb-1.5 uppercase tracking-wider">Program Studi</label>
-                    <input wire:model="programStudi" type="text" placeholder="Mis. D3 Keperawatan"
-                        class="w-full px-3.5 py-2.5 text-sm border border-stone-200 rounded-xl bg-stone-50 text-stone-800 outline-none
-                               focus:border-blue-400 focus:ring-2 focus:ring-blue-400/15 focus:bg-white transition-all duration-200"/>
-                    @error('programStudi') <p class="text-xs text-red-500 mt-1">{{ $message }}</p> @enderror
+        {{-- ══════════ KOLOM KIRI (Edit Profil) ══════════ --}}
+        <div class="lg:col-span-2">
+            <div class="bg-white rounded-2xl border border-stone-200 overflow-hidden
+                        shadow-[0_1px_0_rgba(255,255,255,.95)_inset,0_6px_20px_-4px_rgba(120,113,108,.12)]">
+                <div class="flex items-center gap-2.5 px-5 py-4 border-b border-stone-100">
+                    <div class="w-0.5 h-5 rounded-full" style="background:linear-gradient(180deg,#3B9FD1,#0F5A8C)"></div>
+                    <h3 class="text-sm font-semibold text-stone-800">Edit Biodata</h3>
                 </div>
-                <div>
-                    <label class="block text-xs font-semibold text-stone-500 mb-1.5 uppercase tracking-wider">Semester</label>
-                    <input wire:model="semester" type="number" min="1" max="14" placeholder="Mis. 5"
-                        class="w-full px-3.5 py-2.5 text-sm border border-stone-200 rounded-xl bg-stone-50 text-stone-800 outline-none
-                               focus:border-blue-400 focus:ring-2 focus:ring-blue-400/15 focus:bg-white transition-all duration-200"/>
-                    @error('semester') <p class="text-xs text-red-500 mt-1">{{ $message }}</p> @enderror
+                <div class="p-5 space-y-4 lg:grid lg:grid-cols-2 lg:gap-4 lg:space-y-0">
+                    <div>
+                        <label class="block text-xs font-semibold text-stone-500 mb-1.5 uppercase tracking-wider">Nama Lengkap</label>
+                        <input wire:model="nama" type="text"
+                            class="w-full px-3.5 py-2.5 text-sm border border-stone-200 rounded-xl bg-stone-50 text-stone-800 outline-none
+                                   focus:border-blue-400 focus:ring-2 focus:ring-blue-400/15 focus:bg-white transition-all duration-200"/>
+                        @error('nama') <p class="text-xs text-red-500 mt-1">{{ $message }}</p> @enderror
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-stone-500 mb-1.5 uppercase tracking-wider">Email</label>
+                        <input type="text" value="{{ auth()->user()->email }}" disabled
+                            class="w-full px-3.5 py-2.5 text-sm border border-stone-200 rounded-xl bg-stone-100 text-stone-400 outline-none cursor-not-allowed"/>
+                        <p class="text-xs text-stone-400 mt-1">Email tidak dapat diubah</p>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-stone-500 mb-1.5 uppercase tracking-wider">No. HP</label>
+                        <input wire:model="hp" type="text" placeholder="08xxxxxxxxxx"
+                            class="w-full px-3.5 py-2.5 text-sm border border-stone-200 rounded-xl bg-stone-50 text-stone-800 outline-none
+                                   focus:border-blue-400 focus:ring-2 focus:ring-blue-400/15 focus:bg-white transition-all duration-200"/>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-stone-500 mb-1.5 uppercase tracking-wider">Institusi</label>
+                        <input wire:model="institusi" type="text" placeholder="Nama institusi / vendor"
+                            class="w-full px-3.5 py-2.5 text-sm border border-stone-200 rounded-xl bg-stone-50 text-stone-800 outline-none
+                                   focus:border-blue-400 focus:ring-2 focus:ring-blue-400/15 focus:bg-white transition-all duration-200"/>
+                        @error('institusi') <p class="text-xs text-red-500 mt-1">{{ $message }}</p> @enderror
+                    </div>
+                    <div class="lg:col-span-2">
+                        <label class="block text-xs font-semibold text-stone-500 mb-1.5 uppercase tracking-wider">Alamat</label>
+                        <textarea wire:model="alamat" rows="2" placeholder="Alamat domisili / KTP"
+                            class="w-full px-3.5 py-2.5 text-sm border border-stone-200 rounded-xl bg-stone-50 text-stone-800 outline-none resize-none
+                                   focus:border-blue-400 focus:ring-2 focus:ring-blue-400/15 focus:bg-white transition-all duration-200"></textarea>
+                        @error('alamat') <p class="text-xs text-red-500 mt-1">{{ $message }}</p> @enderror
+                    </div>
+
+                    @if($isMahasiswa)
+                    <div class="lg:col-span-2 grid grid-cols-2 gap-3">
+                        <div>
+                            <label class="block text-xs font-semibold text-stone-500 mb-1.5 uppercase tracking-wider">Program Studi</label>
+                            <input wire:model="programStudi" type="text" placeholder="Mis. D3 Keperawatan"
+                                class="w-full px-3.5 py-2.5 text-sm border border-stone-200 rounded-xl bg-stone-50 text-stone-800 outline-none
+                                       focus:border-blue-400 focus:ring-2 focus:ring-blue-400/15 focus:bg-white transition-all duration-200"/>
+                            @error('programStudi') <p class="text-xs text-red-500 mt-1">{{ $message }}</p> @enderror
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-stone-500 mb-1.5 uppercase tracking-wider">Semester</label>
+                            <input wire:model="semester" type="number" min="1" max="14" placeholder="Mis. 5"
+                                class="w-full px-3.5 py-2.5 text-sm border border-stone-200 rounded-xl bg-stone-50 text-stone-800 outline-none
+                                       focus:border-blue-400 focus:ring-2 focus:ring-blue-400/15 focus:bg-white transition-all duration-200"/>
+                            @error('semester') <p class="text-xs text-red-500 mt-1">{{ $message }}</p> @enderror
+                        </div>
+                    </div>
+                    @endif
+
+                    <div class="lg:col-span-2">
+                        <button wire:click="simpanProfil" wire:loading.attr="disabled"
+                            class="w-full py-2.5 rounded-xl text-sm font-bold text-white transition-all duration-200
+                                   hover:-translate-y-0.5 active:scale-95 disabled:opacity-50
+                                   shadow-[0_4px_14px_-3px_rgba(15,79,122,.4)]"
+                            style="background:linear-gradient(135deg,#3B9FD1 0%,#1A78B0 50%,#0F5A8C 100%)">
+                            <span wire:loading.remove wire:target="simpanProfil">Simpan Perubahan</span>
+                            <span wire:loading wire:target="simpanProfil">Menyimpan...</span>
+                        </button>
+                    </div>
                 </div>
             </div>
-            @endif
+        </div>
 
-            <button wire:click="simpanProfil" wire:loading.attr="disabled"
-                class="w-full py-2.5 rounded-xl text-sm font-bold text-white transition-all duration-200
-                       hover:-translate-y-0.5 active:scale-95 disabled:opacity-50
-                       shadow-[0_4px_14px_-3px_rgba(15,79,122,.4)]"
-                style="background:linear-gradient(135deg,#3B9FD1 0%,#1A78B0 50%,#0F5A8C 100%)">
-                <span wire:loading.remove wire:target="simpanProfil">Simpan Perubahan</span>
-                <span wire:loading wire:target="simpanProfil">Menyimpan...</span>
-            </button>
+        {{-- ══════════ KOLOM KANAN (Ganti Password) ══════════ --}}
+        <div class="lg:col-span-1">
+            <div class="bg-white rounded-2xl border border-stone-200 overflow-hidden
+                        shadow-[0_1px_0_rgba(255,255,255,.95)_inset,0_6px_20px_-4px_rgba(120,113,108,.12)]">
+                <div class="flex items-center gap-2.5 px-5 py-4 border-b border-stone-100">
+                    <div class="w-0.5 h-5 rounded-full bg-gradient-to-b from-orange-500 to-orange-400"></div>
+                    <h3 class="text-sm font-semibold text-stone-800">Ganti Password</h3>
+                </div>
+                <div class="p-5 space-y-4">
+                    <div>
+                        <label class="block text-xs font-semibold text-stone-500 mb-1.5 uppercase tracking-wider">Password Lama</label>
+                        <input wire:model="passwordLama" type="password" placeholder="••••••••"
+                            class="w-full px-3.5 py-2.5 text-sm border border-stone-200 rounded-xl bg-stone-50 text-stone-800 outline-none
+                                   focus:border-orange-400 focus:ring-2 focus:ring-orange-400/15 focus:bg-white transition-all duration-200"/>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-stone-500 mb-1.5 uppercase tracking-wider">Password Baru</label>
+                        <input wire:model="passwordBaru" type="password" placeholder="Min. 8 karakter"
+                            class="w-full px-3.5 py-2.5 text-sm border border-stone-200 rounded-xl bg-stone-50 text-stone-800 outline-none
+                                   focus:border-orange-400 focus:ring-2 focus:ring-orange-400/15 focus:bg-white transition-all duration-200"/>
+                        @error('passwordBaru') <p class="text-xs text-red-500 mt-1">{{ $message }}</p> @enderror
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-stone-500 mb-1.5 uppercase tracking-wider">Konfirmasi Password</label>
+                        <input wire:model="konfirmasi" type="password" placeholder="Ulangi password baru"
+                            class="w-full px-3.5 py-2.5 text-sm border border-stone-200 rounded-xl bg-stone-50 text-stone-800 outline-none
+                                   focus:border-orange-400 focus:ring-2 focus:ring-orange-400/15 focus:bg-white transition-all duration-200"/>
+                        @error('konfirmasi') <p class="text-xs text-red-500 mt-1">{{ $message }}</p> @enderror
+                    </div>
+                    <button wire:click="gantiPassword" wire:loading.attr="disabled"
+                        class="w-full py-2.5 rounded-xl text-sm font-bold text-white transition-all duration-200
+                               hover:-translate-y-0.5 active:scale-95 disabled:opacity-50
+                               bg-gradient-to-r from-orange-500 to-orange-600
+                               shadow-[0_4px_14px_-3px_rgba(234,88,12,.4)]">
+                        <span wire:loading.remove wire:target="gantiPassword">Ganti Password</span>
+                        <span wire:loading wire:target="gantiPassword">Memproses...</span>
+                    </button>
+                </div>
+            </div>
         </div>
-    </div>
 
-    {{-- Ganti Password --}}
-    <div class="bg-white rounded-2xl border border-stone-200 overflow-hidden
-                shadow-[0_1px_0_rgba(255,255,255,.95)_inset,0_6px_20px_-4px_rgba(120,113,108,.12)]">
-        <div class="flex items-center gap-2.5 px-5 py-4 border-b border-stone-100">
-            <div class="w-0.5 h-5 rounded-full bg-gradient-to-b from-orange-500 to-orange-400"></div>
-            <h3 class="text-sm font-semibold text-stone-800">Ganti Password</h3>
-        </div>
-        <div class="p-5 space-y-4">
-            <div>
-                <label class="block text-xs font-semibold text-stone-500 mb-1.5 uppercase tracking-wider">Password Lama</label>
-                <input wire:model="passwordLama" type="password" placeholder="••••••••"
-                    class="w-full px-3.5 py-2.5 text-sm border border-stone-200 rounded-xl bg-stone-50 text-stone-800 outline-none
-                           focus:border-orange-400 focus:ring-2 focus:ring-orange-400/15 focus:bg-white transition-all duration-200"/>
-            </div>
-            <div>
-                <label class="block text-xs font-semibold text-stone-500 mb-1.5 uppercase tracking-wider">Password Baru</label>
-                <input wire:model="passwordBaru" type="password" placeholder="Min. 8 karakter"
-                    class="w-full px-3.5 py-2.5 text-sm border border-stone-200 rounded-xl bg-stone-50 text-stone-800 outline-none
-                           focus:border-orange-400 focus:ring-2 focus:ring-orange-400/15 focus:bg-white transition-all duration-200"/>
-                @error('passwordBaru') <p class="text-xs text-red-500 mt-1">{{ $message }}</p> @enderror
-            </div>
-            <div>
-                <label class="block text-xs font-semibold text-stone-500 mb-1.5 uppercase tracking-wider">Konfirmasi Password</label>
-                <input wire:model="konfirmasi" type="password" placeholder="Ulangi password baru"
-                    class="w-full px-3.5 py-2.5 text-sm border border-stone-200 rounded-xl bg-stone-50 text-stone-800 outline-none
-                           focus:border-orange-400 focus:ring-2 focus:ring-orange-400/15 focus:bg-white transition-all duration-200"/>
-                @error('konfirmasi') <p class="text-xs text-red-500 mt-1">{{ $message }}</p> @enderror
-            </div>
-            <button wire:click="gantiPassword" wire:loading.attr="disabled"
-                class="w-full py-2.5 rounded-xl text-sm font-bold text-white transition-all duration-200
-                       hover:-translate-y-0.5 active:scale-95 disabled:opacity-50
-                       bg-gradient-to-r from-orange-500 to-orange-600
-                       shadow-[0_4px_14px_-3px_rgba(234,88,12,.4)]">
-                <span wire:loading.remove wire:target="gantiPassword">Ganti Password</span>
-                <span wire:loading wire:target="gantiPassword">Memproses...</span>
-            </button>
-        </div>
     </div>
 </div>

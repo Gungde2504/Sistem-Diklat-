@@ -4,7 +4,7 @@
 
 <head>
     <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>{{ $title ?? 'Portal Eksternal' }} — Sistem Diklat</title>
     <link rel="preconnect" href="https://fonts.bunny.net">
@@ -43,9 +43,11 @@
             </nav>
 
             {{-- Footer --}}
-            <div class="px-4 py-3 border-t border-stone-100 flex-shrink-0
+            <a href="{{ route('eksternal.profil') }}"
+                class="block px-4 py-3 border-t border-stone-100 flex-shrink-0
                     bg-gradient-to-r from-slate-50 to-blue-50/40
-                    shadow-[0_-1px_0_rgba(255,255,255,.9)_inset]">
+                    shadow-[0_-1px_0_rgba(255,255,255,.9)_inset]
+                    hover:from-blue-50 hover:to-blue-100/50 transition-colors duration-200 cursor-pointer">
                 <div class="flex items-center gap-2.5">
                     <div class="w-9 h-9 rounded-full flex-shrink-0 flex items-center justify-center
                             text-white text-xs font-bold
@@ -58,7 +60,7 @@
                         <p class="text-stone-400 text-[10.5px] truncate">{{ auth()->user()->email }}</p>
                     </div>
                 </div>
-            </div>
+            </a>
         </aside>
 
         {{-- ── MAIN CONTENT ── --}}
@@ -113,7 +115,8 @@
     </div>
 
     {{-- ── BOTTOM NAV MOBILE ── --}}
-    <nav class="lg:hidden fixed bottom-0 left-0 right-0 z-40 bg-white border-t border-stone-200 px-2 pb-safe
+    <nav class="lg:hidden fixed bottom-0 left-0 right-0 z-40 bg-white border-t border-stone-200 px-2
+            pb-[max(0.5rem,env(safe-area-inset-bottom))]
             shadow-[0_-4px_20px_-4px_rgba(120,113,108,.12),0_-1px_0_rgba(255,255,255,.9)_inset]">
         <div class="flex items-center justify-around">
 
@@ -158,15 +161,15 @@
             {{-- Jurnal — Center Button --}}
             <a href="{{ route('eksternal.jurnal') }}"
                 class="group flex flex-col items-center gap-1 -mt-5 active:scale-95 transition-all duration-200">
-                <div class="w-14 h-14 rounded-full flex items-center justify-center
+                <div class="relative w-14 h-14 rounded-full flex items-center justify-center
                         shadow-[0_6px_20px_-3px_rgba(15,79,122,.5),0_1px_0_rgba(255,255,255,.2)_inset]
                         group-hover:-translate-y-1
                         group-hover:shadow-[0_10px_28px_-4px_rgba(15,79,122,.55)]
                         transition-all duration-200"
-                    style="background:linear-gradient(135deg,#3B9FD1 0%,#1A78B0 50%,#0F5A8C100%)">
-                    <span class="absolute w-14 h-14 rounded-full border-2 border-blue-300/40
+                    style="background:linear-gradient(135deg,#3B9FD1 0%,#1A78B0 50%,#0F5A8C 100%)">
+                    <span class="absolute inset-0 rounded-full border-2 border-blue-300/40
                              group-hover:scale-110 transition-all duration-300 pointer-events-none"></span>
-                    <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 text-white relative" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 text-white relative z-10" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Z" />
                     </svg>
                 </div>

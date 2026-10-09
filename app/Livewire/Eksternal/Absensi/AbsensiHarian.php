@@ -2,8 +2,9 @@
 
 namespace App\Livewire\Eksternal\Absensi;
 
-use App\Actions\Absensi\CheckinGpsAction;
+use App\Helpers\GeoHelper;
 use App\Models\ExternalDailyAttendance;
+use App\Models\SistemKonfigurasi;
 use Livewire\Component;
 use Livewire\Attributes\Title;
 
@@ -18,13 +19,26 @@ class AbsensiHarian extends Component
     public string $message    = '';
     public string $messageType = '';
 
+    public float  $rsLat   = -8.674694;
+    public float  $rsLng   = 115.212806;
+    public float  $rsRadius = 300;
+
+    public function mount(): void
+    {
+        $this->rsLat    = (float) SistemKonfigurasi::get('rs_latitude', -8.674694);
+        $this->rsLng    = (float) SistemKonfigurasi::get('rs_longitude', 115.212806);
+        $this->rsRadius = (float) SistemKonfigurasi::get('rs_radius', 300);
+    }
+
     public function setLocation(float $lat, float $lng, bool $valid, float $jarak): void
     {
         $this->latitude  = $lat;
         $this->longitude = $lng;
         $this->gpsReady  = true;
-        $this->gpsValid  = $valid;
-        $this->jarak     = $jarak;
+        // Jangan percaya begitu saja nilai valid/jarak dari client — validasi ulang di server
+        // memakai koordinat & radius RS dari konfigurasi, supaya hasil akhir tidak bisa dimanipulasi.
+        $this->gpsValid  = GeoHelper::isWithinRadius($lat, $lng, $this->rsLat, $this->rsLng, $this->rsRadius);
+        $this->jarak     = GeoHelper::haversineDistance($lat, $lng, $this->rsLat, $this->rsLng);
     }
 
     public function checkin(): void
