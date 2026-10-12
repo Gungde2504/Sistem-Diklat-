@@ -183,7 +183,7 @@
                         @method('DELETE')
                         <button
                             type="button"
-                            @click="$store.fotoModal.show('{{ asset('storage/'.$foto->file) }}', () => $el.closest('form').submit())"
+                            @click="$store.deleteModal.show('Hapus Foto?', 'Foto dokumentasi ini akan dihapus permanen dan tidak dapat dikembalikan.', () => $el.closest('form').submit())"
                             class="w-9 h-9 rounded-full flex items-center justify-center
            shadow-[0_2px_8px_rgba(0,0,0,.2)]
            hover:scale-110 transition-all duration-150"

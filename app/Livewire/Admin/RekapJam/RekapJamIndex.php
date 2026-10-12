@@ -5,6 +5,7 @@ namespace App\Livewire\Admin\RekapJam;
 use App\Actions\RekapJam\CalculateRekapJamAction;
 use App\Helpers\RekapHelper;
 use App\Models\MUnit;
+use App\Models\SistemKonfigurasi;
 use App\Models\User;
 use Livewire\Component;
 use Livewire\Attributes\Title;
@@ -24,7 +25,8 @@ class RekapJamIndex extends Component
 
     public function mount(): void
     {
-        $this->tahun = (string) now()->year;
+        $this->tahun  = (string) now()->year;
+        $this->target = (float) SistemKonfigurasi::get('target_jam_tahunan', 20);
     }
 
     public function updatingSearch(): void { $this->resetPage(); }

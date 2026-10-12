@@ -26,7 +26,7 @@ class AcaraEdit extends Component
     #[Validate('required|in:Diklat Internal,Diklat Eksternal,Seminar')]
     public string $jenisDiklat = '';
 
-    #[Validate('required|in:medis,non_medis')]
+    #[Validate('nullable|in:medis,non_medis,')]
     public string $kategori = '';
 
     #[Validate('required|string|max:255')]
@@ -63,7 +63,7 @@ class AcaraEdit extends Component
     public int    $publish     = 0;
     public bool   $berhasil    = false;
 
-    #[Validate('required|array|min:1')]
+    #[Validate('nullable|array')]
     public array $selectedUnits = [];
 
     public function mount(MDiklat $diklat): void
@@ -154,7 +154,7 @@ class AcaraEdit extends Component
         $dto = EventDTO::fromArray([
             'nama'           => $this->nama,
             'jenisDiklat'    => $this->jenisDiklat,
-            'kategori'       => $this->kategori,
+            'kategori'       => $this->kategori ?: null,
             'namaNarasumber' => $this->namaNarasumber,
             'tempat'         => $this->tempat,
             'tglJamMulai'    => $this->tglJamMulai,

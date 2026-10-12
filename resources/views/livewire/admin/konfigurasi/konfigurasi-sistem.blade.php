@@ -209,10 +209,7 @@
                                     shadow-[0_2px_10px_-2px_rgba(120,113,108,.12)]" style="height:300px"></div>
                     </div>
 
-                    <div class="flex items-center">
-                        <span class="text-xs text-stone-500 font-mono bg-stone-50 border border-stone-200 px-2.5 py-1 rounded-lg"
-                            x-text="lat.toFixed(6) + ', ' + lng.toFixed(6)"></span>
-                    </div>
+                    
                 </div>
 
                 {{-- Simpan --}}

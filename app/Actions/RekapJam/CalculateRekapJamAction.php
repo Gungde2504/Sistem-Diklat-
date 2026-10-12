@@ -7,6 +7,7 @@ use App\Helpers\RekapHelper;
 use App\Models\DiklatMandiri;
 use App\Models\ElearningProgress;
 use App\Models\RecordAbsensiDiklat;
+use App\Models\SistemKonfigurasi;
 
 class CalculateRekapJamAction
 {
@@ -30,10 +31,18 @@ class CalculateRekapJamAction
             ->whereYear('completed_at', $tahun)
             ->sum('jam_dikontribusikan');
 
+        // Batas maksimal jam yang dihitung dari Diklat Mandiri & E-Learning,
+        // sesuai konfigurasi Super Admin (menu Konfigurasi Sistem > Jam Pelatihan)
+        $batasMandiri   = (float) SistemKonfigurasi::get('batas_diklat_mandiri', 10);
+        $batasElearning = (float) SistemKonfigurasi::get('batas_elearning', 5);
+
+        $jamMandiri   = min(RekapHelper::menitKeJam($menitMandiri), $batasMandiri);
+        $jamElearning = min((float) $jamElearning, $batasElearning);
+
         return new RekapJamDTO(
             jamDiklatAcara:   RekapHelper::menitKeJam($menitAcara),
-            jamDiklatMandiri: RekapHelper::menitKeJam($menitMandiri),
-            jamElearning:     (float) $jamElearning,
+            jamDiklatMandiri: $jamMandiri,
+            jamElearning:     $jamElearning,
         );
     }
 }

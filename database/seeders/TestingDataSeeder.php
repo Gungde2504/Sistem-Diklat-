@@ -79,8 +79,7 @@ class TestingDataSeeder extends Seeder
         $this->command->info('7/9  Mengisi absensi diklat per-acara...');
         $this->seedAbsensiDiklat($pegawaiIds, $pesertaIds, $karyawanIds);
 
-        $this->command->info('8/9  Mengisi diklat mandiri & progress e-learning pegawai...');
-        $this->seedDiklatMandiri($pegawaiIds);
+        $this->command->info('8/9  Mengisi progress e-learning pegawai...');
         $this->seedElearningProgress($pegawaiIds);
 
         $this->command->info('9/9  Mengisi absensi harian & jurnal peserta eksternal...');
@@ -247,6 +246,74 @@ class TestingDataSeeder extends Seeder
         $local   = mb_strtolower(implode('', $dipakai));
 
         return $local . '@gmail.com';
+    }
+
+    // ────────────────────────────────────────────────────────────────
+    // Helper: tentukan program studi yang relevan untuk peserta PKL/
+    // Magang berdasarkan unit penempatannya, supaya program studi yang
+    // tercatat nyambung dengan unit RS tempat dia ditempatkan.
+    // ────────────────────────────────────────────────────────────────
+    private function programStudiUntukUnit(string $namaUnit): string
+    {
+        $unit = mb_strtoupper(trim($namaUnit));
+
+        $map = [
+            'Keperawatan' => ['UGD', 'ICU', 'RIA', 'RIC', 'RID', 'VK', 'NICU', 'HD', 'OK A', 'KND', 'RAWAT JALAN', 'UGD DAN POLI UMUM'],
+            'Kebidanan' => ['VK', 'RIC', 'NICU'],
+            'Farmasi' => ['FARMASI'],
+            'Teknik Radiodiagnostik dan Radioterapi' => ['RADIOLOGI'],
+            'Teknologi Laboratorium Medis' => ['LAB.PK', 'LAB.PA'],
+            'Rekam Medis dan Informasi Kesehatan' => ['REKAM MEDIS', 'CASEMIX'],
+            'Sistem Informasi' => ['IT', 'OPERATOR'],
+            'Administrasi Rumah Sakit' => ['FRONT OFFICE', 'KASIR', 'MANAJEMEN', 'PENGADAAN', 'PAJAK', 'SPI', 'UPM'],
+            'Teknik Elektromedik' => ['ELEKTRO MEDIS', 'TEKNISI'],
+            'Gizi' => ['DAPUR SAJI A', 'CAFÉ GARDENIA', 'CAFE GARDENIA'],
+        ];
+
+        foreach ($map as $prodi => $unitList) {
+            if (in_array($unit, $unitList, true)) {
+                return $prodi;
+            }
+        }
+
+        return 'Kesehatan Masyarakat';
+    }
+
+    // ────────────────────────────────────────────────────────────────
+    // Helper: tentukan semester peserta PKL/Magang, DITULIS DALAM
+    // BENTUK ROMAWI ("V", "VI", "VII", dst) sesuai permintaan — magang
+    // semester 6-8, PKL semester 5-7 (konvensi akademik: PKL biasanya
+    // lebih awal dari magang).
+    //
+    // PENTING: kolom `semester` di tabel detail_eksternals bertipe
+    // unsignedTinyInteger (lihat migration
+    // 2026_10_06_000000_add_semester_and_program_studi_to_detail_eksternals_table
+    // dan validasi controller publiknya: 'semester' => 'required|integer|min:1|max:14').
+    // Kolom integer TIDAK BISA diisi teks Romawi ("V", "VII") — pada
+    // MySQL strict mode insert akan ditolak/di-cast jadi 0. Jadi method
+    // ini mengembalikan ANGKA (integer) semester, dan disediakan juga
+    // semesterToRomawi() untuk mengubahnya jadi teks Romawi HANYA untuk
+    // ditampilkan (misal di console log contoh akun), bukan untuk
+    // disimpan ke database.
+    // ────────────────────────────────────────────────────────────────
+    private function semesterUntukJenis(string $jenis): int
+    {
+        return match ($jenis) {
+            'magang' => rand(6, 8),
+            'pkl'    => rand(5, 7),
+            default  => rand(5, 7),
+        };
+    }
+
+    private function semesterToRomawi(int $semester): string
+    {
+        $angkaRomawi = [
+            1 => 'I', 2 => 'II', 3 => 'III', 4 => 'IV', 5 => 'V', 6 => 'VI',
+            7 => 'VII', 8 => 'VIII', 9 => 'IX', 10 => 'X', 11 => 'XI',
+            12 => 'XII', 13 => 'XIII', 14 => 'XIV',
+        ];
+
+        return $angkaRomawi[$semester] ?? (string) $semester;
     }
 
     // ────────────────────────────────────────────────────────────────
@@ -549,7 +616,15 @@ class TestingDataSeeder extends Seeder
             ['orientasi', 'Lestari Dharma Narayana', 'lestari.dharma.narayana53@poltekkes-denpasar.ac.id', 'Politeknik Kesehatan Denpasar'],
         ];
         $supervisorPool = array_column($pegawaiIds, 'id');
-        $unitPool       = array_values($this->unitCache);
+
+        // Bangun pool unit beserta NAMA aslinya (unitCache cuma menyimpan
+        // id & slug per key nama-unit-huruf-besar), supaya program studi
+        // bisa ditentukan dari nama unit, bukan dari slug.
+        $unitPool = [];
+        foreach ($this->unitCache as $namaUnitKey => $unitData) {
+            $unitPool[] = ['id' => $unitData['id'], 'slug' => $unitData['slug'], 'nama' => $namaUnitKey];
+        }
+
         $ids = [];
 
         foreach ($pesertaEksternalExcel as $row) {
@@ -588,10 +663,28 @@ class TestingDataSeeder extends Seeder
 
             $unit = !empty($unitPool) ? $unitPool[array_rand($unitPool)] : null;
 
+            // Program studi & semester HANYA diisi untuk PKL/Magang
+            // (orientasi tetap tidak diisi, sesuai permintaan). Semester
+            // disimpan sebagai integer (lihat catatan di
+            // semesterUntukJenis() di atas) — direpresentasikan dalam
+            // bentuk Romawi lewat semesterToRomawi() kalau perlu ditulis
+            // sebagai teks (mis. di log contoh akun), bukan di kolom DB.
+            $programStudi = null;
+            $semester     = null;
+            if (in_array($jenis, ['pkl', 'magang'], true)) {
+                $namaUnitUntukProdi = $unit['nama'] ?? null;
+                $programStudi = $namaUnitUntukProdi
+                    ? $this->programStudiUntukUnit($namaUnitUntukProdi)
+                    : 'Kesehatan Masyarakat';
+                $semester = $this->semesterUntukJenis($jenis);
+            }
+
             DB::table('detail_eksternals')->insert([
                 'id_user'         => $userId,
                 'jenis'           => $jenis,
                 'institusi'       => $institusi,
+                'program_studi'   => $programStudi,
+                'semester'        => $semester,
                 'vendor'          => null,
                 'id_unit'         => $unit['id'] ?? null,
                 'id_supervisor'   => $supervisorPool[array_rand($supervisorPool)],
@@ -611,6 +704,7 @@ class TestingDataSeeder extends Seeder
             $ids[] = [
                 'id' => $userId, 'nama' => $nama, 'jenis' => $jenis, 'email' => $emailUnik,
                 'mulai' => $mulai, 'selesai' => $selesai,
+                'semester_romawi' => $semester !== null ? $this->semesterToRomawi($semester) : null,
             ];
         }
 
@@ -711,6 +805,14 @@ class TestingDataSeeder extends Seeder
             return;
         }
 
+        // Batas maksimal jam diklat kumulatif untuk pegawai internal
+        // (role=pegawai) selama periode demo: 21 jam. Karyawan vendor &
+        // peserta eksternal TIDAK dibatasi. Tracker ini menyimpan total
+        // jam (bukan menit) yang sudah terpakai per id_user pegawai.
+        $maxJamPegawai      = 21;
+        $pegawaiIdSet       = array_column($pegawaiIds, 'id');
+        $jamTerpakaiPegawai = array_fill_keys($pegawaiIdSet, 0.0);
+
         foreach ($acaraList as $acara) {
             $jumlahHadir  = max(5, (int) round(count($pegawaiIds) * (rand(40, 85) / 100)));
             $pesertaAcara = collect($pegawaiIds)->shuffle()->take($jumlahHadir);
@@ -723,13 +825,34 @@ class TestingDataSeeder extends Seeder
             $tglAcara = Carbon::parse($acara->tglJamMulai);
 
             foreach ($pesertaAcara as $peserta) {
-                $hadir = rand(1, 100) <= 90; // 90% hadir
+                $hadir       = rand(1, 100) <= 90; // 90% hadir
+                $jamAcara    = (float) $acara->durasi;
+                $durasiMenit = $hadir ? ($jamAcara * 60) : 0;
+
+                // Pegawai internal (role=pegawai) dibatasi maksimal 21 jam
+                // diklat kumulatif selama periode demo. Karyawan vendor &
+                // peserta eksternal tidak terkena batas ini.
+                if ($hadir && array_key_exists($peserta['id'], $jamTerpakaiPegawai)) {
+                    $sisaJam = $maxJamPegawai - $jamTerpakaiPegawai[$peserta['id']];
+
+                    if ($sisaJam <= 0) {
+                        // Kuota 21 jam sudah habis — tandai tidak hadir.
+                        $hadir       = false;
+                        $durasiMenit = 0;
+                    } elseif ($jamAcara > $sisaJam) {
+                        // Potong durasi supaya tidak melewati sisa kuota.
+                        $jamAcara    = $sisaJam;
+                        $durasiMenit = $jamAcara * 60;
+                    }
+
+                    $jamTerpakaiPegawai[$peserta['id']] += $jamAcara;
+                }
 
                 DB::table('record_absensi_diklats')->insert([
                     'id_user'     => $peserta['id'],
                     'id_diklat'   => $acara->id,
                     'namaPeserta' => $peserta['nama'],
-                    'durasi'      => $hadir ? ((int) $acara->durasi * 60) : 0,
+                    'durasi'      => (int) round($durasiMenit),
                     'date'        => $tglAcara->format('Y-m-d'),
                     'is_hadir'    => $hadir,
                     'created_at'  => $tglAcara,
@@ -740,71 +863,7 @@ class TestingDataSeeder extends Seeder
     }
 
     // ────────────────────────────────────────────────────────────────
-    // 5. Diklat Mandiri pegawai (webinar/kursus online eksternal)
-    // ────────────────────────────────────────────────────────────────
-    private function seedDiklatMandiri(array $pegawaiIds): void
-    {
-        $namaDiklat = [
-            'Webinar Manajemen Rekam Medis Digital',
-            'Kursus Online Farmakologi Dasar',
-            'Pelatihan Mandiri BHD Online',
-            'Seminar Virtual Keselamatan Pasien',
-            'Workshop Online Komunikasi Terapeutik',
-            'Kursus Manajemen Nyeri Paliatif',
-            'Pelatihan E-Learning Triase',
-            'Webinar Nutrisi Enteral dan Parenteral',
-            'Kursus Online Etika Keperawatan',
-            'Pelatihan Mandiri Penggunaan EHR',
-            'Seminar Kesehatan Mental Tenaga Medis',
-            'Workshop Virtual K3 Laboratorium',
-            'Kursus Online Radiologi Dasar',
-            'Pelatihan Mandiri APAR untuk RS',
-            'Webinar Manajemen Luka Modern',
-            'Kursus Online Pediatri Dasar',
-            'Pelatihan Mandiri Sterilisasi Alat',
-            'Seminar Virtual Anestesi Dasar',
-            'Workshop Online Kebidanan Normal',
-            'Kursus Manajemen Sepsis',
-            'Pelatihan Mandiri Pengambilan Darah',
-            'Webinar Farmasi Klinik Lanjutan',
-            'Kursus Online Gizi Olahraga',
-            'Pelatihan Mandiri PPGD',
-            'Seminar Virtual Psikiatri Komunitas',
-            'Workshop Online Perawatan Luka Bakar',
-            'Kursus Online Imunisasi Dewasa',
-            'Pelatihan Mandiri Ventilator Dasar',
-            'Webinar Manajemen Diabetes',
-            'Kursus Online Kesehatan Kerja',
-        ];
-
-        $statusPool  = ['Disetujui', 'Disetujui', 'Disetujui', 'Disetujui', 'Ditolak', 'pending'];
-        $rentangHari = max(1, $this->periodeMulai->diffInDays($this->periodeSelesai));
-
-        foreach ($namaDiklat as $nama) {
-            $pegawai = $pegawaiIds[array_rand($pegawaiIds)];
-            $st      = $statusPool[array_rand($statusPool)];
-            $tgl     = $this->periodeMulai->copy()->addDays(rand(0, $rentangHari));
-
-            DB::table('diklat_mandiris')->insert([
-                'id'            => (string) Str::uuid(),
-                'nama'          => $nama,
-                'jenisDiklat'   => 'Diklat Mandiri',
-                'tglJamMulai'   => $tgl->format('Y-m-d\TH:i'),
-                'tglJamSelesai' => $tgl->copy()->addHours(rand(1, 4))->format('Y-m-d\TH:i'),
-                'tempat'        => 'Online / Mandiri',
-                'durasi'        => (string) rand(60, 240),
-                'sertifikat'    => $st === 'Disetujui' ? 'sertifikat/mandiri/dummy.jpg' : '',
-                'materi'        => null,
-                'id_user'       => $pegawai['id'],
-                'status'        => $st,
-                'created_at'    => $tgl,
-                'updated_at'    => now(),
-            ]);
-        }
-    }
-
-    // ────────────────────────────────────────────────────────────────
-    // 6. Progress E-Learning pegawai (pakai modul elearning_modules
+    // 5. Progress E-Learning pegawai (pakai modul elearning_modules
     //    yang sudah ada, tidak di-truncate)
     // ────────────────────────────────────────────────────────────────
     private function seedElearningProgress(array $pegawaiIds): void
@@ -848,7 +907,7 @@ class TestingDataSeeder extends Seeder
     }
 
     // ────────────────────────────────────────────────────────────────
-    // 7. Absensi harian + jurnal harian peserta eksternal
+    // 6. Absensi harian + jurnal harian peserta eksternal
     //    - Absensi harian: semua eksternal (peserta PKL/Magang/Orientasi
     //      & karyawan vendor)
     //    - Jurnal harian: hanya peserta PKL/Magang/Orientasi

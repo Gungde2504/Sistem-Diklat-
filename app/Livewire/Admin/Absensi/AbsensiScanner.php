@@ -38,7 +38,7 @@ class AbsensiScanner extends Component
             $this->diklatId   = $acara->id;
             $this->namaAcara  = $acara->nama;
             $this->totalKuota = $acara->kuota;
-            $this->totalHadir = $acara->absensiDiklats()->count();
+            $this->totalHadir = $acara->absensiDiklats()->where('is_hadir', true)->count();
         }
     }
 
@@ -129,6 +129,7 @@ class AbsensiScanner extends Component
             'namaPeserta' => $user->nama,
             'durasi'      => $acara->durasi * 60,
             'date'        => now(),
+            'is_hadir'    => true,
         ]);
 
         $this->manualMessage     = "✅ {$user->nama} berhasil diabsenkan.";
@@ -154,7 +155,7 @@ class AbsensiScanner extends Component
     {
         if ($this->diklatId) {
             $this->totalHadir = MDiklat::find($this->diklatId)
-                ?->absensiDiklats()->count() ?? 0;
+                ?->absensiDiklats()->where('is_hadir', true)->count() ?? 0;
         }
     }
 

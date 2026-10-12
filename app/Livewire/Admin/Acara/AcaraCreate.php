@@ -38,7 +38,7 @@ class AcaraCreate extends Component
         return [
             'nama'              => 'required|string|max:255',
             'jenisDiklat'       => 'required|in:Diklat Internal,Diklat Eksternal,Seminar',
-            'kategori'          => 'required|in:medis,non_medis',
+            'kategori'          => 'nullable|in:medis,non_medis,',
             'namaNarasumber'    => 'required|string|max:255',
             'tempat'            => 'required|string|max:255',
             'tglJamMulai'       => 'required|string',
@@ -49,7 +49,7 @@ class AcaraCreate extends Component
             'linkPretest'       => 'nullable|url',
             'linkPosttest'      => 'nullable|url',
             'img'               => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
-            'selectedUnits'     => 'required|array|min:1',
+            'selectedUnits'     => 'nullable|array',
             'selectedUnits.*'   => 'exists:m_units,id',
         ];
     }
@@ -94,7 +94,7 @@ class AcaraCreate extends Component
         $dto = EventDTO::fromArray([
             'nama'           => $this->nama,
             'jenisDiklat'    => $this->jenisDiklat,
-            'kategori'       => $this->kategori,
+            'kategori'       => $this->kategori ?: null,
             'namaNarasumber' => $this->namaNarasumber,
             'tempat'         => $this->tempat,
             'tglJamMulai'    => $this->tglJamMulai,

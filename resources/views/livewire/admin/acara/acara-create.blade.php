@@ -56,12 +56,14 @@
                                 @error('jenisDiklat') <p class="text-[11px] text-red-500 mt-1">{{ $message }}</p> @enderror
                             </div>
                             <div>
-                                <label class="block text-[10.5px] font-bold text-stone-500 uppercase tracking-widest mb-1.5">Kategori Acara <span class="text-red-400">*</span></label>
+                                <label class="block text-[10.5px] font-bold text-stone-500 uppercase tracking-widest mb-1.5">
+                                    Kategori Acara <span class="text-stone-400 normal-case font-medium">(Opsional)</span>
+                                </label>
                                 <select wire:model.live="kategori"
                                     class="w-full px-3.5 py-2.5 text-sm border border-stone-200 rounded-xl bg-stone-50 text-stone-700 outline-none
                                            focus:border-orange-400 focus:ring-2 focus:ring-orange-400/15
                                            transition-all duration-200">
-                                    <option value="">-- Pilih Kategori --</option>
+                                    <option value="">-- Tidak ditentukan --</option>
                                     <option value="medis">Medis</option>
                                     <option value="non_medis">Non Medis</option>
                                 </select>
@@ -72,7 +74,7 @@
                         {{-- Unit yang Dapat Mengikuti — muncul setelah kategori dipilih --}}
                         <div>
                             <label class="block text-[10.5px] font-bold text-stone-500 uppercase tracking-widest mb-1.5">
-                                Unit yang Dapat Mengikuti <span class="text-red-400">*</span>
+                                Unit yang Dapat Mengikuti <span class="text-stone-400 normal-case font-medium">(Opsional)</span>
                             </label>
 
                             @if($kategori)

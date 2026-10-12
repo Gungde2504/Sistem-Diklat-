@@ -27,6 +27,7 @@ class SertifikatEksternal extends Component
         $sertifikatDiklat = MFileDiklat::with('diklat')
             ->whereIn('id_diklat', $diklatIds)
             ->where('type', 'sertifikat')
+            ->where('created_by', $userId)
             ->latest()
             ->get();
 

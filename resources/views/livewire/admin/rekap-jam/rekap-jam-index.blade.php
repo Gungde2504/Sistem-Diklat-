@@ -233,10 +233,10 @@
                         <td class="px-5 py-4">
                             <div class="flex items-center gap-2">
                                 @if($r['is_karyawan'])
-                                <span class="w-5 h-5 rounded-md flex items-center justify-center flex-shrink-0 text-[8px] font-bold text-white"
+                                <span class="w-5 h-5 rounded-full flex items-center justify-center flex-shrink-0 text-[8px] font-bold text-white"
                                       style="background:linear-gradient(135deg,#3B9FD1,#0F5A8C)">K</span>
                                 @else
-                                <span class="w-5 h-5 rounded-md flex items-center justify-center flex-shrink-0 text-[8px] font-bold text-white"
+                                <span class="w-5 h-5 rounded-full flex items-center justify-center flex-shrink-0 text-[8px] font-bold text-white"
                                       style="background:linear-gradient(135deg,#FB923C,#EA580C)">I</span>
                                 @endif
                                 <div>

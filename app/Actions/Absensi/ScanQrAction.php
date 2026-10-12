@@ -49,6 +49,7 @@ class ScanQrAction
             'namaPeserta' => $dto->namaPeserta,
             'durasi'      => $dto->durasi,
             'date'        => $dto->date,
+            'is_hadir'    => true,
         ]);
 
         return [
