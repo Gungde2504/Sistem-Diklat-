@@ -65,6 +65,7 @@ class AcaraEdit extends Component
 
     #[Validate('nullable|array')]
     public array $selectedUnits = [];
+    public array $unitAwal = [];
 
     public function mount(MDiklat $diklat): void
     {
@@ -84,6 +85,7 @@ class AcaraEdit extends Component
         $this->publish        = (int) $diklat->publish;
         $this->imgExisting    = $diklat->img          ?? '';
         $this->selectedUnits  = $diklat->units->pluck('id')->toArray();
+        $this->unitAwal       = $this->selectedUnits;
     }
 
     private function hitungStatus(): string
@@ -179,7 +181,7 @@ class AcaraEdit extends Component
     public function render()
     {
         return view('livewire.admin.acara.acara-edit', [
-            'units' => MUnit::orderBy('nama')->get(),
+            'units' => MUnit::pilihanAcara($this->unitAwal),
         ]);
     }
 }

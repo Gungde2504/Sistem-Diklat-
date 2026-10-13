@@ -33,6 +33,26 @@ class MUnit extends Model
         });
     }
 
+    /**
+     * Unit resmi (daftar MUnitSeeder) untuk pilihan "Unit yang Dapat Mengikuti".
+     * $sertakanId: id unit lain yang tetap ikut ditampilkan (mis. yang sudah
+     * terpilih di acara lama), supaya tidak hilang saat acara diedit.
+     */
+    public static function pilihanAcara(array $sertakanId = [])
+    {
+        $slugResmi = array_map(fn ($n) => Str::slug($n), \Database\Seeders\MUnitSeeder::semua());
+
+        return static::query()
+            ->where(function ($q) use ($slugResmi, $sertakanId) {
+                $q->whereIn('slug', $slugResmi);
+                if (!empty($sertakanId)) {
+                    $q->orWhereIn('id', $sertakanId);
+                }
+            })
+            ->orderBy('nama')
+            ->get();
+    }
+
     // ── Relations ─────────────────────────────────────
     public function pesertaEksternal(): HasMany
     {

@@ -78,16 +78,40 @@
                             </label>
 
                             @if($kategori)
-                            <div class="grid grid-cols-2 sm:grid-cols-3 gap-2 p-3 border border-stone-200 rounded-xl bg-stone-50 max-h-52 overflow-y-auto">
-                                @forelse($units as $unit)
-                                <label class="flex items-center gap-2 text-xs text-stone-600 cursor-pointer select-none">
-                                    <input type="checkbox" wire:model="selectedUnits" value="{{ $unit->id }}"
-                                        class="w-3.5 h-3.5 rounded border-stone-300 text-orange-500 focus:ring-orange-400/30" />
-                                    {{ $unit->nama }}
-                                </label>
-                                @empty
-                                <p class="text-xs text-stone-400 col-span-full">Belum ada data unit.</p>
-                                @endforelse
+            <div x-data="{ q: '', n: 0,
+                                    hitung() { this.n = this.$root.querySelectorAll('input[type=checkbox]:checked').length },
+                                    get kosong() { const k = this.q.trim().toLowerCase(); return ![...this.$root.querySelectorAll('[data-n]')].some(e => e.dataset.n.includes(k)); } }"
+                                 x-init="$nextTick(() => hitung())" @change="hitung()"
+                                 class="border border-stone-200 rounded-xl bg-stone-50 overflow-hidden">
+                                {{-- Pencarian unit --}}
+                                <div class="flex items-center gap-2 px-3 py-2 bg-white border-b border-stone-200">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-stone-400 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z" />
+                                    </svg>
+                                    <input type="text" x-model="q" placeholder="Cari unit..." autocomplete="off"
+                                        @keydown.enter.prevent
+                                        class="flex-1 min-w-0 text-xs bg-transparent border-0 p-0 text-stone-700 placeholder-stone-400 focus:ring-0 focus:outline-none" />
+                                    <button type="button" x-show="q" x-cloak @click="q = ''"
+                                        class="text-[11px] text-stone-400 hover:text-stone-600">Reset</button>
+                                    <span class="text-[11px] font-semibold text-orange-600 whitespace-nowrap" x-show="n > 0" x-cloak x-text="n + ' dipilih'"></span>
+                                    <button type="button" x-show="n > 0" x-cloak
+                                        @click="$root.querySelectorAll('input[type=checkbox]:checked').forEach(e => { e.checked = false; e.dispatchEvent(new Event('change', { bubbles: true })); })"
+                                        class="text-[11px] text-red-500 hover:text-red-600 font-semibold whitespace-nowrap">Hapus pilihan</button>
+                                </div>
+                                <div class="grid grid-cols-2 sm:grid-cols-3 gap-2 p-3 max-h-52 overflow-y-auto">
+                                    @forelse($units as $unit)
+                                    <label data-n="{{ mb_strtolower($unit->nama) }}"
+                                        x-show="$el.dataset.n.includes(q.trim().toLowerCase())"
+                                        class="flex items-center gap-2 text-xs text-stone-600 cursor-pointer select-none">
+                                        <input type="checkbox" wire:model="selectedUnits" value="{{ $unit->id }}"
+                                            class="w-3.5 h-3.5 rounded border-stone-300 text-orange-500 focus:ring-orange-400/30" />
+                                        {{ $unit->nama }}
+                                    </label>
+                                    @empty
+                                    <p class="text-xs text-stone-400 col-span-full">Belum ada data unit.</p>
+                                    @endforelse
+                                    <p x-show="kosong" x-cloak class="text-xs text-stone-400 col-span-full">Unit tidak ditemukan.</p>
+                                </div>
                             </div>
                             @else
                             <div class="p-3 border border-dashed border-stone-200 rounded-xl bg-stone-50/50">

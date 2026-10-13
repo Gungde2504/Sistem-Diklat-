@@ -123,7 +123,7 @@ class AcaraCreate extends Component
     public function render()
     {
         return view('livewire.admin.acara.acara-create', [
-            'units' => MUnit::orderBy('nama')->get(),
+            'units' => MUnit::pilihanAcara(),
         ]);
     }
 }
