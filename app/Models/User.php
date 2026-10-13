@@ -83,6 +83,14 @@ class User extends Authenticatable
     }
 
     // ── Relations ─────────────────────────────────────
+    // Peserta eksternal yang masa kegiatannya sudah selesai tidak boleh login lagi
+    public function eksternalSelesai(): bool
+    {
+        if ($this->role !== 'peserta_eksternal') return false;
+        $d = $this->detailEksternal;
+        return $d ? $d->sudahSelesai() : false;
+    }
+
     public function detailEksternal(): HasOne
     {
         return $this->hasOne(DetailEksternal::class, 'id_user');

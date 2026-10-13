@@ -17,6 +17,17 @@ class RoleMiddleware
 
         $user = auth()->user();
 
+        // Peserta eksternal yang sudah selesai: akhiri sesi yang masih berjalan
+        if ($user->eksternalSelesai()) {
+            auth()->guard('web')->logout();
+            $request->session()->invalidate();
+            $request->session()->regenerateToken();
+
+            return redirect()->route('login')->withErrors([
+                'email' => 'Masa kegiatan Anda sudah selesai, sehingga akun tidak dapat digunakan lagi.',
+            ]);
+        }
+
         // Karyawan external boleh akses route pegawai
         if (in_array('pegawai', $roles) && $user->role === 'peserta_eksternal') {
             $detail = DetailEksternal::where('id_user', $user->id)->first();

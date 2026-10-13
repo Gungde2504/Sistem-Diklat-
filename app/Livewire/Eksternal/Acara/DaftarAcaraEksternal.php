@@ -31,29 +31,16 @@ class DaftarAcaraEksternal extends Component
         $user   = auth()->user();
         $diklat = MDiklat::findOrFail($diklatId);
 
-        if ($diklat->sudahPenuh()) {
-            session()->flash('error', 'Kuota acara sudah penuh.');
+        $hasil = $diklat->daftarkanPeserta($user);
+
+        if ($hasil === 'penuh') {
+            session()->flash('error', $diklat->pesanPenuh());
             return;
         }
-
-        $sudah = RecordAbsensiDiklat::where('id_user', $user->id)
-            ->where('id_diklat', $diklatId)
-            ->exists();
-
-        if ($sudah) {
+        if ($hasil === 'sudah') {
             session()->flash('error', 'Anda sudah terdaftar di acara ini.');
             return;
         }
-
-        // Daftar saja — belum absen (is_hadir false, durasi 0)
-        RecordAbsensiDiklat::create([
-            'id_user'     => $user->id,
-            'id_diklat'   => $diklatId,
-            'namaPeserta' => $user->nama,
-            'durasi'      => 0,
-            'date'        => now()->toDateString(),
-            'is_hadir'    => false,
-        ]);
 
         session()->flash('success', 'Berhasil mendaftar ke acara ' . $diklat->nama);
     }

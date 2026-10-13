@@ -27,27 +27,24 @@ class DetailAcaraEksternal extends Component
 
     public function daftar(): void
     {
-        if ($this->sudahPenuh) {
-            session()->flash('error', 'Kuota acara sudah penuh.');
+        $user   = auth()->user();
+        $diklat = $this->diklat->fresh();
+
+        $hasil = $diklat->daftarkanPeserta($user);
+
+        if ($hasil === 'penuh') {
+            $this->sudahPenuh = true;
+            session()->flash('error', $diklat->pesanPenuh());
             return;
         }
-
-        if ($this->sudahTerdaftar) {
+        if ($hasil === 'sudah') {
+            $this->sudahTerdaftar = true;
             session()->flash('error', 'Anda sudah terdaftar di acara ini.');
             return;
         }
 
-        RecordAbsensiDiklat::create([
-            'id_user'     => auth()->id(),
-            'id_diklat'   => $this->diklat->id,
-            'namaPeserta' => auth()->user()->nama,
-            'durasi'      => 0,
-            'date'        => now()->toDateString(),
-            'is_hadir'    => false,
-        ]);
-
         $this->sudahTerdaftar = true;
-        session()->flash('success', 'Berhasil mendaftar ke acara ' . $this->diklat->nama);
+        session()->flash('success', 'Berhasil mendaftar ke acara ' . $diklat->nama);
     }
 
     public function render()

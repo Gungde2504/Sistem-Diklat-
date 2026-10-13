@@ -59,6 +59,16 @@ class LoginRequest extends FormRequest
             ]);
         }
 
+        // Peserta eksternal yang statusnya sudah selesai tidak dapat login lagi
+        if (Auth::user()->eksternalSelesai()) {
+            Auth::guard('web')->logout();
+            RateLimiter::hit($this->throttleKey());
+
+            throw ValidationException::withMessages([
+                'email' => 'Masa kegiatan Anda sudah selesai, sehingga akun tidak dapat digunakan untuk login lagi. Hubungi Admin Diklat jika ada kendala.',
+            ]);
+        }
+
         RateLimiter::clear($this->throttleKey());
     }
 

@@ -84,6 +84,16 @@ class DetailEksternal extends Model
         }
     }
 
+    // Kegiatan sudah selesai: status 'selesai' atau tanggal selesai sudah lewat (tanpa menunggu scheduler)
+    public function sudahSelesai(): bool
+    {
+        if ($this->status === 'selesai') return true;
+        return $this->approval_status === 'approved'
+            && !self::isKaryawanExternal((string) $this->jenis)
+            && $this->tanggal_selesai
+            && now()->toDateString() > $this->tanggal_selesai->toDateString();
+    }
+
     // Scopes
     public function scopeAktif($query)       { return $query->where('status', 'aktif'); }
     public function scopeSelesai($query)     { return $query->where('status', 'selesai'); }

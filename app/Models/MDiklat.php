@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\DB;
 
 class MDiklat extends Model
 {
@@ -83,6 +84,41 @@ class MDiklat extends Model
     public function sudahPenuh(): bool
     {
         return $this->sisaKuota() <= 0;
+    }
+
+
+    /**
+     * Daftarkan peserta secara atomik (kunci baris acara) supaya kuota tidak terlampaui
+     * walaupun beberapa peserta menekan "Daftar" bersamaan.
+     * @return string 'ok' | 'penuh' | 'sudah'
+     */
+    public function daftarkanPeserta(\App\Models\User $user, array $extra = []): string
+    {
+        return DB::transaction(function () use ($user, $extra) {
+            $acara = static::whereKey($this->id)->lockForUpdate()->first();
+
+            $sudah = RecordAbsensiDiklat::where('id_user', $user->id)
+                ->where('id_diklat', $acara->id)->exists();
+            if ($sudah) return 'sudah';
+
+            if ($acara->sudahPenuh()) return 'penuh';
+
+            RecordAbsensiDiklat::create(array_merge([
+                'id_user'     => $user->id,
+                'id_diklat'   => $acara->id,
+                'namaPeserta' => $user->nama,
+                'durasi'      => 0,
+                'date'        => now()->toDateString(),
+                'is_hadir'    => false,
+            ], $extra));
+
+            return 'ok';
+        });
+    }
+
+    public function pesanPenuh(): string
+    {
+        return 'Maaf, kuota peserta acara ini sudah penuh ('.$this->kuota.'/'.$this->kuota.'). Pendaftaran sudah ditutup dan Anda tidak dapat mendaftar.';
     }
 
     public function absensiDiklats(): HasMany

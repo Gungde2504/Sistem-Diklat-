@@ -27,28 +27,24 @@ class DetailAcara extends Component
 
     public function daftar(): void
     {
-        $user = auth()->user();
+        $user   = auth()->user();
+        $diklat = $this->diklat->fresh();
 
-        if ($this->sudahTerdaftar) {
-            session()->flash('error', 'Anda sudah terdaftar.');
+        $hasil = $diklat->daftarkanPeserta($user, ['durasi' => (int) $diklat->durasi * 60]);
+
+        if ($hasil === 'penuh') {
+            $this->sudahPenuh = true;
+            session()->flash('error', $diklat->pesanPenuh());
             return;
         }
-
-        if ($this->sudahPenuh) {
-            session()->flash('error', 'Kuota sudah penuh.');
+        if ($hasil === 'sudah') {
+            $this->sudahTerdaftar = true;
+            session()->flash('error', 'Anda sudah terdaftar di acara ini.');
             return;
         }
-
-        RecordAbsensiDiklat::create([
-            'id_user'     => $user->id,
-            'id_diklat'   => $this->diklat->id,
-            'namaPeserta' => $user->nama,
-            'durasi'      => (int) $this->diklat->durasi * 60,
-            'date'        => now()->toDateString(),
-        ]);
 
         $this->sudahTerdaftar = true;
-        session()->flash('success', 'Berhasil mendaftar!');
+        session()->flash('success', 'Berhasil mendaftar ke acara ' . $diklat->nama);
     }
 
     public function render()
