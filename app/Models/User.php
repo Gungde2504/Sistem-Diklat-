@@ -83,12 +83,12 @@ class User extends Authenticatable
     }
 
     // ── Relations ─────────────────────────────────────
-    // Peserta eksternal yang masa kegiatannya sudah selesai tidak boleh login lagi
+    // Peserta eksternal: tidak boleh login lagi setelah 40 hari sejak status selesai
     public function eksternalSelesai(): bool
     {
         if ($this->role !== 'peserta_eksternal') return false;
         $d = $this->detailEksternal;
-        return $d ? $d->sudahSelesai() : false;
+        return $d ? $d->masaAksesHabis() : false;
     }
 
     public function detailEksternal(): HasOne

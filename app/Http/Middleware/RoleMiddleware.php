@@ -17,14 +17,14 @@ class RoleMiddleware
 
         $user = auth()->user();
 
-        // Peserta eksternal yang sudah selesai: akhiri sesi yang masih berjalan
+        // Peserta eksternal yang masa akses 40 hari setelah selesai sudah habis: akhiri sesi
         if ($user->eksternalSelesai()) {
             auth()->guard('web')->logout();
             $request->session()->invalidate();
             $request->session()->regenerateToken();
 
             return redirect()->route('login')->withErrors([
-                'email' => 'Masa kegiatan Anda sudah selesai, sehingga akun tidak dapat digunakan lagi.',
+                'email' => 'Masa akses akun Anda telah berakhir (40 hari setelah kegiatan selesai).',
             ]);
         }
 

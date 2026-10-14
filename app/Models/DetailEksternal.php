@@ -94,6 +94,24 @@ class DetailEksternal extends Model
             && now()->toDateString() > $this->tanggal_selesai->toDateString();
     }
 
+    // Setelah status selesai, peserta masih boleh login selama 40 hari
+    public const MASA_AKSES_SETELAH_SELESAI_HARI = 40;
+
+    // Tanggal terakhir peserta masih boleh login (null = belum selesai / tanpa batas)
+    public function batasAkhirLogin(): ?\Carbon\Carbon
+    {
+        if (!$this->sudahSelesai()) return null;
+        $dasar = $this->tanggal_selesai ?? $this->updated_at;
+        return $dasar ? \Carbon\Carbon::parse($dasar)->startOfDay()->addDays(self::MASA_AKSES_SETELAH_SELESAI_HARI) : null;
+    }
+
+    // True jika sudah lewat 40 hari sejak selesai -> tidak boleh login lagi
+    public function masaAksesHabis(): bool
+    {
+        $batas = $this->batasAkhirLogin();
+        return $batas !== null && now()->startOfDay()->gt($batas);
+    }
+
     // Scopes
     public function scopeAktif($query)       { return $query->where('status', 'aktif'); }
     public function scopeSelesai($query)     { return $query->where('status', 'selesai'); }
