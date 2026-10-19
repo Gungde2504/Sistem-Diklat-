@@ -102,8 +102,8 @@ class PesertaEdit extends Component
             'tanggal_selesai' => $isKaryawan ? $this->detail->tanggal_selesai : $this->editTanggalSelesai,
         ]);
 
+        $this->detail->refresh();
         session()->flash('success', 'Data peserta berhasil diupdate.');
-        $this->redirect(route('admin.peserta.detail', $this->detail->id));
     }
 
     public function render()
