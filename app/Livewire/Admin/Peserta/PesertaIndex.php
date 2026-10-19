@@ -8,6 +8,7 @@ use App\Models\User;
 use Illuminate\Support\Facades\Mail;
 use Livewire\Component;
 use Livewire\Attributes\Title;
+use Livewire\Attributes\Url;
 use Livewire\WithPagination;
 
 #[Title('Karyawan / Peserta')]
@@ -15,7 +16,10 @@ class PesertaIndex extends Component
 {
     use WithPagination;
 
+    #[Url(as: 'tab')]
     public string $tab           = 'pkl';
+
+    #[Url(as: 'sub')]
     public string $karyawanSubTab = 'pegawai'; // 'pegawai' | 'eksternal'
     public string $search        = '';
     public string $status        = '';
