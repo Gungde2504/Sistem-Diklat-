@@ -4,6 +4,7 @@ use App\Http\Controllers\Controller;
 use App\Models\DetailEksternal;
 use App\Models\MDiklat;
 use App\Models\RecordAbsensiDiklat;
+use App\Models\SistemKonfigurasi;
 use App\Models\User;
 use App\Actions\RekapJam\CalculateRekapJamAction;
 use Illuminate\View\View;
@@ -16,13 +17,35 @@ class DashboardController extends Controller
 
         $acaraAktif = MDiklat::whereIn('status', ['Berlangsung', 'Terbuka'])->count();
         $totalPeserta = RecordAbsensiDiklat::distinct('id_user')->count('id_user');
-        $eksternalAktif = DetailEksternal::where('status', 'aktif')->count();
+
+        // Hanya PKL/Magang/Orientasi — Karyawan Eksternal (ISS/BSS/dll, jenis
+        // diawali 'karyawan_') sengaja TIDAK ikut dihitung di sini supaya
+        // sesuai dengan label kartu "PKL / Magang / Orientasi".
+        $eksternalAktif = DetailEksternal::where('status', 'aktif')
+            ->whereIn('jenis', ['pkl', 'magang', 'orientasi'])
+            ->count();
+
+        // Target jam tahunan diambil dari Konfigurasi Sistem (bisa diubah
+        // Super Admin), bukan angka tetap — supaya selalu sinkron dengan
+        // halaman Rekap Jam yang juga pakai konfigurasi yang sama.
+        $targetJamTahunan = (float) SistemKonfigurasi::get('target_jam_tahunan', 20);
+
+        // Gabungan pegawai internal (aktif) + Karyawan Eksternal (ISS/BSS/dll,
+        // status aktif) — dua-duanya dihitung jam pelatihannya terhadap target
+        // tahunan yang sama, bukan cuma pegawai internal saja.
+        $pegawaiInternal = User::where('type', 'internal')
+            ->where('isActive', 1)
+            ->get();
+
+        $idKaryawanEksternal = DetailEksternal::where('status', 'aktif')
+            ->where('jenis', 'like', 'karyawan_%')
+            ->pluck('id_user');
+
+        $karyawanEksternal = User::whereIn('id', $idKaryawanEksternal)->get();
 
         $action = new CalculateRekapJamAction();
-        $karyawanKurangJam = User::where('type', 'internal')
-            ->where('isActive', 1)
-            ->get()
-            ->filter(fn($user) => $action->execute($user->id, $tahun)->total() < 20)
+        $karyawanKurangJam = $pegawaiInternal->merge($karyawanEksternal)
+            ->filter(fn($user) => $action->execute($user->id, $tahun)->total() < $targetJamTahunan)
             ->count();
 
         // Acara Mendatang: tampilkan acara yang SEDANG berlangsung (apapun tanggalnya),
@@ -104,6 +127,7 @@ class DashboardController extends Controller
             'pesertaPerJenis'   => $pesertaPerJenis,
             'pesertaJenisBulan' => $pesertaJenisBulan,
             'tahun'             => $tahun,
+            'targetJamTahunan'  => $targetJamTahunan,
         ]);
     }
 }
