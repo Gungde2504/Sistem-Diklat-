@@ -45,8 +45,14 @@ class ElearningModule extends Model
     public function scopeForUnit($query, ?string $unitSlug)
     {
         return $query->where(function ($q) use ($unitSlug) {
-            $q->whereNull('id_target_unit')
-              ->orWhere('id_target_unit', $unitSlug);
+            $q->whereNull('id_target_unit');
+
+            // id_target_unit menyimpan UUID m_units.id, sedangkan $unitSlug
+            // (dari User->unit) adalah m_units.slug — jadi dicocokkan lewat
+            // relasi targetUnit, bukan dibandingkan langsung.
+            if ($unitSlug) {
+                $q->orWhereHas('targetUnit', fn($uq) => $uq->where('slug', $unitSlug));
+            }
         });
     }
 
