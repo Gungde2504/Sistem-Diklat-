@@ -45,8 +45,12 @@ class RekapJamIndex extends Component
 
         $query = User::where('isActive', 1)
             ->where(function ($q) use ($karyawanJenis) {
-                // Internal
+                // Internal — hanya role 'pegawai' yang dihitung, BUKAN semua
+                // type='internal' (akun super_admin & admin_diklat juga
+                // type='internal' tapi mereka staf sistem, bukan karyawan
+                // yang perlu memenuhi target jam pelatihan).
                 $q->where('type', 'internal')
+                  ->where('role', 'pegawai')
                   ->orWhere(function ($q2) use ($karyawanJenis) {
                       // Karyawan external yang approved
                       $q2->where('type', 'external')

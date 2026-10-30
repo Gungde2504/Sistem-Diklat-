@@ -30,10 +30,13 @@ class DashboardController extends Controller
         // halaman Rekap Jam yang juga pakai konfigurasi yang sama.
         $targetJamTahunan = (float) SistemKonfigurasi::get('target_jam_tahunan', 20);
 
-        // Gabungan pegawai internal (aktif) + Karyawan Eksternal (ISS/BSS/dll,
-        // status aktif) — dua-duanya dihitung jam pelatihannya terhadap target
-        // tahunan yang sama, bukan cuma pegawai internal saja.
+        // Gabungan pegawai internal (role 'pegawai', bukan akun admin) +
+        // Karyawan Eksternal (ISS/BSS/dll, status aktif) — dua-duanya
+        // dihitung jam pelatihannya terhadap target tahunan yang sama.
+        // role difilter 'pegawai' supaya akun super_admin/admin_diklat
+        // (yang type-nya juga 'internal') tidak ikut terhitung.
         $pegawaiInternal = User::where('type', 'internal')
+            ->where('role', 'pegawai')
             ->where('isActive', 1)
             ->get();
 
