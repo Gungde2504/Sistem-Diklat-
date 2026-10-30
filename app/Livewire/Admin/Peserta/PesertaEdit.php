@@ -89,6 +89,20 @@ class PesertaEdit extends Component
             'hp'    => $this->editHp,
         ]);
 
+        // Isi dulu atribut terbaru ke instance (belum disimpan) supaya
+        // hitungStatus() di bawah menghitung berdasarkan tanggal yang BARU
+        // diedit, bukan tanggal lama yang masih tersimpan di database.
+        $this->detail->status          = $this->editStatus; // dipakai sbg fallback kalau belum approved
+        $this->detail->tanggal_mulai   = $isKaryawan ? $this->detail->tanggal_mulai   : $this->editTanggalMulai;
+        $this->detail->tanggal_selesai = $isKaryawan ? $this->detail->tanggal_selesai : $this->editTanggalSelesai;
+
+        // Status untuk PKL/Magang/Orientasi dihitung OTOMATIS dari tanggal
+        // mulai/selesai (konsisten dengan cara Acara menghitung statusnya) —
+        // bukan lagi ikut nilai dropdown yang bisa jadi tidak sinkron begitu
+        // tanggalnya diubah. Karyawan eksternal tidak punya tanggal, jadi
+        // tetap pakai pilihan dropdown apa adanya.
+        $statusFinal = $isKaryawan ? $this->editStatus : $this->detail->hitungStatus();
+
         $this->detail->update([
             'jenis'     => $this->editJenis,
             // Karyawan eksternal tidak punya field ini di form — pertahankan nilai yang sudah ada.
@@ -97,9 +111,9 @@ class PesertaEdit extends Component
             'semester'        => $isKaryawan ? $this->detail->semester : $this->editSemester,
             'id_unit'         => $this->editIdUnit ?: null,
             'id_supervisor'   => $this->editIdSupervisor ?: null,
-            'status'          => $this->editStatus,
-            'tanggal_mulai'   => $isKaryawan ? $this->detail->tanggal_mulai : $this->editTanggalMulai,
-            'tanggal_selesai' => $isKaryawan ? $this->detail->tanggal_selesai : $this->editTanggalSelesai,
+            'status'          => $statusFinal,
+            'tanggal_mulai'   => $this->detail->tanggal_mulai,
+            'tanggal_selesai' => $this->detail->tanggal_selesai,
         ]);
 
         $this->detail->refresh();
