@@ -2,10 +2,12 @@
 
 namespace App\Livewire\Admin\Peserta;
 
+use App\Mail\PesertaStatusNotification;
 use App\Models\DetailEksternal;
 use App\Models\MUnit;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Mail;
 use Livewire\Component;
 use Livewire\Attributes\Title;
 
@@ -32,6 +34,7 @@ class PesertaCreate extends Component
     public string $tanggalSelesai = '';
 
     public bool $berhasil = false;
+    public bool $emailTerkirim = false;
 
     protected function rules(): array
     {
@@ -108,7 +111,7 @@ class PesertaCreate extends Component
             'isActive' => $this->tipe === 'eksternal' ? true : false,
         ]);
 
-        DetailEksternal::create([
+        $detail = DetailEksternal::create([
             'id_user'         => $user->id,
             'jenis'           => $this->jenis,
             'institusi'       => $this->tipe === 'eksternal'
@@ -124,6 +127,20 @@ class PesertaCreate extends Component
             'approval_status' => $this->tipe === 'karyawan' ? 'pending' : 'approved',
             'created_by'      => auth()->id(),
         ]);
+
+        // Peserta eksternal yang ditambahkan admin langsung berstatus approved,
+        // jadi kirim email pemberitahuan yang sama seperti saat admin menyetujui
+        // pendaftaran manual. Karyawan (pending) menunggu persetujuan dulu.
+        $this->emailTerkirim = false;
+        if ($detail->approval_status === 'approved' && $user->email) {
+            try {
+                $detail->load('user');
+                Mail::to($user->email)->send(new PesertaStatusNotification($detail));
+                $this->emailTerkirim = true;
+            } catch (\Throwable $e) {
+                report($e);
+            }
+        }
 
         $this->berhasil = true;
         $this->reset([
