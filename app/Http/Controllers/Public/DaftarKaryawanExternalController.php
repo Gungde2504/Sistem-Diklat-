@@ -15,14 +15,14 @@ class DaftarKaryawanExternalController extends Controller
         $request->validate([
             'nama'     => 'required|string|max:100',
             'email'    => 'required|email|unique:users,email',
-            'password' => 'required|min:6|same:konfirmasi',
+            'password' => 'required|min:8|same:konfirmasi',
             'hp'       => 'nullable|string|max:20',
             'alamat'   => 'nullable|string|max:255',
             'jenis'    => 'required|string|in:karyawan_iss,karyawan_bss,karyawan_adidaya,karyawan_bayi_tabung,karyawan_koperasi,karyawan_lotus_spa',
         ], [
             'email.unique'   => 'Email sudah terdaftar.',
             'password.same'  => 'Konfirmasi password tidak cocok.',
-            'password.min'   => 'Password minimal 6 karakter.',
+            'password.min'   => 'Password minimal 8 karakter.',
             'jenis.required' => 'Pilih vendor terlebih dahulu.',
             'jenis.in'       => 'Pilih vendor yang valid.',
         ]);

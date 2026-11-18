@@ -38,7 +38,7 @@ class PesertaCreate extends Component
         $rules = [
             'nama'     => 'required|string|max:150',
             'email'    => 'required|email|unique:users,email',
-            'password' => 'required|string|min:6',
+            'password' => 'required|string|min:8',
             'hp'       => 'nullable|string|max:20',
             'alamat'   => 'nullable|string|max:255',
         ];
@@ -64,7 +64,7 @@ class PesertaCreate extends Component
             'nama.required'          => 'Nama wajib diisi.',
             'email.required'         => 'Email wajib diisi.',
             'email.unique'           => 'Email sudah terdaftar.',
-            'password.min'           => 'Password minimal 6 karakter.',
+            'password.min'           => 'Password minimal 8 karakter.',
             'jenis.required'         => 'Jenis wajib dipilih.',
             'jenis.in'               => 'Pilih jenis yang valid.',
             'institusi.required'     => 'Institusi wajib diisi.',

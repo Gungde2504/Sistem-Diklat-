@@ -15,7 +15,7 @@ class DaftarExternalController extends Controller
         $request->validate([
             'nama'            => 'required|string|max:100',
             'email'           => 'required|email|unique:users,email',
-            'password'        => 'required|min:6|same:konfirmasi',
+            'password'        => 'required|min:8|same:konfirmasi',
             'hp'              => 'nullable|string|max:20',
             'alamat'          => 'nullable|string|max:255',
             'jenis'           => 'required|string|in:pkl,magang,orientasi',
@@ -27,7 +27,7 @@ class DaftarExternalController extends Controller
         ], [
             'email.unique'                  => 'Email sudah terdaftar.',
             'password.same'                 => 'Konfirmasi password tidak cocok.',
-            'password.min'                  => 'Password minimal 6 karakter.',
+            'password.min'                  => 'Password minimal 8 karakter.',
             'jenis.in'                      => 'Pilih jenis yang valid.',
             'program_studi.required'        => 'Program studi wajib diisi.',
             'semester.required'             => 'Semester wajib diisi.',

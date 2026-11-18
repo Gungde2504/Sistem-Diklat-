@@ -44,7 +44,7 @@ class DaftarExternal extends Component
         $rules = [
             'nama'     => 'required|string|max:100',
             'email'    => 'required|email|unique:users,email',
-            'password' => 'required|min:6|same:konfirmasi',
+            'password' => 'required|min:8|same:konfirmasi',
             'hp'       => 'nullable|string|max:20',
             'alamat'   => 'nullable|string|max:255',
             'jenis'    => 'required|string',
@@ -59,7 +59,7 @@ class DaftarExternal extends Component
         $this->validate($rules, [
             'email.unique'          => 'Email sudah terdaftar.',
             'password.same'         => 'Konfirmasi password tidak cocok.',
-            'password.min'          => 'Password minimal 6 karakter.',
+            'password.min'          => 'Password minimal 8 karakter.',
             'tanggalSelesai.after_or_equal' => 'Tanggal selesai harus setelah tanggal mulai.',
         ]);
 
