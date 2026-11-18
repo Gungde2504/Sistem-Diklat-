@@ -198,6 +198,36 @@
     </div>
     @endif
 
+    {{-- ── CATATAN HARI INI ── --}}
+    @if($absensiHarini)
+    <div class="bg-white rounded-2xl border border-stone-200 overflow-hidden
+                shadow-[0_1px_0_rgba(255,255,255,.95)_inset,0_6px_20px_-4px_rgba(120,113,108,.12),0_2px_6px_-1px_rgba(120,113,108,.07)]">
+        <div class="flex items-center gap-2.5 px-4 py-3.5 border-b border-stone-100">
+            <div class="w-0.5 h-4 rounded-full bg-gradient-to-b from-stone-400 to-stone-500"></div>
+            <p class="text-sm font-semibold text-stone-800 tracking-tight">Catatan Hari Ini</p>
+            <span class="ml-auto text-[10px] text-stone-300 font-normal">Opsional</span>
+        </div>
+        <div class="p-4 space-y-2.5">
+            <textarea wire:model="catatan" rows="2" maxlength="500"
+                placeholder="Mis. GPS kurang akurat, sinyal lemah di dalam gedung, dll."
+                class="w-full px-3.5 py-2.5 text-sm border border-stone-200 rounded-xl bg-stone-50 text-stone-800 outline-none resize-none
+                       focus:border-blue-400 focus:ring-2 focus:ring-blue-400/15 focus:bg-white transition-all duration-200"></textarea>
+            @error('catatan') <p class="text-[11px] text-red-500">{{ $message }}</p> @enderror
+            <button wire:click="simpanCatatan" wire:loading.attr="disabled"
+                class="relative w-full py-2.5 rounded-xl text-sm font-semibold text-white overflow-hidden
+                       shadow-[0_4px_16px_-3px_rgba(15,79,122,.5),0_1px_0_rgba(255,255,255,.25)_inset]
+                       hover:-translate-y-0.5 hover:shadow-[0_8px_24px_-4px_rgba(15,79,122,.55)]
+                       active:scale-[.97] disabled:opacity-50 disabled:cursor-not-allowed disabled:translate-y-0
+                       transition-all duration-200"
+                style="background:linear-gradient(135deg,#3B9FD1 0%,#1A78B0 50%,#0F5A8C 100%)">
+                <span class="absolute inset-0 bg-gradient-to-br from-white/15 to-transparent pointer-events-none"></span>
+                <span wire:loading.remove wire:target="simpanCatatan" class="relative">Simpan Catatan</span>
+                <span wire:loading wire:target="simpanCatatan" class="relative">Menyimpan...</span>
+            </button>
+        </div>
+    </div>
+    @endif
+
     {{-- ── RIWAYAT 7 HARI ── --}}
     <div class="bg-white rounded-2xl border border-stone-200 overflow-hidden
                 shadow-[0_1px_0_rgba(255,255,255,.95)_inset,0_6px_20px_-4px_rgba(120,113,108,.12),0_2px_6px_-1px_rgba(120,113,108,.07)]

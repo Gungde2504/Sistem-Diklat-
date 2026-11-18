@@ -258,6 +258,14 @@
                         </p>
                     </div>
                 </div>
+
+                @if($r->catatan)
+                <div class="ml-12 mt-2 px-3 py-2.5 bg-white border border-stone-200 rounded-xl
+                            shadow-[0_1px_0_rgba(255,255,255,.95)_inset,0_2px_8px_-2px_rgba(120,113,108,.1)]">
+                    <p class="text-[10px] font-semibold text-stone-400 uppercase tracking-wide mb-0.5">Catatan</p>
+                    <p class="text-xs text-stone-600">{{ $r->catatan }}</p>
+                </div>
+                @endif
             </div>
             @empty
             <div class="px-4 py-10 text-center">

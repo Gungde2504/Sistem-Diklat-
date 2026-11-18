@@ -182,6 +182,7 @@
                         <th class="text-center px-5 py-3.5 text-[10.5px] font-bold text-stone-500 uppercase tracking-wider">Check-out</th>
                         <th class="text-center px-5 py-3.5 text-[10.5px] font-bold text-stone-500 uppercase tracking-wider">Durasi</th>
                         <th class="text-center px-5 py-3.5 text-[10.5px] font-bold text-stone-500 uppercase tracking-wider">Status GPS</th>
+                        <th class="text-left px-5 py-3.5 text-[10.5px] font-bold text-stone-500 uppercase tracking-wider">Catatan</th>
                     </tr>
                 </thead>
                 <tbody class="divide-y divide-stone-50">
@@ -205,10 +206,13 @@
                                 {{ $a->is_valid ? 'Valid' : 'Di luar radius' }}
                             </span>
                         </td>
+                        <td class="px-5 py-3.5 text-sm text-stone-500 max-w-[220px]">
+                            {{ $a->catatan ?: '-' }}
+                        </td>
                     </tr>
                     @empty
                     <tr>
-                        <td colspan="5" class="px-5 py-12 text-center">
+                        <td colspan="6" class="px-5 py-12 text-center">
                             <div class="flex flex-col items-center gap-2">
                                 <div class="w-12 h-12 rounded-2xl bg-stone-100 flex items-center justify-center">
                                     <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 text-stone-300" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">

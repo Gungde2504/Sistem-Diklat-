@@ -23,11 +23,24 @@ class AbsensiHarian extends Component
     public float  $rsLng   = 115.212806;
     public float  $rsRadius = 300;
 
+    public string $catatan = '';
+
     public function mount(): void
     {
         $this->rsLat    = (float) SistemKonfigurasi::get('rs_latitude', -8.674694);
         $this->rsLng    = (float) SistemKonfigurasi::get('rs_longitude', 115.212806);
         $this->rsRadius = (float) SistemKonfigurasi::get('rs_radius', 300);
+
+        $this->muatCatatan();
+    }
+
+    protected function muatCatatan(): void
+    {
+        $absensi = ExternalDailyAttendance::where('id_user', auth()->id())
+            ->where('tanggal', now()->toDateString())
+            ->first();
+
+        $this->catatan = $absensi?->catatan ?? '';
     }
 
     public function setLocation(float $lat, float $lng, bool $valid, float $jarak): void
@@ -106,16 +119,41 @@ class AbsensiHarian extends Component
             return;
         }
 
+        // is_valid di-AND-kan, BUKAN ditimpa — hari itu baru dianggap valid
+        // kalau check-in MAUPUN check-out dua-duanya dalam radius. Koordinat
+        // check-in juga sengaja TIDAK ditimpa lagi oleh koordinat check-out,
+        // supaya bukti lokasi check-in tidak hilang.
         $absensi->update([
             'checkout_at' => now(),
-            'latitude'    => $this->latitude,
-            'longitude'   => $this->longitude,
+            'is_valid'    => $absensi->is_valid && $this->gpsValid,
         ]);
 
         $this->message     = $this->gpsValid
             ? '✅ Check-out berhasil!'
-            : '⚠️ Check-out tercatat namun lokasi di luar radius RS.';
+            : '⚠️ Check-out tercatat namun lokasi di luar radius RS — status hari ini jadi tidak valid.';
         $this->messageType = $this->gpsValid ? 'success' : 'warning';
+    }
+
+    public function simpanCatatan(): void
+    {
+        $absensi = ExternalDailyAttendance::where('id_user', auth()->id())
+            ->where('tanggal', now()->toDateString())
+            ->first();
+
+        if (!$absensi) {
+            $this->message     = 'Belum ada data absensi hari ini untuk diberi catatan.';
+            $this->messageType = 'warning';
+            return;
+        }
+
+        $this->validate([
+            'catatan' => 'nullable|string|max:500',
+        ]);
+
+        $absensi->update(['catatan' => $this->catatan ?: null]);
+
+        $this->message     = '📝 Catatan berhasil disimpan.';
+        $this->messageType = 'success';
     }
 
     public function render()

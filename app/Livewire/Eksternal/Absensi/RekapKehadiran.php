@@ -3,6 +3,7 @@
 namespace App\Livewire\Eksternal\Absensi;
 
 use App\Models\ExternalDailyAttendance;
+use App\Models\SistemKonfigurasi;
 use Livewire\Component;
 use Livewire\Attributes\Title;
 use Livewire\WithPagination;
@@ -16,10 +17,18 @@ class RekapKehadiran extends Component
     public string $bulan  = '';
     public string $tahun  = '';
 
+    public float $rsLat   = -8.674694;
+    public float $rsLng   = 115.212806;
+    public float $rsRadius = 300;
+
     public function mount(): void
     {
         $this->bulan = (string) now()->month;
         $this->tahun = (string) now()->year;
+
+        $this->rsLat    = (float) SistemKonfigurasi::get('rs_latitude', -8.674694);
+        $this->rsLng    = (float) SistemKonfigurasi::get('rs_longitude', 115.212806);
+        $this->rsRadius = (float) SistemKonfigurasi::get('rs_radius', 300);
     }
 
     public function updatingBulan(): void  { $this->resetPage(); }
