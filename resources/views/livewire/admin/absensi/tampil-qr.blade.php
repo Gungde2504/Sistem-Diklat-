@@ -234,6 +234,13 @@
                         {{-- Dropdown hasil cari cepat --}}
                         @if($hasilCari->count() > 0 && !$selectedUserId)
                         <div class="bg-white border border-stone-200 rounded-xl shadow-lg overflow-hidden divide-y divide-stone-50">
+                            @php
+                                $sudahHadirIds = $diklat->absensiDiklats()
+                                    ->where('is_hadir', true)
+                                    ->whereIn('id_user', $hasilCari->pluck('id'))
+                                    ->pluck('id_user')
+                                    ->all();
+                            @endphp
                             @foreach($hasilCari as $userItem)
                             <div class="w-full flex items-center gap-3 px-4 py-2.5">
                                 <div class="w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0
@@ -247,12 +254,22 @@
                                         · {{ $userItem->type === 'internal' ? ($userItem->unit ?? '-') : 'Eksternal' }}
                                     </p>
                                 </div>
+                                @if(in_array($userItem->id, $sudahHadirIds))
+                                <button type="button" disabled aria-disabled="true"
+                                    title="Peserta ini sudah tercatat hadir"
+                                    class="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg text-xs font-bold
+                                            bg-stone-100 text-stone-400 border border-stone-200 cursor-not-allowed select-none">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 6 6 9-13.5" /></svg>
+                                    Sudah Absen
+                                </button>
+                                @else
                                 <button wire:click="absenSatu({{ $userItem->id }})"
                                     class="px-3 py-1.5 rounded-lg text-xs font-bold text-white transition active:scale-95
                                             bg-gradient-to-r from-orange-500 to-orange-600
                                             shadow-[0_2px_8px_rgba(234,88,12,.25)]">
                                     Absenkan
                                 </button>
+                                @endif
                             </div>
                             @endforeach
                         </div>
