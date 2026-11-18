@@ -13,9 +13,9 @@ class AbsensiDownloadController extends Controller
     public function download(Request $request, MDiklat $diklat)
     {
         $format = $request->get('format', 'pdf');
-        $tipe   = $request->get('tipe', 'semua');
+        $tipe   = $request->get('tipe') ?: 'semua';
         $unit   = $request->get('unit', '');
-        $status = $request->get('status', 'semua');
+        $status = $request->get('status') ?: 'semua';
 
         $query = RecordAbsensiDiklat::with('user')
             ->where('id_diklat', $diklat->id)
@@ -45,7 +45,7 @@ class AbsensiDownloadController extends Controller
 
     private function downloadPdf($diklat, $absensi, $totalHadir, $totalBelum)
     {
-        $pdf = \Barryvdh\DomPDF\Facade\Pdf::loadView('admin.absensi.rekap-pdf', compact(
+        $pdf = \Barryvdh\DomPDF\Facade\Pdf::loadView('admin.absensi.absensi-acara-pdf', compact(
             'diklat', 'absensi', 'totalHadir', 'totalBelum'
         ))->setPaper('a4', 'portrait');
 
