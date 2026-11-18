@@ -62,7 +62,7 @@ class ModulCreate extends Component
 
         $filePath = null;
         if ($this->file) {
-            $filePath = $this->file->store('elearning/files', 'public');
+            $filePath = $this->file->storeAs('elearning/files', \App\Models\ElearningModule::namaFileUnik($this->file->getClientOriginalName()), 'public');
         }
 
         $modul = ElearningModule::create([

@@ -109,7 +109,7 @@
                             </svg>
                         </div>
                         <div class="flex-1 min-w-0">
-                            <p class="text-xs font-semibold text-green-700 truncate">{{ basename($modul->file_path) }}</p>
+                            <p class="text-xs font-semibold text-green-700 truncate">{{ $modul->nama_file }}</p>
                             <p class="text-[10px] text-green-500 mt-0.5">File aktif saat ini</p>
                         </div>
                         <div class="flex items-center gap-2 flex-shrink-0">
@@ -122,7 +122,7 @@
                             <button type="button"
                                 @click="$store.deleteModal.show(
                                     'Hapus File Materi',
-                                    'Yakin ingin menghapus file &quot;{{ addslashes(basename($modul->file_path)) }}&quot;? File tidak bisa dikembalikan.',
+                                    'Yakin ingin menghapus file &quot;{{ addslashes($modul->nama_file) }}&quot;? File tidak bisa dikembalikan.',
                                     () => $wire.hapusFile()
                                 )"
                                 class="text-xs font-semibold text-red-500 hover:text-red-700
@@ -148,7 +148,12 @@
             handleDrop(e) {
                 this.isDragging = false;
                 const file = e.dataTransfer.files[0];
-                if (file) this.setFile(file);
+                if (!file) return;
+                const input = document.getElementById('fileInputEdit');
+                const dt = new DataTransfer();
+                dt.items.add(file);
+                input.files = dt.files;
+                input.dispatchEvent(new Event('change', { bubbles: true }));
             },
             handleChange(e) {
                 const file = e.target.files[0];
@@ -298,6 +303,7 @@
                                 accept=".pdf,.doc,.docx,.ppt,.pptx"
                                 class="hidden"
                                 @change="handleChange($event)" />
+                            @error('file') <p class="text-xs text-red-500 mt-1">{{ $message }}</p> @enderror
                         </div>
                     </div>
 
@@ -442,7 +448,7 @@
                     </button>
                 </div>
 
-                <button wire:click="simpan" wire:loading.attr="disabled"
+                <button wire:click="simpan" wire:loading.attr="disabled" wire:target="simpan,file"
                     class="relative w-full flex items-center justify-center gap-2 py-3 rounded-2xl
                            text-white text-sm font-bold overflow-hidden
                            shadow-[0_4px_16px_-3px_rgba(200,61,0,.5),0_1px_0_rgba(255,255,255,.2)_inset]

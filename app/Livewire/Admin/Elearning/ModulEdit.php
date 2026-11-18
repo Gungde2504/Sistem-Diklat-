@@ -107,7 +107,7 @@ class ModulEdit extends Component
             if ($filePath) {
                 Storage::disk('public')->delete($filePath);
             }
-            $filePath = $this->file->store('elearning/files', 'public');
+            $filePath = $this->file->storeAs('elearning/files', \App\Models\ElearningModule::namaFileUnik($this->file->getClientOriginalName()), 'public');
         }
 
         $this->modul->update([

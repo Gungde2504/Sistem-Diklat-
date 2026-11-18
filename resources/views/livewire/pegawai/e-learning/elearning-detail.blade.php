@@ -149,7 +149,7 @@
             @if($modul->file_path)
             <div>
                 <p class="text-[10.5px] font-bold text-stone-400 uppercase tracking-widest mb-2.5">File Materi</p>
-                <a href="{{ asset('storage/'.$modul->file_path) }}" target="_blank"
+                <a href="{{ asset('storage/'.dirname($modul->file_path).'/'.rawurlencode(basename($modul->file_path))) }}" download="{{ $modul->nama_file }}" target="_blank"
                     class="group flex items-center gap-3 p-4 bg-white border border-stone-100 rounded-2xl
                            shadow-[0_1px_0_rgba(255,255,255,.95)_inset,0_4px_12px_-4px_rgba(120,113,108,.1)]
                            hover:shadow-[0_4px_16px_-4px_rgba(15,79,122,.2)] hover:-translate-y-0.5
@@ -164,7 +164,7 @@
                     </div>
                     <div class="flex-1 min-w-0">
                         <p class="text-sm font-semibold text-stone-800 group-hover:text-blue-700 transition-colors duration-200">Unduh File Materi</p>
-                        <p class="text-xs text-stone-400 mt-0.5 truncate">{{ basename($modul->file_path) }}</p>
+                        <p class="text-xs text-stone-400 mt-0.5 truncate">{{ $modul->nama_file }}</p>
                     </div>
                     <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-stone-300 group-hover:text-blue-400 group-hover:translate-x-0.5 transition-all duration-200" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" d="m8.25 4.5 7.5 7.5-7.5 7.5" />

@@ -13,6 +13,23 @@ class ElearningModule extends Model
 
     protected $table = 'elearning_modules';
 
+        /** Nama file di storage: prefix acak + nama asli PDF agar nama asli tetap terbaca. */
+    public static function namaFileUnik(string $namaAsli): string
+    {
+        $ext  = pathinfo($namaAsli, PATHINFO_EXTENSION);
+        $base = pathinfo($namaAsli, PATHINFO_FILENAME);
+        $base = trim(preg_replace('/[^A-Za-z0-9._ \-()]/', '', $base)) ?: 'materi';
+        return \Illuminate\Support\Str::random(8) . '__' . $base . ($ext ? '.' . strtolower($ext) : '');
+    }
+
+    /** Nama file untuk ditampilkan (tanpa prefix acak). */
+    public function getNamaFileAttribute(): ?string
+    {
+        if (!$this->file_path) return null;
+        $b = basename($this->file_path);
+        return str_contains($b, '__') ? substr($b, strpos($b, '__') + 2) : $b;
+    }
+
     protected $fillable = [
         'judul',
         'deskripsi',

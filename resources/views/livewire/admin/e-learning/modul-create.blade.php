@@ -109,7 +109,12 @@
         handleDrop(e) {
             this.isDragging = false;
             const file = e.dataTransfer.files[0];
-            if (file) this.setFile(file);
+            if (!file) return;
+            const input = document.getElementById('fileInput');
+            const dt = new DataTransfer();
+            dt.items.add(file);
+            input.files = dt.files;
+            input.dispatchEvent(new Event('change', { bubbles: true }));
         },
         handleChange(e) {
             const file = e.target.files[0];
@@ -412,7 +417,7 @@
                     </button>
                 </div>
 
-                <button wire:click="simpan" wire:loading.attr="disabled"
+                <button wire:click="simpan" wire:loading.attr="disabled" wire:target="simpan,file"
                     class="relative w-full flex items-center justify-center gap-2 py-3 rounded-2xl
                            text-white text-sm font-bold overflow-hidden
                            shadow-[0_4px_16px_-3px_rgba(200,61,0,.5),0_1px_0_rgba(255,255,255,.2)_inset]
