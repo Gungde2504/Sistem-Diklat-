@@ -24,15 +24,16 @@ class ElearningIndex extends Component
     public function render()
     {
         $userId = auth()->id();
-        $user   = auth()->user();
 
+        // Daftar modul tidak lagi dibatasi/difilter berdasarkan unit sama sekali.
         $moduls = ElearningModule::published()
-            ->forUnit($user->unit)
             ->when(
                 $this->search,
                 fn($q) =>
-                $q->where('judul', 'like', '%' . $this->search . '%')
-                    ->orWhere('kategori', 'like', '%' . $this->search . '%')
+                $q->where(function ($sub) {
+                    $sub->where('judul', 'like', '%' . $this->search . '%')
+                        ->orWhere('kategori', 'like', '%' . $this->search . '%');
+                })
             )
             ->withCount('quizzes')
             ->orderByDesc('created_at')
@@ -50,7 +51,7 @@ class ElearningIndex extends Component
             $moduls = $moduls->filter(fn($m) => ($progressMap[$m->id] ?? '') === 'completed');
         }
 
-        $totalModul    = ElearningModule::published()->forUnit($user->unit)->count();
+        $totalModul    = ElearningModule::published()->count();
         $totalSelesai  = ElearningProgress::where('id_user', $userId)->where('status', 'completed')->count();
         $totalProgress = ElearningProgress::where('id_user', $userId)->where('status', 'in_progress')->count();
 
