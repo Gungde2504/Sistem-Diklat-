@@ -32,7 +32,15 @@ class AuthenticatedSessionController extends Controller
             ]);
         }
 
+        // Ambil tujuan semula SEBELUM regenerate (kalau datang dari scan QR absen)
+        $intended = $request->session()->pull('url.intended');
         $request->session()->regenerate();
+
+        // Hanya kembali ke halaman scan absen; selain itu ikut alur role biasa
+        if ($intended && str_contains($intended, '/absensi/scan/')) {
+            return redirect($intended);
+        }
+
         return redirect(AuthHelper::redirectByRole());
     }
 

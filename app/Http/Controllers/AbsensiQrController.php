@@ -21,7 +21,10 @@ class AbsensiQrController extends Controller
             return view('absensi.scan-confirm', compact('diklat', 'token', 'user'));
         }
 
-        return view('absensi.scan-login', compact('diklat', 'token'));
+        // Belum login: arahkan ke halaman login biasa (berbasis sesi).
+        // Setelah login berhasil, peserta otomatis kembali ke halaman absen ini.
+        return redirect()->guest(route('login'))
+            ->with('status', 'Silakan login terlebih dahulu untuk absen acara "' . $diklat->nama . '".');
     }
 
     public function login(Request $request, string $token)
