@@ -312,6 +312,46 @@
                 <p class="text-xs text-stone-400 mt-1.5">Jam dari e-learning yang dihitung maksimal <span class="font-semibold text-stone-600">{{ $batas_elearning }} jam</span></p>
             </div>
 
+            {{-- Pengingat Jam Pelatihan --}}
+            <div class="border border-stone-200 rounded-xl p-4 bg-white
+                        shadow-[0_1px_0_rgba(255,255,255,.9)_inset]">
+                <div class="flex items-start justify-between gap-3">
+                    <div>
+                        <p class="text-[10.5px] font-bold text-stone-500 uppercase tracking-widest">Pengingat Jam Pelatihan</p>
+                        <p class="text-xs text-stone-400 mt-1">Kirim notifikasi sistem dan email kepada pegawai &amp; karyawan eksternal yang jam pelatihannya belum memenuhi target. Berhenti otomatis setelah target tercapai.</p>
+                    </div>
+                    <style>
+                        .pm-switch{display:inline-flex;align-items:center;gap:10px;cursor:pointer;flex-shrink:0;user-select:none}
+                        .pm-switch input{position:absolute;opacity:0;width:0;height:0}
+                        .pm-switch-track{position:relative;width:46px;height:26px;border-radius:999px;background:#d6d3d1;
+                            box-shadow:inset 0 1px 3px rgba(0,0,0,.18);transition:background .25s ease,box-shadow .25s ease}
+                        .pm-switch-thumb{position:absolute;top:3px;left:3px;width:20px;height:20px;border-radius:50%;background:#fff;
+                            box-shadow:0 2px 5px rgba(0,0,0,.28);transition:transform .25s cubic-bezier(.4,0,.2,1)}
+                        .pm-switch input:checked + .pm-switch-track{background:linear-gradient(135deg,#FB923C 0%,#F97316 45%,#EA580C 100%);
+                            box-shadow:inset 0 1px 2px rgba(0,0,0,.12),0 3px 10px -2px rgba(234,88,12,.45)}
+                        .pm-switch input:checked + .pm-switch-track .pm-switch-thumb{transform:translateX(20px)}
+                        .pm-switch input:focus-visible + .pm-switch-track{outline:3px solid rgba(249,115,22,.3);outline-offset:2px}
+                        .pm-switch:active .pm-switch-thumb{width:24px}
+                        .pm-switch input:checked:active + .pm-switch-track .pm-switch-thumb{transform:translateX(16px)}
+                        .pm-switch-text{font-size:12px;font-weight:700;color:#78716c;min-width:56px}
+                        .pm-switch input:checked ~ .pm-switch-text{color:#ea580c}
+                    </style>
+                    <label class="pm-switch">
+                        <input type="checkbox" wire:model.live="pengingat_aktif">
+                        <span class="pm-switch-track"><span class="pm-switch-thumb"></span></span>
+                        <span class="pm-switch-text">{{ $pengingat_aktif ? 'Aktif' : 'Nonaktif' }}</span>
+                    </label>
+                </div>
+                <div class="mt-3" @if(!$pengingat_aktif) style="opacity:.5" @endif>
+                    <label class="block text-[10.5px] font-bold text-stone-500 uppercase tracking-widest mb-1.5">Tanggal Pengingat (bulan-tanggal, pisahkan koma)</label>
+                    <input wire:model="pengingat_jadwal" type="text" placeholder="07-01,08-01,09-01,10-01,11-01,11-15,12-01,12-15,12-25"
+                        class="w-full px-3.5 py-2.5 text-sm border border-stone-200 rounded-xl bg-stone-50 text-stone-800 outline-none
+                               focus:border-orange-400 focus:ring-2 focus:ring-orange-400/15 focus:bg-white transition-all duration-200"/>
+                    @error('pengingat_jadwal') <p class="text-[11px] text-red-500 mt-1">{{ $message }}</p> @enderror
+                    <p class="text-xs text-stone-400 mt-1.5">Dikirim dua kali pada tanggal yang terdaftar: pukul 08:00 (pagi) dan 19:00 (malam). Contoh: <span class="font-semibold text-stone-600">11-15</span> = 15 November.</p>
+                </div>
+            </div>
+
             {{-- Summary --}}
             <div class="bg-stone-50 border border-stone-200 rounded-xl p-4
                         shadow-[0_1px_0_rgba(255,255,255,.9)_inset]">

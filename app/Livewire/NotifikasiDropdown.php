@@ -164,6 +164,9 @@ class NotifikasiDropdown extends Component
                     'is_new' => $isNew($m->updated_at),
                 ]);
             $notif = $notif->merge($sertifikatMandiriBaru);
+
+            // Pengingat jam pelatihan belum terpenuhi
+            $notif = $notif->merge($this->pengingatJam($user, $isNew));
         }
 
         // ── PESERTA EKSTERNAL (termasuk Karyawan External) ──
@@ -252,6 +255,9 @@ class NotifikasiDropdown extends Component
                         'is_new' => $isNew($e->created_at),
                     ]);
                 $notif = $notif->merge($elearningKaryawan);
+
+                // Pengingat jam pelatihan belum terpenuhi
+                $notif = $notif->merge($this->pengingatJam($user, $isNew));
             } else {
                 // PKL/Magang/Orientasi — sertifikat siap
                 $sertifikatSiap = DB::table('detail_eksternals')
@@ -279,6 +285,47 @@ class NotifikasiDropdown extends Component
             ->toArray();
 
         $this->jumlahBelumBaca = $notif->where('is_new', true)->count();
+    }
+
+    /**
+     * Pengingat jam pelatihan terbaru (14 hari terakhir) dari tabel pengingat_jam_logs.
+     * Dibuat oleh command `jam:kirim-pengingat`; hilang dari daftar kalau target sudah terpenuhi.
+     */
+    private function pengingatJam($user, \Closure $isNew): \Illuminate\Support\Collection
+    {
+        try {
+            $log = DB::table('pengingat_jam_logs')
+                ->where('id_user', $user->id)
+                ->where('tahun', now()->year)
+                ->where('dikirim_at', '>=', now()->subDays(14))
+                ->orderByDesc('dikirim_at')
+                ->first();
+
+            if (!$log) {
+                return collect();
+            }
+
+            $rekap = app(\App\Actions\RekapJam\CalculateRekapJamAction::class)->execute($user->id, now()->year);
+            $target = (float) $log->target_jam;
+            if ($rekap->sudahMemenuhiTarget($target)) {
+                return collect();
+            }
+
+            $fmt = fn($v) => rtrim(rtrim(number_format((float) $v, 1, ',', '.'), '0'), ',');
+            $total = (float) $rekap->total();
+
+            return collect([[
+                'icon'   => '⏰',
+                'judul'  => 'Pengingat: jam pelatihan Anda baru ' . $fmt($total) . ' dari ' . $fmt($target)
+                            . ' jam (kurang ' . $fmt(max(0, $target - $total)) . ' jam)',
+                'waktu'  => \Carbon\Carbon::parse($log->dikirim_at)->diffForHumans(),
+                'warna'  => 'orange',
+                'is_new' => $isNew($log->dikirim_at),
+            ]]);
+        } catch (\Throwable $e) {
+            // Tabel belum dimigrasi / error lain: jangan ganggu dropdown notifikasi
+            return collect();
+        }
     }
 
     public function toggleOpen(): void

@@ -48,3 +48,16 @@ Schedule::call(function () {
         \Illuminate\Support\Facades\Log::error('[Scheduler] Error update-status-acara: '.$e->getMessage());
     }
 })->everyMinute()->name('update-status-acara');
+
+// 3. Pengingat jam pelatihan belum terpenuhi — sesi pagi jam 08:00
+//    (jadwal tanggal & status aktif diatur di Konfigurasi Sistem > Jam Pelatihan)
+Schedule::command('jam:kirim-pengingat --sesi=pagi')
+    ->dailyAt('08:00')
+    ->withoutOverlapping()
+    ->name('pengingat-jam-pelatihan-pagi');
+
+// Pengingat sesi malam — jam 19:00, hanya pada tanggal yang sama dengan jadwal pengingat
+Schedule::command('jam:kirim-pengingat --sesi=malam')
+    ->dailyAt('19:00')
+    ->withoutOverlapping()
+    ->name('pengingat-jam-pelatihan-malam');

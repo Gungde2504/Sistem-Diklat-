@@ -23,6 +23,10 @@ class KonfigurasiSistem extends Component
     public string $batas_diklat_mandiri = '';
     public string $batas_elearning      = '';
 
+    // Pengingat jam pelatihan
+    public bool   $pengingat_aktif  = true;
+    public string $pengingat_jadwal = '';
+
     // Aplikasi
     public string $app_nama     = '';
     public string $app_instansi = '';
@@ -38,6 +42,7 @@ class KonfigurasiSistem extends Component
         $configs = SistemKonfigurasi::whereIn('key', [
             'rs_latitude', 'rs_longitude', 'rs_radius', 'rs_nama', 'rs_alamat',
             'target_jam_tahunan', 'batas_diklat_mandiri', 'batas_elearning',
+            'pengingat_aktif', 'pengingat_jadwal',
             'app_nama', 'app_instansi', 'app_tahun',
         ])->pluck('value', 'key');
 
@@ -50,6 +55,9 @@ class KonfigurasiSistem extends Component
         $this->target_jam_tahunan   = $configs->get('target_jam_tahunan', '20');
         $this->batas_diklat_mandiri = $configs->get('batas_diklat_mandiri', '10');
         $this->batas_elearning      = $configs->get('batas_elearning', '5');
+
+        $this->pengingat_aktif  = $configs->get('pengingat_aktif', '1') === '1';
+        $this->pengingat_jadwal = $configs->get('pengingat_jadwal', \App\Console\Commands\KirimPengingatJam::JADWAL_DEFAULT);
 
         $this->app_nama     = $configs->get('app_nama', 'Sistem Informasi Diklat & Seminar');
         $this->app_instansi = $configs->get('app_instansi', 'RSU Prima Medika');
@@ -89,11 +97,18 @@ class KonfigurasiSistem extends Component
             'target_jam_tahunan'   => 'required|numeric|min:1',
             'batas_diklat_mandiri' => 'required|numeric|min:0',
             'batas_elearning'      => 'required|numeric|min:0',
+            // Daftar tanggal MM-DD dipisah koma, mis. 07-01,11-15,12-25
+            'pengingat_jadwal'     => ['required', 'regex:/^\s*(0[1-9]|1[0-2])-(0[1-9]|[12]\d|3[01])(\s*,\s*(0[1-9]|1[0-2])-(0[1-9]|[12]\d|3[01]))*\s*$/'],
+        ], [
+            'pengingat_jadwal.required' => 'Jadwal pengingat wajib diisi.',
+            'pengingat_jadwal.regex'    => 'Format jadwal: bulan-tanggal dipisah koma, mis. 07-01,11-15,12-25.',
         ]);
 
         SistemKonfigurasi::set('target_jam_tahunan',   $this->target_jam_tahunan);
         SistemKonfigurasi::set('batas_diklat_mandiri', $this->batas_diklat_mandiri);
         SistemKonfigurasi::set('batas_elearning',      $this->batas_elearning);
+        SistemKonfigurasi::set('pengingat_aktif',      $this->pengingat_aktif ? '1' : '0');
+        SistemKonfigurasi::set('pengingat_jadwal',     preg_replace('/\s+/', '', $this->pengingat_jadwal));
 
         $this->loadConfig();
 
