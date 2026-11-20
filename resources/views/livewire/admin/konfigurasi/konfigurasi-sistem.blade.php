@@ -348,7 +348,7 @@
                         class="w-full px-3.5 py-2.5 text-sm border border-stone-200 rounded-xl bg-stone-50 text-stone-800 outline-none
                                focus:border-orange-400 focus:ring-2 focus:ring-orange-400/15 focus:bg-white transition-all duration-200"/>
                     @error('pengingat_jadwal') <p class="text-[11px] text-red-500 mt-1">{{ $message }}</p> @enderror
-                    <p class="text-xs text-stone-400 mt-1.5">Dikirim dua kali pada tanggal yang terdaftar: pukul 08:00 (pagi) dan 19:00 (malam). Contoh: <span class="font-semibold text-stone-600">11-15</span> = 15 November.</p>
+                    <p class="text-xs text-stone-400 mt-1.5">Dikirim dua kali pada tanggal yang terdaftar: pukul 08:00 (pagi) dan 20:00 (malam). Contoh: <span class="font-semibold text-stone-600">11-15</span> = 15 November.</p>
                 </div>
             </div>
 
