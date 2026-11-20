@@ -162,7 +162,7 @@
             @foreach([
                 ['label' => 'Jenis',       'value' => ucfirst($detail->jenis)],
                 ['label' => 'Institusi',   'value' => $detail->institusi],
-                ['label' => 'Unit',        'value' => $detail->unit?->nama ?? '-'],
+                ['label' => 'Unit',        'value' => $detail->unit?->nama ?? (str_starts_with((string) $detail->jenis, 'karyawan_') ? ($detail->institusi ?: '-') : '-')],
                 ['label' => 'Pembimbing',  'value' => $detail->supervisor?->nama ?? '-'],
                 ['label' => 'Periode',     'value' => \Carbon\Carbon::parse($detail->tanggal_mulai)->format('d M Y').' — '.\Carbon\Carbon::parse($detail->tanggal_selesai)->format('d M Y')],
                 ['label' => 'Status',      'value' => ucfirst($detail->status),

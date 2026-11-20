@@ -117,7 +117,7 @@
         <div class="grid grid-cols-2 sm:grid-cols-4 divide-x divide-stone-100">
             <div class="px-5 py-4 text-center hover:bg-stone-50/70 transition-colors">
                 <p class="text-[11px] text-stone-400 mb-1">Unit</p>
-                <p class="text-sm font-semibold text-stone-800">{{ $detail->unit?->nama ?? '-' }}</p>
+                <p class="text-sm font-semibold text-stone-800">{{ $detail->unit?->nama ?? (str_starts_with((string) $detail->jenis, 'karyawan_') ? ($detail->institusi ?: '-') : '-') }}</p>
             </div>
             <div class="px-5 py-4 text-center hover:bg-stone-50/70 transition-colors">
                 <p class="text-[11px] text-stone-400 mb-1">{{ $isKaryawan ? 'Perusahaan' : 'Pembimbing' }}</p>
@@ -256,7 +256,7 @@
                 ['label' => 'Nama', 'value' => $detail->user?->nama],
                 ['label' => 'Institusi', 'value' => $detail->institusi],
                 ['label' => 'Jenis', 'value' => ucfirst($detail->jenis)],
-                ['label' => 'Unit', 'value' => $detail->unit?->nama ?? '-'],
+                ['label' => 'Unit', 'value' => $detail->unit?->nama ?? (str_starts_with((string) $detail->jenis, 'karyawan_') ? ($detail->institusi ?: '-') : '-')],
                 ['label' => 'Pembimbing', 'value' => $detail->supervisor?->nama ?? '-'],
                 ['label' => 'Periode', 'value' => \Carbon\Carbon::parse($detail->tanggal_mulai)->format('d M Y').' — '.\Carbon\Carbon::parse($detail->tanggal_selesai)->format('d M Y')],
                 ['label' => 'Kehadiran Valid', 'value' => $totalHadir.' / '.$totalAbsensi.' hari'],

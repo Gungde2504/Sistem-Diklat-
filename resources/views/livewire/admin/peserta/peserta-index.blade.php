@@ -470,7 +470,7 @@
                             <p class="text-xs text-stone-400">-</p>
                             @endif
                             @else
-                            <p class="text-xs font-medium text-stone-700">{{ $p->unit?->nama ?? '-' }}</p>
+                            <p class="text-xs font-medium text-stone-700">{{ $p->unit?->nama ?? (str_starts_with((string) $p->jenis, 'karyawan_') ? ($p->institusi ?: '-') : '-') }}</p>
                             @endif
                         </td>
 
